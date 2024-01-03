@@ -1,0 +1,111 @@
+ /* base */
+ #wrap {
+     margin: 0 auto;
+     width: 90%;
+     text-align: center;
+ }
+
+ ul {
+     padding: 0;
+     list-style: none;
+ }
+
+ ul li {
+     display: inline-block;
+     margin-left: 30px;
+     margin-right: 30px;
+ }
+
+ a {
+     text-decoration: none;
+ }
+
+ a:hover {
+     color: red;
+ }
+
+ /* 상품 조회 */
+ table {
+     margin: 0 auto;
+ }
+
+ table#prd_list {
+     border-bottom: brown;
+ }
+
+ table#prd_list th {
+     width: 100px;
+     background-color: #dc3030;
+     color: white;
+     height: 30px;
+     line-height: 30px;
+ }
+
+ table#prd_list tr td {
+     border-bottom: red 1px dashed;
+     height: 30px;
+     line-height: 30px;
+ }
+
+
+ /* 상품 상세정보 조회 */
+
+
+ table#prd_detail {
+     width: 500px;
+ }
+
+ table#prd_detail th {
+     width: 100px;
+     background-color: #dc3030;
+     color: white;
+     height: 30px;
+     line-height: 30px;
+     text-align: right;
+     padding-right: 10px;
+ }
+
+ table#prd_detail td {
+     border: solid 1px black;
+ }
+
+ /* 상품 등록 */
+ #form_tbl th {
+     background-color: #dc3030;
+     color: white;
+     width: 100px;
+     text-align: right;
+ }
+
+ #form_tbl td input {
+     border: solid 1px #dc3030;
+     width: 300px;
+     height: 30px;
+     box-shadow: 0 1px 1px 0;
+ }
+
+ #form_btn {
+     background-color: #dc3030;
+     width: 80px;
+     height: 35;
+     color: white;
+     border-radius: 5px;
+ }
+
+
+ h3 {
+     color: red;
+ }
+
+ .btn {
+     background-color: #dc3030;
+     width: 50px;
+     height: 35;
+     color: white;
+     border-radius: 5px;
+ }
+
+ #imgPreviewOne img, #imgPreviewMulti img {
+    width: 150px;
+    height: 100px;
+ }
