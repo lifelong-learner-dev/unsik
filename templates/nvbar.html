@@ -1,7 +1,46 @@
 <nav>
-    <ul>
-        <li><a href="{% url 'main' %}">HOME</a></li>
-        <li><a href="{% url 'exercise_index' %}">운동</a></li>
-        <li><a href="{% url 'meal_index' %}">식단</a></li>       
+    {% if user.is_authenticated %}
+    <ul class="head_menu">
+        <li><a href="{% url 'meal_index' %}">식단 올리기</a></li>       
+        <li><a href="{% url 'exercise_index' %}">운동 기록하기</a></li>
+        <li>
+            <a href="#">커뮤니티</a>
+            <ul class="submenu">
+                <li><a href="#">오늘의 운동 인증</a></li>
+                <li><a href="#">질문있어요</a></li>
+                <li><a href="#">식단 조합 추천</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">마이페이지</a>
+            <ul class="submenu">
+                <li><a href="">나의 식단 히스토리</a></li>
+                <li><a href="">나의 운동 기록</a></li>
+                <li><a href="">나의 정보 수정</a></li>
+            </ul>
+        </li>
     </ul>
+    {% else %}
+    <ul class="head_menu">
+        <!-- <li><a href="{% url 'main' %}">HOME</a></li> -->
+        <li><a href="{% url 'meal_index' %}">식단 올리기</a></li>       
+        <li><a href="{% url 'exercise_index' %}">운동 기록하기</a></li>
+        <li>
+            <a href="#">커뮤니티</a>
+            <ul class="submenu">
+                <li><a href="#">오늘의 운동 인증</a></li>
+                <li><a href="#">질문있어요</a></li>
+                <li><a href="#">식단 조합 추천</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">마이페이지</a>
+            <ul class="submenu">
+                <li><a href="">나의 식단 히스토리</a></li>
+                <li><a href="">나의 운동 기록</a></li>
+                <li><a href="">나의 정보 수정</a></li>
+            </ul>
+        </li>
+    </ul>
+    {% endif %}
 </nav>
