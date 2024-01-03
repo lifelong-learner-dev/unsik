@@ -1,4 +1,4 @@
-<nav>
+<nav id="nv_bar">
     {% if user.is_authenticated %}
     <ul class="head_menu">
         <li><a href="{% url 'meal_index' %}">식단 올리기</a></li>       
@@ -22,7 +22,6 @@
     </ul>
     {% else %}
     <ul class="head_menu">
-        <!-- <li><a href="{% url 'main' %}">HOME</a></li> -->
         <li><a href="{% url 'meal_index' %}">식단 올리기</a></li>       
         <li><a href="{% url 'exercise_index' %}">운동 기록하기</a></li>
         <li>
