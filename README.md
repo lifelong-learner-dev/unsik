@@ -62,3 +62,8 @@
         > exercise_index 추가
       > urls.py
         > exercise_index url 추가
+
+### 2024.01.03 식단 분석 페이지 추가
+    - 식단 분석 페이지 작업중 
+      - 시간대별 코멘트
+      - 이미지 업로드 
