@@ -1,0 +1,18 @@
+header {
+    height: 120px;
+}
+
+#logo_box {
+    padding: 5px;
+    text-align: center;
+}
+
+#user_info {
+    padding: 10px;
+    text-align: right;
+}
+
+#user_info ul > li {
+    display: inline-flex;
+    margin-left: 10px;
+}

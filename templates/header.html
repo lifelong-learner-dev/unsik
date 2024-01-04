@@ -1,8 +1,13 @@
+{% load static %}
+<link rel="stylesheet" href="{% static '/css/header.css' %}">
 <header>
-    <a href="{% url 'main' %}">
-        <span>UNSIK</span>
-    </a>
-    <div>
+    <div id="logo_box">
+        <a href="{% url 'main' %}">
+            <img src="" alt="unsik_logo">
+            <span>UNSIK</span>
+        </a>
+    </div>
+    <div id="user_info">
         {% if user.is_authenticated %}
         <ul>
             <li><a href="">{{ user }}님 로그인</a></li>
@@ -16,4 +21,5 @@
         </ul>
         {% endif %}
     </div>
+    <hr>
 </header>

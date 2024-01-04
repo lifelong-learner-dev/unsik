@@ -13,15 +13,13 @@
 </head>
 
 <body>
-    <div id="wrap">
-        {% include 'header.html' %}
-        {% include "nvbar.html" %}
-        <br><br><hr>
-        {% block content %}
-        {% endblock content %}
-        <hr>
-        {% include "footer.html" %}
-    </div>
+    {% include 'header.html' %}
+    {% include "nvbar.html" %}
+    <br><hr>
+    {% block content %}
+    {% endblock content %}
+    <hr>
+    {% include "footer.html" %}
 </body>
 
 </html>
