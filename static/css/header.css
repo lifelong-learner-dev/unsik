@@ -1,14 +1,38 @@
 header {
+    display: inline-flex;
+    width: 1020px;
     height: 120px;
+    /* background-color: bisque; */
+}
+
+#nv_bar {
+    width: 100vh;
+    position: sticky;
+    top: 10px;
 }
 
 #logo_box {
+    width: 210px;
+}
+
+#logo_box > img {
     padding: 5px;
-    text-align: center;
+}
+
+#unsik_header_logo {
+    height: 100px;
+    margin: 10px;
+}
+
+#user_menu_section {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 #user_info {
-    padding: 10px;
+    width: 95vh;
+    padding-top: 10px;
     text-align: right;
 }
 

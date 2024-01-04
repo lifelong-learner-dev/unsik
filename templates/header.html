@@ -3,23 +3,24 @@
 <header>
     <div id="logo_box">
         <a href="{% url 'main' %}">
-            <img src="" alt="unsik_logo">
-            <span>UNSIK</span>
+            <img id="unsik_header_logo" src="{% static 'images/unsik_logo1.png' %}" alt="unsik_logo1">
         </a>
     </div>
-    <div id="user_info">
-        {% if user.is_authenticated %}
-        <ul>
-            <li><a href="">{{ user }}님 로그인</a></li>
-            <li><a href="#">로그아웃</a></li>
-            <li><a href="#">회원가입</a></li>
-        </ul>
-        {% else %}
-        <ul>
-            <li><a href="#">로그인</a></li>
-            <li><a href="#">회원가입</a></li>
-        </ul>
-        {% endif %}
-    </div>
-    <hr>
+    <section id="user_menu_section">
+        <div id="user_info">
+            {% if user.is_authenticated %}
+            <ul>
+                <li><a href="">{{ user }}님 로그인</a></li>
+                <li><a href="#">로그아웃</a></li>
+                <li><a href="#">회원가입</a></li>
+            </ul>
+            {% else %}
+            <ul>
+                <li><a href="#">로그인</a></li>
+                <li><a href="#">회원가입</a></li>
+            </ul>
+            {% endif %}
+        </div>
+        {% include 'nvbar.html' %}
+    </section>
 </header>

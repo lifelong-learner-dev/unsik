@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h2>식단&운동관리 서비스</h2>
-<h1>UNSIK</h1>
+<link rel="stylesheet" href="{% static 'css/main_page.css' %}">
+<h2>운동 & 식단 관리 트레이너, 운식입니다.</h2>
+<section class="main_section clearfix">
+    <div id="imgDiv1">
+        <img class="mainpic" src="{% static 'images/mainpic1.jpg' %}" alt="">
+    </div>
+    <div id="imgDiv2">
+        <img class="mainpic" src="{% static 'images/mainpic2.jpg' %}" alt="">
+    </div>
+</section>
+<script>
+    
+</script>
 {% endblock content %}
