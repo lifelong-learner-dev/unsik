@@ -1,0 +1,116 @@
+/* #nv_bar {
+    width: 100vh;
+} */
+
+.head_menu {
+    width: 90%;
+    position: relative;
+    z-index: 20;
+    margin: 0 auto;
+    height: 40px;
+}
+
+.head_menu > li {
+    width: 25%;
+    height: 40px;
+    float: left;
+    text-align: center;
+    line-height: 40px;
+    /* 배경 검출용 테스트 bg_color */
+    /* background-color: aqua; */
+    position: relative;
+}
+
+.head_menu > li:hover {
+    background-color: #eeeeee;
+    transition-duration: 0.4s;
+}
+
+.head_menu > li a:hover {
+    font-weight: bolder;
+    color: #209d14;
+    transition-duration: 0.4s;
+}
+
+.head_menu > li:not(:hover) {
+    /* background-color: aqua; */
+    transition-duration: 0.5s;
+}
+
+.head_menu a {
+    color: black;
+    display: block;
+}
+
+.submenu {
+    overflow: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    /* background-color: cadetblue; */
+    transition-duration: 1s;
+    z-index: 21;
+}
+
+.submenu > li {
+    line-height: 50px;
+    background-color: #eeeeee;
+}
+
+.submenu > li:hover {
+    background-color: #e1e1e1;
+    transition-duration: 0.5s;
+}
+
+.head_menu > li:hover .submenu {
+    height: 150px;
+    transition-duration: 0.5s;
+}
+
+.head_menu > li:not(:hover) .submenu {
+    height: 0px;
+    transition-duration: 0.5s;
+}
+
+.submenu1 {
+    overflow: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    /* background-color: cadetblue;
+    transition-duration: 1s; */
+    z-index: 21;
+}
+
+.submenu1 > li {
+    line-height: 50px;
+    background-color: #eeeeee;
+}
+
+.submenu1 > li:hover {
+    background-color: #e1e1e1;
+    transition-duration: 1s;
+}
+
+.head_menu > li:hover .submenu1 {
+    height: 50px;
+    transition-duration: 0.5s;
+}
+
+.head_menu > li:not(:hover) .submenu1 {
+    height: 0px;
+    transition-duration: 0.5s;
+}
+
+@media (max-width: 768px) {
+    .head_menu > li {
+        width: 20%;
+        float: none;
+    }
+
+    .submenu {
+        top: 20%;
+    }
+}

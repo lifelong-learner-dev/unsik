@@ -1,0 +1,35 @@
+.main_section {
+    margin: 0 auto;
+    width: 1020px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    /* position: relative; */
+}
+
+.mainpic {
+    width: 800px;
+    height: auto;
+    z-index: 1;
+}
+
+.mainpic:hover {
+    width: 100%;
+    opacity: 0.5;
+    transition-duration: 0.5s;
+}
+
+.mainpic:not(:hover) {
+    opacity: 1;
+    transition-duration: 0.5s;
+}
+
+#imgDiv1, #imgDiv2 {
+    flex: 1;
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}

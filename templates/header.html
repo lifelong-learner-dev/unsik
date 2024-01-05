@@ -1,19 +1,26 @@
+{% load static %}
+<link rel="stylesheet" href="{% static '/css/header.css' %}">
 <header>
-    <a href="{% url 'main' %}">
-        <span>UNSIK</span>
-    </a>
-    <div>
-        {% if user.is_authenticated %}
-        <ul>
-            <li><a href="">{{ user }}님 로그인</a></li>
-            <li><a href="#">로그아웃</a></li>
-            <li><a href="#">회원가입</a></li>
-        </ul>
-        {% else %}
-        <ul>
-            <li><a href="#">로그인</a></li>
-            <li><a href="#">회원가입</a></li>
-        </ul>
-        {% endif %}
+    <div id="logo_box">
+        <a href="{% url 'main' %}">
+            <img id="unsik_header_logo" src="{% static 'images/unsik_logo1.png' %}" alt="unsik_logo1">
+        </a>
     </div>
+    <section id="user_menu_section">
+        <div id="user_info">
+            {% if user.is_authenticated %}
+            <ul>
+                <li><a href="">{{ user }}님 로그인</a></li>
+                <li><a href="#">로그아웃</a></li>
+                <li><a href="#">회원가입</a></li>
+            </ul>
+            {% else %}
+            <ul>
+                <li><a href="#">로그인</a></li>
+                <li><a href="#">회원가입</a></li>
+            </ul>
+            {% endif %}
+        </div>
+        {% include 'nvbar.html' %}
+    </section>
 </header>
