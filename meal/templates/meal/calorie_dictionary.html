@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/calorie_dict.css' %}">
+<section class="calorie_dict_box">
+    <h2>칼로리 사전</h2>
+
+    <div class="searchBar">
+        <select name="대분류" id="">
+            <option value="--">-대분류-</option>
+            <!-- for문 써서 출력 -->
+        </select>
+        <select name="소분류" id="">
+            <option value="--">-소분류-</option>
+            <!-- for문 써서 출력 -->
+        </select>
+        <input type="text" value="" placeholder="검색어 입력">
+        <button>검색</button>
+    </div>
+</section>
+{% endblock content %}
