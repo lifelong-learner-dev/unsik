@@ -68,17 +68,22 @@
     - 시간대별 코멘트
     - 이미지 업로드 
 
-### 2024/01/04 csh 변경점
+### 2024/01/09 csh 변경점
+    > requirements.txt가 수정되었습니다.
+    - torch==2.1.2
+    - ultralytics==8.0.229
 
-    > 운식 로고가 생성되었습니다.
+    > images/favicon.ico 파일이 추가되었습니다.
+    - templates/base.html에 favicon이 연결되었습니다. favicon이란 페이지 로고 같은 것입니다.
 
-    > templates에 header, footer, main.html이 추가 되었습니다.
+    > 식단 하이퍼링크가 'meal_analyze'로 연결되었습니다.
 
-    > nvbar.html이 일부 수정되었습니다.
+    > exercise, meal app의 models.py에 모델이 추가되었습니다.
 
-    > reset.css 가 추가되었습니다. 스타일 초기화하는 코드가 담겨 있습니다. 초기화된 스타일에 맞춰 다른 페이지도 작성해주시면    
-      감사하겠습니다.
+    <meal app>
+    > calorie_dictionary 검색 기능 구현이 완료되었습니다. CSS는 아직입니다.
 
-    > 메인페이지는 아직 작성 중입니다.
-      > 메뉴 css는 변경될 예정입니다.
-      > 메뉴 a 태그에 링크는 자유롭게 걸어주시기 바랍니다.
+    > modules 폴더 하위에 meal_anal.py가 생성되었습니다. 내부 코드는 수정 중입니다.
+
+    <footer>
+    % marquee는 실험용입니다.
