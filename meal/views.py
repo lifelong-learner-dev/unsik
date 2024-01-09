@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import CalorieDictionary
+from django.db.models import Q
 
 # Create your views here.
 
@@ -8,6 +11,83 @@ def meal_index(request):
 def meal_analyze(request):
     return render(request, 'meal/meal_analyze.html')
 
+# 칼로리 사전 기능
 def calorie_dict(request):
+    page = request.GET.get('page', 1)
+    items_per_page = 30
+    page_display = 10
+
+    # 페이지가 첫 로드되면 DB의 모든 데이터를 긁어와 띄운다
+    cal_data = CalorieDictionary.objects.all()
+
+    # form name=search인 항목에서 검색어를 가져온다.
+    # 첫 로드 시에는 비어있다.
+    search_query = request.GET.get('search', '')
+    print(search_query)
+
+    # 대분류, 소분류 항목을 가져와 option 태그에서 for문을 돌려 노출시킨다.
+    major_classes = CalorieDictionary.objects.filter(Q(food_name__icontains=search_query)
+                                                      | Q(maker__icontains=search_query)).values_list('major_class', flat=True).distinct()
+    detail_classes = CalorieDictionary.objects.filter(Q(food_name__icontains=search_query)
+                                                       | Q(maker__icontains=search_query)).values_list('detail_class', flat=True).distinct()
+
+    # form name=majorClass, detailClass 인 항목을 가져온다.
+    major_class_filter = request.GET.get('majorClass', '')
+    print(major_class_filter)
+    detail_class_filter = request.GET.get('detailClass', '')
+    print(detail_class_filter)
     
-    return render(request, 'meal/calorie_dictionary.html')
+    # 각 항목에 맞는 데이터를 필터해온다. 
+    if major_class_filter:
+        cal_data = cal_data.filter(major_class=major_class_filter)
+    if detail_class_filter:
+        cal_data = cal_data.filter(detail_class=detail_class_filter)
+
+    # 검색 키워드 개수에 따라 다르게 굴러간다.
+    # try except 구문은 크게 필요 없어보이는데, 없으면 오류가 난다.
+    try:
+        keywords = search_query.split()
+        print(keywords)
+        if len(keywords)>=2:
+            q_obj = Q()
+
+            q_obj |= Q(food_name__icontains=keywords[0]) & Q(maker__icontains=keywords[1])
+        
+            cal_data = cal_data.filter(q_obj)
+        else:
+            cal_data = cal_data.filter(Q(food_name__icontains=search_query)
+                                        | Q(maker__icontains=search_query))
+    except:
+        cal_data = cal_data.filter(Q(food_name__icontains=search_query)
+                                        | Q(maker__icontains=search_query))
+
+    # 페이지 기능 실행을 위한 paginator
+    paginator = Paginator(cal_data, items_per_page)
+
+    try:
+        curruent_page_data = paginator.page(page)
+    except PageNotAnInteger:
+        curruent_page_data = paginator.page(1)
+    except EmptyPage:
+        curruent_page_data = paginator.page(paginator.num_pages)
+
+    index = curruent_page_data.number - 1
+    max_index = len(paginator.page_range)
+    start_index = max(0, index - page_display // 2)
+    end_index = min(max_index, start_index + page_display)
+
+    page_range = paginator.page_range[start_index:end_index]
+
+    return render(request, 'meal/calorie_dictionary.html', {
+        'current_page_data':curruent_page_data,
+        'page_range':page_range,
+        'major_classes':major_classes,
+        'detail_classes':detail_classes,
+        'search_query': search_query,
+        'major_class_filter': major_class_filter,
+        'detail_class_filter': detail_class_filter,
+        })
+
+def food_detail(request, food_code):
+    food = get_object_or_404(CalorieDictionary, pk=food_code)
+    return render(request, 'meal/calorie_dict_detail.html', {'food':food})
