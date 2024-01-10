@@ -68,22 +68,19 @@
     - 시간대별 코멘트
     - 이미지 업로드 
 
-### 2024/01/09 csh 변경점
+### 2024/01/10 csh 변경점
     > requirements.txt가 수정되었습니다.
     - torch==2.1.2
     - ultralytics==8.0.229
 
-    > images/favicon.ico 파일이 추가되었습니다.
-    - templates/base.html에 favicon이 연결되었습니다. favicon이란 페이지 로고 같은 것입니다.
+    > settings.py에 MEDIA_ROOT, MEDIA_URL 관련 코드가 생성되었습니다.
+    - 이미지를 이곳에 임시 저장한 후 디텍션하기 위한 용도입니다.
 
-    > 식단 하이퍼링크가 'meal_analyze'로 연결되었습니다.
+    > unsik/urls.py에 DEBUG용 코드가 생성되었습니다. MEDIA_ROOT 경로를 제대로 못 잡을 때 이렇게 쓰면 된다고 합니다.
 
-    > exercise, meal app의 models.py에 모델이 추가되었습니다.
+    > meal_analyze_result가 생성되었습니다. 결과를 보여주는 화면입니다.
 
-    <meal app>
-    > calorie_dictionary 검색 기능 구현이 완료되었습니다. CSS는 아직입니다.
-
-    > modules 폴더 하위에 meal_anal.py가 생성되었습니다. 내부 코드는 수정 중입니다.
+    > modules/meal_anal.py 코드가 작성 되었습니다. YOLO v8 모델을 위한 코드로 원할한 작동을 위해서는 requirements.txt의 필수 패키지들을 설치해야 합니다.
 
     <footer>
     % marquee는 실험용입니다.

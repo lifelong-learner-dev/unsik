@@ -1,7 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 from .models import CalorieDictionary
+from .modules.meal_anal import predict_meal
 from django.db.models import Q
+from uuid import uuid4
 
 # Create your views here.
 
@@ -10,6 +14,34 @@ def meal_index(request):
 
 def meal_analyze(request):
     return render(request, 'meal/meal_analyze.html')
+
+# 이미지 파일명에 고유번호를 부여해주는 함수
+def rename_imagefile_to_uuid(filename):
+    ext = filename.split('.')[-1]
+    uuid = uuid4().hex
+
+    filename = '{}.{}'.format(uuid, ext)
+
+    return filename
+
+# 예측 함수
+def meal_to_analyze(request):
+    if request.method == 'POST':
+        meal_img = request.FILES.get('fileUpload')
+        print(meal_img.name)
+
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+        file_name = rename_imagefile_to_uuid(meal_img.name)
+        image_url = fs.save(file_name, meal_img)
+
+        # 이미지를 예측하러 함수로 보내기
+        detections = predict_meal(meal_img)
+        print(detections)
+        image_url = settings.MEDIA_URL + image_url
+        print(image_url)
+
+        # 돌아온 값 담아서 return
+    return render(request, 'meal/meal_analyze_result.html', {'detect_results': detections, 'meal_image': image_url})
 
 # 칼로리 사전 기능
 def calorie_dict(request):
@@ -88,6 +120,7 @@ def calorie_dict(request):
         'detail_class_filter': detail_class_filter,
         })
 
+# 칼로리 사전에 걸린 링크 기본키로 음식 상세정보 출력
 def food_detail(request, food_code):
     food = get_object_or_404(CalorieDictionary, pk=food_code)
     return render(request, 'meal/calorie_dict_detail.html', {'food':food})
