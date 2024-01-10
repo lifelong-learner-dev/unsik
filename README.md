@@ -68,17 +68,19 @@
     - 시간대별 코멘트
     - 이미지 업로드 
 
-### 2024/01/04 csh 변경점
+### 2024/01/10 csh 변경점
+    > requirements.txt가 수정되었습니다.
+    - torch==2.1.2
+    - ultralytics==8.0.229
 
-    > 운식 로고가 생성되었습니다.
+    > settings.py에 MEDIA_ROOT, MEDIA_URL 관련 코드가 생성되었습니다.
+    - 이미지를 이곳에 임시 저장한 후 디텍션하기 위한 용도입니다.
 
-    > templates에 header, footer, main.html이 추가 되었습니다.
+    > unsik/urls.py에 DEBUG용 코드가 생성되었습니다. MEDIA_ROOT 경로를 제대로 못 잡을 때 이렇게 쓰면 된다고 합니다.
 
-    > nvbar.html이 일부 수정되었습니다.
+    > meal_analyze_result가 생성되었습니다. 결과를 보여주는 화면입니다.
 
-    > reset.css 가 추가되었습니다. 스타일 초기화하는 코드가 담겨 있습니다. 초기화된 스타일에 맞춰 다른 페이지도 작성해주시면    
-      감사하겠습니다.
+    > modules/meal_anal.py 코드가 작성 되었습니다. YOLO v8 모델을 위한 코드로 원할한 작동을 위해서는 requirements.txt의 필수 패키지들을 설치해야 합니다.
 
-    > 메인페이지는 아직 작성 중입니다.
-      > 메뉴 css는 변경될 예정입니다.
-      > 메뉴 a 태그에 링크는 자유롭게 걸어주시기 바랍니다.
+    <footer>
+    % marquee는 실험용입니다.

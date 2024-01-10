@@ -1,0 +1,9 @@
+.calorie_dict_box {
+    width: 1020px;
+    margin: 0 auto;
+}
+
+.calorie_dict_box > h2 {
+    padding-bottom: 8px;
+    border-bottom: 2px solid black;
+}

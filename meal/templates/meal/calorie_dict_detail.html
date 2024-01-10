@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>식품 상세 정보</h2>
+<button onclick="goBack()">돌아가기</button>
+<div>
+    <table id="food_detail">
+        <tr><th>식품명</th><td>{{ food.food_name }}</td></tr>
+        <tr><th>지역/제조사</th><td>{{ food.maker }}</td></tr>
+        <tr><th>1회 제공량(g)</th><td>{{ food.one_serve_amount_g_field }}</td></tr>
+        <tr><th>총량(g)</th><td>{{ food.total_amount_g_field }}</td></tr>
+        <tr><th>칼로리(kcal)</th><td>{{ food.calories }}</td></tr>
+        <tr><th>수분</th><td>{{ food.water }}</td></tr>
+        <tr><th>단백질</th><td>{{ food.protein }}</td></tr>
+        <tr><th>지방</th><td>{{ food.fat }}</td></tr>
+        <tr><th>탄수화물</th><td>{{ food.carbohydrate }}</td></tr>
+        <tr><th>당</th><td>{{ food.suger }}</td></tr>
+        <tr><th>식이섬유</th><td>{{ food.dietary_fiber }}</td></tr>
+        <tr><th>나트륨(mg)</th><td>{{ food.natrium }}</td></tr>
+        <tr><th>포화지방</th><td>{{ food.total_sfa }}</td></tr>
+        <tr><th>트랜스지방</th><td>{{ food.total_tfa }}</td></tr>
+    </table>    
+</div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+{% endblock content %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    #result_section {
+        position: relative;
+        display: inline-block;
+    }
+
+    .marker {
+        position: absolute;
+        background-color: red;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 20px;
+    }
+</style>
+<aside>
+    <div id="result_section">
+            {% if meal_image %}
+            <img src="{{ meal_image }}" alt="meal_image" id="meal_image" style="width: 700px;">
+            {% endif %}
+        </div>
+        <div>
+            <p>이 식단으로 예측했습니다. 이 정보가 맞나요?</p>
+            {% if detect_results %}
+                {% for result in detect_results %}
+                <p>{{ result }}</p>
+                {% endfor %}
+            {% endif %}
+            <!-- 이 아래에 식단이 떠야 한다. -->
+
+            <!-- 모든 식단 정보를 확인 후 사용자에게 컨펌시킨다. -->
+            <button id="confirm-button">맞음</button>
+            <button id="deny-button">틀림</button>
+    </div>
+
+    <h2>영양소 정보</h2>
+    <div id="nutrient_information"></div>
+    <h2>코멘트</h2>
+    <div id="time_comment"></div>
+</aside>
+
+<script>
+    function createMarker(text, x, y) {
+        const marker = document.createElement('div');
+        marker.className = 'marker';
+        marker.style.left = x + 'px';
+        marker.style.top = y + 'px';
+        marker.textContent = text;
+        return marker;
+    }
+
+    // 이미지 로드
+    const img = document.getElementById('meal_image');
+
+    img.onload = function() {
+        var width = img.width;
+        var height = img.height;
+
+        console.log(width, height)
+        {% for key, values in detect_results.items %}
+        var tagWidth = width * {{ values.0 }};
+        var tagHeight = height * {{ values.1 }};
+
+        var marker = createMarker(`{{ key }}`, tagWidth, tagHeight);
+        document.getElementById('result_section').appendChild(marker);
+        {% endfor %}
+    }
+</script>
+{% endblock content %}

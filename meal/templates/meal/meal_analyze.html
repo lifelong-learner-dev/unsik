@@ -5,14 +5,15 @@
 <main>
     <section class="meal-analysis">
         <h1>식단 사진 업로드</h1>
-        <form>
+        <form method="post" enctype="multipart/form-data" action="{% url 'meal_to_analyze' %}">
+            {% csrf_token %}
             <label for="fileUpload">식단 사진 선택:</label>
             <input type="file" id="fileUpload" name="fileUpload" accept="image/*">
+            <div id="preview">
+                AI가 식단을 분석해 자동으로 영양정보를 분석하고 맞춤 식단을 추천해드립니다.
+            </div>
+            <button type="submit" id="analyze-button">분석</button>
         </form>
-        <div id="preview">
-            AI가 식단을 분석해 자동으로 영양정보를 분석하고 맞춤 식단을 추천해드립니다.
-        </div>
-        <button id="analyze-button">분석</button>   
     </section>
     <div id="current-section"></div>
     <!-- <section class="meal-details">
@@ -25,6 +26,9 @@
     <div id="analysis-section">
         <main>
             <p>이 식단으로 예측했습니다. 이 정보가 맞나요?</p>
+            <!-- 이 아래에 식단이 떠야 한다. -->
+
+            <!-- 모든 식단 정보를 확인 후 사용자에게 컨펌시킨다. -->
             <button id="confirm-button">맞음</button>
             <button id="deny-button">틀림</button>
         </main>
