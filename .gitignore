@@ -33,3 +33,6 @@ Pipfile.lock
 # Poetry
 pyproject.toml
 poetry.lock
+
+# meal_photos 내 파일 
+meal_photos/

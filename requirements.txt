@@ -7,3 +7,5 @@ mysqlclient==2.2.1
 torch==2.1.2
 
 ultralytics==8.0.229
+
+Pillow==10.2.0
