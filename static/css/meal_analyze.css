@@ -1,3 +1,7 @@
 #analysis-section {
     display: none;
 }
+
+#meal_image {
+    z-index: 1;
+}

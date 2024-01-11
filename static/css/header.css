@@ -9,6 +9,7 @@ header {
     width: 100vh;
     position: sticky;
     top: 10px;
+    z-index: 10;
 }
 
 #logo_box {
