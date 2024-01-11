@@ -41,15 +41,15 @@
     <div id="modify_result">
         <form method="post" id="meal_result_form" action="">
             {% csrf_token %}
-            <!-- <legend>음식 정보 수정</legend> -->
             {% if detect_results %}
                 {% for result in detect_results %}
-                {{ result }} : <input type="text" name="food_info">
+                <input type="text" name="food_info[]" value="{{ result }}">
+                <button type="button" class="remove_input">입력창 삭제</button>
                 {% endfor %}
             {% endif %}
         </form>
         <button id="add_input_box">음식 추가</button>
-        <button type="submit">완료</button>
+        <button type="submit" id="submit_form">완료</button>
     </div>
 
     <h2>영양소 정보</h2>
