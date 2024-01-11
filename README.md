@@ -43,44 +43,15 @@
       > INSTALLED_APPS "rest_framework", "exercise", "meal" 추가
       > TEMPLATES의 DIRS에 BASE_DIR 추가
       > STATICFILES_DIR 추가
-      
-    > unsik 폴더 내 urls.py
-      > exercise.urls 와 meals.urls 추가
 
-    > meal 폴더
-      > templates\meal 폴더
-        > meal_index.html 생성
-      > views.py 
-        > meal_index 추가
-      > urls.py
-        > meal_index url 추가
-
-    > exercise 폴더
-      > templates\exercise 폴더
-        > exercise_index.html 생성
-      > views.py 
-        > exercise_index 추가
-      > urls.py
-        > exercise_index url 추가
-
-### 2024.01.03 식단 분석 페이지 추가
-    - 식단 분석 페이지 작업중 
-    - 시간대별 코멘트
-    - 이미지 업로드 
-
-### 2024/01/10 csh 변경점
+### 2024/01/11 csh 변경점
     > requirements.txt가 수정되었습니다.
     - torch==2.1.2
     - ultralytics==8.0.229
 
-    > settings.py에 MEDIA_ROOT, MEDIA_URL 관련 코드가 생성되었습니다.
-    - 이미지를 이곳에 임시 저장한 후 디텍션하기 위한 용도입니다.
+    > 부트스트랩 적용 후 CSS가 의도된 모습과 다르게 출력되는 부분을 수정하였습니다.
 
-    > unsik/urls.py에 DEBUG용 코드가 생성되었습니다. MEDIA_ROOT 경로를 제대로 못 잡을 때 이렇게 쓰면 된다고 합니다.
+    > 식단 올리기 페이지에서 사진 업로드 없이 '분석' 버튼을 누르면
+     오류 페이지가 출력되는 현상을 수정하였습니다.
 
-    > meal_analyze_result가 생성되었습니다. 결과를 보여주는 화면입니다.
-
-    > modules/meal_anal.py 코드가 작성 되었습니다. YOLO v8 모델을 위한 코드로 원할한 작동을 위해서는 requirements.txt의 필수 패키지들을 설치해야 합니다.
-
-    <footer>
-    % marquee는 실험용입니다.
+    > 칼로리 사전 페이지 CSS가 소소하게 수정되었습니다. 크게 눈에 띄지는 않습니다.

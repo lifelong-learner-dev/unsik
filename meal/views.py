@@ -28,7 +28,7 @@ def rename_imagefile_to_uuid(filename):
 def meal_to_analyze(request):
     if request.method == 'POST':
         meal_img = request.FILES.get('fileUpload')
-        print(meal_img.name)
+        # print(meal_img.name)
 
         fs = FileSystemStorage(location=settings.MEDIA_ROOT)
         file_name = rename_imagefile_to_uuid(meal_img.name)
@@ -36,9 +36,9 @@ def meal_to_analyze(request):
 
         # 이미지를 예측하러 함수로 보내기
         detections = predict_meal(meal_img)
-        print(detections)
+        # print(detections)
         image_url = settings.MEDIA_URL + image_url
-        print(image_url)
+        # print(image_url)
 
         # 돌아온 값 담아서 return
     return render(request, 'meal/meal_analyze_result.html', {'detect_results': detections, 'meal_image': image_url})
@@ -84,8 +84,14 @@ def calorie_dict(request):
             q_obj = Q()
 
             q_obj |= Q(food_name__icontains=keywords[0]) & Q(maker__icontains=keywords[1])
+
+            print(q_obj)
         
             cal_data = cal_data.filter(q_obj)
+
+            # 수정된 검색결과에 맞춰 대분류, 소분류 재검색
+            major_classes = CalorieDictionary.objects.filter(q_obj).values_list('major_class', flat=True).distinct()
+            detail_classes = CalorieDictionary.objects.filter(q_obj).values_list('detail_class', flat=True).distinct()
         else:
             cal_data = cal_data.filter(Q(food_name__icontains=search_query)
                                         | Q(maker__icontains=search_query))

@@ -33,6 +33,7 @@
 }
 
 .head_menu a {
+    text-decoration: none !important;
     color: black;
     display: block;
 }
@@ -43,6 +44,7 @@
     top: 100%;
     left: 0;
     width: 100%;
+    padding: 0;
     /* background-color: cadetblue; */
     transition-duration: 1s;
 }
@@ -73,6 +75,7 @@
     top: 100%;
     left: 0;
     width: 100%;
+    padding: 0;
 }
 
 .submenu1 > li {

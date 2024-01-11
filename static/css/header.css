@@ -12,6 +12,10 @@ header {
     z-index: 10;
 }
 
+#nv_bar ul li {
+    list-style: none !important;
+}
+
 #logo_box {
     width: 210px;
 }
