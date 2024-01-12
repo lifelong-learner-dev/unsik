@@ -11,13 +11,14 @@
             {% if user.is_authenticated %}
             <ul>
                 <li><a href="">{{ user }}님 로그인</a></li>
-                <li><a href="#">로그아웃</a></li>
+                <li><a href="{% url 'sign_out' %}">로그아웃</a></li>
                 <li><a href="#">회원가입</a></li>
             </ul>
             {% else %}
             <ul>
                 <li><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a></li>
                 <li><a href="#" data-bs-toggle="modal" data-bs-target="#signupModal">회원가입</a></li>
+                <li><a href="{% url 'sign_up' %}">회원가입2</a></li>
             </ul>
             {% endif %}
         </div>

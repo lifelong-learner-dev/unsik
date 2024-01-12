@@ -4,6 +4,54 @@
 
 ### 2024/01/02 
 
+### 2024/01/12 유저 인증, 로그인 함수 관련 수정
+
+주의! 아래 지침을 수행하기 전 DB에 저장된 파일들을 export 시키거나 백업해놓으시기 바랍니다.
+====================================
+1. exercise, meal, unsik 등 app에 포함된 models.py 내의 정보를 모두 삭제해주세요.
+    - models.py에 정보가 남아있을 경우 오류를 일으킵니다.
+
+2. MySQL의 unsik_db 스키마를 drop해주세요.
+
+    - users_app_user 테이블이 현재 인증 문제를 일으키고 있습니다.
+    Django에서 따로 명령어를 통해 users_app_user 테이블을 생성해야
+    인증 문제가 해결됩니다.
+
+3. 동봉된 MySQL 쿼리문에서 아래 명령어까지만 수행해주세요.
+
+    ```
+    CREATE SCHEMA unsik_db;
+
+    use unsik_db;
+    ```
+
+4. venv 환경에서 unsik 폴더 내 python manage.py makemigrate 실행해주세요.
+
+    ```bash
+    python manage.py makemigrate
+    ```
+
+    - 만약 오류가 날 경우 meal, exercise 각 앱의 migrations 폴더에서 0001_init.py 같은 거 삭제해주세요.
+    - 문제 없이 넘어갔다면 다음 명령어 실행해주세요.
+
+    ```bash
+    python manage.py migrate
+    ```
+    - 터미널 출력창에서 Applying sessions.0001_initial... OK 확인 후 다음 단계로 넘어가주세요. 안 된다면 오류메세지 확인 후 문제 해결 후 다시 수행해주세요.
+
+5. 남은 SQL문 실행해주세요.
+6. inspectdb를 통해 각 models.py에 필요한 DB 넣어주세요.
+   ```bash
+   python manage.py inspectdb
+   ```
+
+   - users_app
+     - UsersAppUser
+   - meal
+     - CalorieDictionary
+     - Meal
+     - UsersAppUser
+
 #### 프로젝트 기본 세팅
     > 모든 세팅이 완료되시면 
       주소 : http://127.0.0.1:8000/exercise/
@@ -43,15 +91,3 @@
       > INSTALLED_APPS "rest_framework", "exercise", "meal" 추가
       > TEMPLATES의 DIRS에 BASE_DIR 추가
       > STATICFILES_DIR 추가
-
-### 2024/01/11 csh 변경점
-    > requirements.txt가 수정되었습니다.
-    - torch==2.1.2
-    - ultralytics==8.0.229
-
-    > 부트스트랩 적용 후 CSS가 의도된 모습과 다르게 출력되는 부분을 수정하였습니다.
-
-    > 식단 올리기 페이지에서 사진 업로드 없이 '분석' 버튼을 누르면
-     오류 페이지가 출력되는 현상을 수정하였습니다.
-
-    > 칼로리 사전 페이지 CSS가 소소하게 수정되었습니다. 크게 눈에 띄지는 않습니다.
