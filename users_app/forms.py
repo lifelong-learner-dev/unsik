@@ -1,9 +1,9 @@
 from django import forms
-# from .models import UsersAppUser
+from .models import UsersAppUser
 
 class UserForm(forms.ModelForm):
     class Meta:
-        # model = UsersAppUser
+        model = UsersAppUser
 
         fields = (
             'username',

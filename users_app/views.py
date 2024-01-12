@@ -33,19 +33,19 @@ def sign_up(request):
         user_gender = request.POST['user_gender']
         user_height = request.POST['user_height']
         user_weight = request.POST['user_weight']
-        # purpose = request.POST['purpose']
         user_activity = request.POST['user_activity']
 
-        user = User.objects.create(username=username, email=email, password=password, user_age=user_age,
-                                    user_gender=user_gender, user_height=user_height, user_weight=user_weight,
-                                    user_activity=user_activity)
+        user = User.objects.create_user(username, email, password, user_age=user_age, user_gender=user_gender)
+        user.user_height = user_height
+        user.user_weight = user_weight
+        user.user_activity = user_activity
         
         user.save()
         return redirect('main')
     else:
         form = UserForm()
 
-    return render(request, "sign_up.html", {'form':form})
+    return render(request, "users_app/sign_up.html", {'form': form})
 
 def id_check(request):
     if request.method == 'POST':
