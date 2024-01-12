@@ -25,6 +25,10 @@ urlpatterns = [
     path("", views.show_main, name='main'),
     path("exercise/", include("exercise.urls")),
     path("meal/", include("meal.urls")),
+    path("sign_up", views.sign_up, name="sign_up"),
+    path("id_check", views.id_check, name='id_check'),
+    path("sign_in", views.sign_in, name='sign_in'),
+    path("sign_out", views.sign_out, name='sign_out')
 ]
 
 if settings.DEBUG:
