@@ -5,3 +5,8 @@
 #meal_image {
     z-index: 1;
 }
+
+#meal_result_form {
+    display: inline-flex;
+    flex-direction: column;
+}
