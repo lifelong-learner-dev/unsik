@@ -130,3 +130,10 @@ def calorie_dict(request):
 def food_detail(request, food_code):
     food = get_object_or_404(CalorieDictionary, pk=food_code)
     return render(request, 'meal/calorie_dict_detail.html', {'food':food})
+
+# def upload_and_detect(request):
+#     if request.method == 'POST':
+#         image = request.FILES.get('fileUpload')
+    
+
+#     return True

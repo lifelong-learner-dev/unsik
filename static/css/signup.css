@@ -1,0 +1,6 @@
+#sign_up_form {
+    margin: 0 auto;
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+}

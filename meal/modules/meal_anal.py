@@ -29,7 +29,10 @@ def predict_meal(image):
     detections = {}
 
     # 클래스 번호에 따라 {음식명: [좌표값]} 으로 묶어주는 for문
+    # 문제! 딕셔너리 형태로 묶으면 안된다. 중복값이 덮어쓰인 채 들어간다.
     for cls, coords in zip(class_num, box_xywhn):
         detections[food_cls[cls]] = coords
+
+    print(detections)
 
     return detections
