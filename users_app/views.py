@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import User, UsersAppUser
+from .models import UsersAppUser
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth.forms import AuthenticationForm
@@ -26,22 +26,14 @@ def sign_out(request):
 
 def sign_up(request):
     if request.method == "POST":
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        user_age = request.POST['user_age']
-        user_gender = request.POST['user_gender']
-        user_height = request.POST['user_height']
-        user_weight = request.POST['user_weight']
-        user_activity = request.POST['user_activity']
-
-        user = User.objects.create_user(username, email, password, user_age=user_age, user_gender=user_gender)
-        user.user_height = user_height
-        user.user_weight = user_weight
-        user.user_activity = user_activity
-        
-        user.save()
-        return redirect('main')
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('main')
     else:
         form = UserForm()
 
@@ -61,3 +53,11 @@ def id_check(request):
 
     else:
         return JsonResponse({'error':'올바르지 않은 형식입니다.'})
+
+# def password_check(request):
+#     if request.method == 'POST':
+#         form = PasswordCheckForm(request.POST)
+
+#         if form.is_valid():
+#             password = form.cleaned_data['password']
+#             password_check = form.cleaned_data['confirm']

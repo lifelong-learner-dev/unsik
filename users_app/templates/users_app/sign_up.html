@@ -2,36 +2,36 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/signup.css' %}">
-<form action="" method="post" id="sign_up_form">
+<form action="{% url 'sign_up' %}" method="post" id="sign_up_form">
     {% csrf_token %}
+    {% include 'form_errors.html' %}
     <table id="sign_up_table">
         <tr><th>아이디</th>
-            <td><input id="input_id" type="text" name="username" placeholder="아이디" required>
+            <td>{{ form.username }}
                 <button class="id_check" type="button" value="id_check">아이디 중복 확인</button>
             </td>
         </tr>
         <tr><th>이메일</th>
-        <td><input type="email" name="email" placeholder="이메일" required></td>
+        <td>{{ form.email }}</td>
         </tr>
         <tr><th>비밀번호</th>
-            <td><input type="password" name="password" placeholder="비밀번호" required></td>
+            <td>{{ form.password1 }}</td>
         </tr>
         <tr><th>비밀번호 확인</th>
-            <td><input type="password" name="password_check" placeholder="비밀번호 확인" required></td>
+            <td>{{ form.password2 }}</td>
         </tr>
         <tr><th>나이</th>
-            <td><input type="date" name="user_age" required></td>
+            <td>{{ form.user_age }}</td>
         </tr>
         <tr><th>성별</th>
             <td>
-                <label>남<input type="radio" name="user_gender" value="0"></label>
-                <label>여<input type="radio" name="user_gender" value="1"></label>
+                {{ form.user_gender }}
             </td>
         </tr>
         <tr><th>키, 몸무게</th>
             <td>
-                <input type="number" name="user_height" value="키" maxlength="3">cm
-                <input type="number" name="user_weight" value="몸무게" maxlength="3">kg
+                {{ form.user_height }}cm
+                {{ form.user_weight }}kg
             </td>
         </tr>
         <tr><th>운동목적</th>
@@ -43,10 +43,7 @@
         </tr>
         <tr><th>활동수준</th>
             <td>
-                <select name="user_activity" id="">
-                    <option value="active">활동적</option>
-                    <option value="deactive">비활동적</option>
-                </select>
+                {{ form.user_activity }}
             </td>
         </tr>
     </table>

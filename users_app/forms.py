@@ -1,28 +1,27 @@
 from django import forms
-from .models import UsersAppUser
+from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.models import User
+from .models import UsersAppUser, User
 
-class UserForm(forms.ModelForm):
+class UserForm(UserCreationForm):
+    email = forms.EmailField(label="이메일", required=True)
+    user_age = forms.DateField(label="연령", widget=forms.widgets.DateInput(attrs={'type':'date'}), required=True)
+    user_gender = forms.ChoiceField(label="성별", choices=(("0", "남자"), ("1", "여자")))
+    user_height = forms.IntegerField(label="키", max_value=300)
+    user_weight = forms.IntegerField(label="몸무게", max_value=300)
+    user_activity = forms.ChoiceField(label="활동수준", choices=(("active", "활동적"), ("deactive","비활동적")))
+
     class Meta:
-        model = UsersAppUser
+        model = User
 
         fields = (
             'username',
             'email',
-            'password',
+            'password1',
+            'password2',
             'user_age',
             'user_gender',
             'user_height',
             'user_weight',
             'user_activity',
         )
-
-        labels = {
-            'username': '아이디',
-            'email': '이메일',
-            'password': '비밀번호',
-            'user_age': '나이',
-            'user_gender': '성별',
-            'user_height': '키',
-            'user_weight': '몸무게',
-            'user_activity': '활동량',
-        }

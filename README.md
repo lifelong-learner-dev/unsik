@@ -8,6 +8,10 @@
 ====================================
 
 > 로그인 회원가입 기능 구현 도중 제가 임의로 만든 users_app_user 테이블 때문에 Django에서 유저 값을 넘길 때 인증 문제가 발생하고 있었습니다. 그냥 users_app_user 테이블만 삭제하여 해결되는 문제가 아니기에 아래 방법을 통해 깨끗한 DB를 재구축하는 작업을 선행합니다.
+>  > 필요한 파일 목록
+>  >  > (modified)Unsik_query.sql  
+>  >  > calorie_dict_all_processed.csv  
+>  >  > additional_food_info.csv 농축산물 일부 생것 포함된 csv
 
 1. exercise, meal, unsik 등 app에 포함된 models.py 내의 정보를 모두 삭제해주세요.
     - models.py에 정보가 남아있을 경우 오류를 일으킵니다.

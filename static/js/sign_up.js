@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     // 아이디 중복 검사 기능
     $('.id_check').click(function() {
-        var username = $('#input_id').val();
+        var username = $('#id_username').val();
         if (username) {
             let csrftoken = $('[name=csrfmiddlewaretoken]').val();
             $.ajax({
@@ -14,7 +14,7 @@ $(document).ready(function () {
                     console.log(data)
                     if (data.is_taken) {
                         alert('이미 사용 중인 아이디입니다.');
-                        $('#input_id').val('');
+                        $('#id_username').val('');
                     } else {
                         alert('사용 가능한 아이디입니다.');
                     }

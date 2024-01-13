@@ -8,8 +8,8 @@ class User(AbstractUser):
     user_height = models.FloatField(blank=True, null=True)
     user_weight = models.FloatField(blank=True, null=True)
     user_activity = models.CharField(max_length=255, blank=True, null=True)
-    user_target_weight = models.IntegerField(blank=True, null=True)
     user_daily_calorie = models.IntegerField(blank=True, null=True)
+    user_target_weight = models.IntegerField(blank=True, null=True)
 
 class UsersAppUser(models.Model):
     id = models.BigAutoField(primary_key=True)
