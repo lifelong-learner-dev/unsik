@@ -7,7 +7,7 @@ $(document).ready(function () {
             let csrftoken = $('[name=csrfmiddlewaretoken]').val();
             $.ajax({
                 type: 'post',
-                url: 'http://127.0.0.1:8000/users_app/id_check',
+                url: 'http://127.0.0.1:8000/users/id_check',
                 data: {'username': username},
                 headers: {'X-CSRFToken': csrftoken},
                 success: function(data) {

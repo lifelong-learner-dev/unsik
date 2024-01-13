@@ -11,10 +11,9 @@
 >  > 필요한 파일 목록
 >  >  > (modified)Unsik_query.sql  
 >  >  > calorie_dict_all_processed.csv  
->  >  > additional_food_info.csv 농축산물 일부 생것 포함된 csv
+>  >  > additional_food_info.csv (농축산물 일부 생것 포함된 csv)
 
-1. exercise, meal, unsik 등 app에 포함된 models.py 내의 정보를 모두 삭제해주세요.
-    - models.py에 정보가 남아있을 경우 오류를 일으킵니다.
+1. 마이그레이션 안전을 위해 주석처리된 구문들이 있습니다. 지금 당장은 손 대지 않도록 합시다.
 
 2. MySQL의 unsik_db 스키마를 drop해주세요.
 
@@ -49,17 +48,29 @@
    ```bash
    python manage.py inspectdb
    ```
-   - users_app
-     - UsersAppUser
-   - meal
-     - CalorieDictionary
-     - Meal
-     - UsersAppUser
+   주석처리된 항목들을 이때 풀어주시면 됩니다. 항목은 아래와 같습니다.  가급적 순서에 맞춰 주석을 풀어주시기 바랍니다.
+
+    * users_app
+      - models.py
+        + 14번 줄부터 끝까지
+      - forms.py
+        + 3번 줄 'from 구문'
+        + 14번 줄 'model = User'
+      - views.py
+        + 2번 줄 'from 구문'
+    * meal
+      - models.py
+        + 4번 줄부터 끝까지
+      - views.py
+        + 5번 줄 'from 구문'
+    
 7. 삭제했던 DB정보를 import 시켜주세요.
     - calorie_dict_all_processed.csv
     - additional_food_info.csv
     - 그 외 사용할 DB정보 등
 8. 회원가입, 로그인 기능 작동하는지 확인해주세요.
+
+## 종료
 
 #### 프로젝트 기본 세팅
     > 모든 세팅이 완료되시면 

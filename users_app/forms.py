@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-# from django.contrib.auth.models import User
-from .models import UsersAppUser, User
+# from .models import UsersAppUser, User
 
 class UserForm(UserCreationForm):
     email = forms.EmailField(label="이메일", required=True)
@@ -12,7 +11,7 @@ class UserForm(UserCreationForm):
     user_activity = forms.ChoiceField(label="활동수준", choices=(("active", "활동적"), ("deactive","비활동적")))
 
     class Meta:
-        model = User
+        # model = User
 
         fields = (
             'username',

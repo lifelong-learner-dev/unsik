@@ -25,7 +25,7 @@ urlpatterns = [
     path("", views.show_main, name='main'),
     path("exercise/", include("exercise.urls")),
     path("meal/", include("meal.urls")),
-    path("users_app/", include("users_app.urls")),
+    path("users/", include("users_app.urls")),
 ]
 
 if settings.DEBUG:
