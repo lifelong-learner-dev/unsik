@@ -45,8 +45,8 @@
         <form method="post" id="meal_result_form" action="">
             {% csrf_token %}
             {% if detect_results %}
-                {% for result in detect_results %}
-                <input type="text" name="food_info[]" value="{{ result }}">
+                {% for key, values in detect_results.items %}
+                <input type="text" id="input_{{ key }}" name="food_info[]" value="{{ key }}">
                 <button type="button" class="remove_input">입력창 삭제</button>
                 {% endfor %}
             {% endif %}
@@ -61,31 +61,44 @@
 </aside>
 
 <script>
-    function createMarker(text, x, y) {
-        const marker = document.createElement('div');
-        marker.className = 'marker';
-        marker.style.left = x + 'px';
-        marker.style.top = y + 'px';
-        marker.textContent = text;
-        return marker;
-    }
-
+    function createMarker(text, x, y, id) {
+            const marker = document.createElement('div');
+            marker.className = 'marker';
+            marker.id = 'marker_' + id;
+            marker.setAttribute('data-input-id', 'input_' + id);
+            marker.style.left = x + 'px';
+            marker.style.top = y + 'px';
+            marker.textContent = text;
+            return marker;
+        }
     // 이미지 로드
     const img = document.getElementById('meal_image');
 
-    img.onload = function() {
+    img.onload = function () {
         var width = img.width;
         var height = img.height;
 
         console.log(width, height)
-        // 빨간 줄 있어도 작동한다.
+        
         {% for key, values in detect_results.items %}
-        var tagWidth = width * {{ values.0 }};
-        var tagHeight = height * {{ values.1 }};
-
-        var marker = createMarker(`{{ key }}`, tagWidth, tagHeight);
-        document.getElementById('result_image_box').appendChild(marker);
+        createMarkerAndInput('{{ key }}', {{values.0}}, {{values.1}});
         {% endfor %}
+
+        function createMarkerAndInput(id, tagWidthFactor, tagHeightFactor) {
+            var tagWidth = width * tagWidthFactor;
+            var tagHeight = height * tagHeightFactor;
+
+            var marker = createMarker(id, tagWidth, tagHeight, id);
+            document.getElementById('result_image_box').appendChild(marker);
+
+            var inputBox = document.getElementById('input_' + id);
+            inputBox.setAttribute('data-marker-id', 'marker_' + id);
+            inputBox.addEventListener('input', function () {
+                var markerToUpdateId = inputBox.getAttribute('data-marker-id');
+                var markerToUpdate = document.getElementById(markerToUpdateId);
+                markerToUpdate.textContent = inputBox.value;
+            });
+        }
     }
 </script>
 {% endblock content %}
