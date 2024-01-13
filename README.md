@@ -2,20 +2,20 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
-### 2024/01/02 
-
 ### 2024/01/12 유저 인증, 로그인 함수 관련 수정
 
 주의! 아래 지침을 수행하기 전 DB에 저장된 파일들을 export 시키거나 백업해놓으시기 바랍니다.
 ====================================
+
+> 로그인 회원가입 기능 구현 도중 제가 임의로 만든 users_app_user 테이블 때문에 Django에서 유저 값을 넘길 때 인증 문제가 발생하고 있었습니다. 그냥 users_app_user 테이블만 삭제하여 해결되는 문제가 아니기에 아래 방법을 통해 깨끗한 DB를 재구축하는 작업을 선행합니다.
+
 1. exercise, meal, unsik 등 app에 포함된 models.py 내의 정보를 모두 삭제해주세요.
     - models.py에 정보가 남아있을 경우 오류를 일으킵니다.
 
 2. MySQL의 unsik_db 스키마를 drop해주세요.
 
     - users_app_user 테이블이 현재 인증 문제를 일으키고 있습니다.
-    Django에서 따로 명령어를 통해 users_app_user 테이블을 생성해야
-    인증 문제가 해결됩니다.
+    Django에서 따로 명령어를 통해 users_app_user 테이블을 생성해야 인증 문제가 해결됩니다.
 
 3. 동봉된 MySQL 쿼리문에서 아래 명령어까지만 수행해주세요.
 
@@ -25,10 +25,10 @@
     use unsik_db;
     ```
 
-4. venv 환경에서 unsik 폴더 내 python manage.py makemigrate 실행해주세요.
+4. venv 환경에서 python manage.py makemigrations 실행해주세요.
 
     ```bash
-    python manage.py makemigrate
+    python manage.py makemigrations
     ```
 
     - 만약 오류가 날 경우 meal, exercise 각 앱의 migrations 폴더에서 0001_init.py 같은 거 삭제해주세요.
@@ -40,17 +40,22 @@
     - 터미널 출력창에서 Applying sessions.0001_initial... OK 확인 후 다음 단계로 넘어가주세요. 안 된다면 오류메세지 확인 후 문제 해결 후 다시 수행해주세요.
 
 5. 남은 SQL문 실행해주세요.
+    - 이때 users_app_user 항목은 모두 주석처리 되어 실행하지 않습니다. users_app_user 테이블이 migrate를 통해 이미 만들어졌기 때문입니다.
 6. inspectdb를 통해 각 models.py에 필요한 DB 넣어주세요.
    ```bash
    python manage.py inspectdb
    ```
-
    - users_app
      - UsersAppUser
    - meal
      - CalorieDictionary
      - Meal
      - UsersAppUser
+7. 삭제했던 DB정보를 import 시켜주세요.
+    - calorie_dict_all_processed.csv
+    - additional_food_info.csv
+    - 그 외 사용할 DB정보 등
+8. 회원가입, 로그인 기능 작동하는지 확인해주세요.
 
 #### 프로젝트 기본 세팅
     > 모든 세팅이 완료되시면 
