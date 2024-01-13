@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-# from .models import UsersAppUser
+from .models import UsersAppUser
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth.forms import AuthenticationForm

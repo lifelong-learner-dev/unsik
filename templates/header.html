@@ -10,9 +10,9 @@
         <div id="user_info">
             {% if user.is_authenticated %}
             <ul>
-                <li><a href="">{{ user }}님 로그인</a></li>
+                <li><a href="#">{{ user }}님 로그인</a></li>
                 <li><a href="{% url 'sign_out' %}">로그아웃</a></li>
-                <li><a href="#">회원가입</a></li>
+                <li><a href="{% url 'sign_up' %}">회원가입</a></li>
             </ul>
             {% else %}
             <ul>
