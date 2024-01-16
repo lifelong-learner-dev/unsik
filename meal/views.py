@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-# from .models import CalorieDictionary
+from .models import CalorieDictionary
 from .modules.meal_anal import predict_meal
 from django.db.models import Q
 from uuid import uuid4
