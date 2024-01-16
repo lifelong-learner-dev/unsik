@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/calorie_dict.css' %}">
 <h2>식품 상세 정보</h2>
 <button onclick="goBack()">돌아가기</button>
-<div>
+<div class="dict_tbody">
     <table id="food_detail">
         <tr><th>식품명</th><td>{{ food.food_name }}</td></tr>
         <tr><th>지역/제조사</th><td>{{ food.maker }}</td></tr>

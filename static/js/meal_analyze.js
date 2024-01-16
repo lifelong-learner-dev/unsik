@@ -38,8 +38,6 @@ $(document).ready(function(){
     updateComment()
 
     // document.addEventListener('DOMContentLoaded', updateComment);
-
-
 })
 
 // 시간별 코멘트

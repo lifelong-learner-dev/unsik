@@ -2,7 +2,75 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
-### 2024/01/02 
+### 2024/01/12 유저 인증, 로그인 함수 관련 수정
+
+주의! 아래 지침을 수행하기 전 DB에 저장된 파일들을 export 시키거나 백업해놓으시기 바랍니다.
+====================================
+
+> 로그인 회원가입 기능 구현 도중 제가 임의로 만든 users_app_user 테이블 때문에 Django에서 유저 값을 넘길 때 인증 문제가 발생하고 있었습니다. 그냥 users_app_user 테이블만 삭제하여 해결되는 문제가 아니기에 아래 방법을 통해 깨끗한 DB를 재구축하는 작업을 선행합니다.
+>  > 필요한 파일 목록
+>  >  > (modified)Unsik_query.sql  
+>  >  > calorie_dict_all_processed.csv  
+>  >  > additional_food_info.csv (농축산물 일부 생것 포함된 csv)
+
+1. 마이그레이션 안전을 위해 주석처리된 구문들이 있습니다. 지금 당장은 손 대지 않도록 합시다.
+
+2. MySQL의 unsik_db 스키마를 drop해주세요.
+
+    - users_app_user 테이블이 현재 인증 문제를 일으키고 있습니다.
+    Django에서 따로 명령어를 통해 users_app_user 테이블을 생성해야 인증 문제가 해결됩니다.
+
+3. 동봉된 MySQL 쿼리문에서 아래 명령어까지만 수행해주세요.
+
+    ```
+    CREATE SCHEMA unsik_db;
+
+    use unsik_db;
+    ```
+
+4. venv 환경에서 python manage.py makemigrations 실행해주세요.
+
+    ```bash
+    python manage.py makemigrations
+    ```
+
+    - 만약 오류가 날 경우 meal, exercise 각 앱의 migrations 폴더에서 0001_init.py 같은 거 삭제해주세요.
+    - 문제 없이 넘어갔다면 다음 명령어 실행해주세요.
+
+    ```bash
+    python manage.py migrate
+    ```
+    - 터미널 출력창에서 Applying sessions.0001_initial... OK 확인 후 다음 단계로 넘어가주세요. 안 된다면 오류메세지 확인 후 문제 해결 후 다시 수행해주세요.
+
+5. 남은 SQL문 실행해주세요.
+    - 이때 users_app_user 항목은 모두 주석처리 되어 실행하지 않습니다. users_app_user 테이블이 migrate를 통해 이미 만들어졌기 때문입니다.
+6. inspectdb를 통해 각 models.py에 필요한 DB 넣어주세요.
+   ```bash
+   python manage.py inspectdb
+   ```
+   주석처리된 항목들을 이때 풀어주시면 됩니다. 항목은 아래와 같습니다.  가급적 순서에 맞춰 주석을 풀어주시기 바랍니다.
+
+    * users_app
+      - models.py
+        + 14번 줄부터 끝까지
+      - forms.py
+        + 3번 줄 'from 구문'
+        + 14번 줄 'model = User'
+      - views.py
+        + 2번 줄 'from 구문'
+    * meal
+      - models.py
+        + 4번 줄부터 끝까지
+      - views.py
+        + 5번 줄 'from 구문'
+    
+7. 삭제했던 DB정보를 import 시켜주세요.
+    - calorie_dict_all_processed.csv
+    - additional_food_info.csv
+    - 그 외 사용할 DB정보 등
+8. 회원가입, 로그인 기능 작동하는지 확인해주세요.
+
+## 종료
 
 #### 프로젝트 기본 세팅
     > 모든 세팅이 완료되시면 
@@ -43,44 +111,3 @@
       > INSTALLED_APPS "rest_framework", "exercise", "meal" 추가
       > TEMPLATES의 DIRS에 BASE_DIR 추가
       > STATICFILES_DIR 추가
-      
-    > unsik 폴더 내 urls.py
-      > exercise.urls 와 meals.urls 추가
-
-    > meal 폴더
-      > templates\meal 폴더
-        > meal_index.html 생성
-      > views.py 
-        > meal_index 추가
-      > urls.py
-        > meal_index url 추가
-
-    > exercise 폴더
-      > templates\exercise 폴더
-        > exercise_index.html 생성
-      > views.py 
-        > exercise_index 추가
-      > urls.py
-        > exercise_index url 추가
-
-### 2024.01.03 식단 분석 페이지 추가
-    - 식단 분석 페이지 작업중 
-    - 시간대별 코멘트
-    - 이미지 업로드 
-
-### 2024/01/10 csh 변경점
-    > requirements.txt가 수정되었습니다.
-    - torch==2.1.2
-    - ultralytics==8.0.229
-
-    > settings.py에 MEDIA_ROOT, MEDIA_URL 관련 코드가 생성되었습니다.
-    - 이미지를 이곳에 임시 저장한 후 디텍션하기 위한 용도입니다.
-
-    > unsik/urls.py에 DEBUG용 코드가 생성되었습니다. MEDIA_ROOT 경로를 제대로 못 잡을 때 이렇게 쓰면 된다고 합니다.
-
-    > meal_analyze_result가 생성되었습니다. 결과를 보여주는 화면입니다.
-
-    > modules/meal_anal.py 코드가 작성 되었습니다. YOLO v8 모델을 위한 코드로 원할한 작동을 위해서는 requirements.txt의 필수 패키지들을 설치해야 합니다.
-
-    <footer>
-    % marquee는 실험용입니다.
