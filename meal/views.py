@@ -7,3 +7,6 @@ def meal_index(request):
 
 def meal_analyze(request):
     return render(request, 'meal/meal_analyze.html')
+
+def meal_history(request):
+    return render(request, 'meal/meal_history.html')
