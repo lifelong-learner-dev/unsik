@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/calorie_dict.css' %}">
+<section class="calorie_dict_box">
+    <h2>칼로리 사전</h2>
+
+    <form method="GET" action="{% url 'calorie_dict' %}">
+        <div class="searchBar">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="식품명 제조사">
+            <select name="majorClass" id="majorClass">
+                <option value="" {% if not major_class_filter %}selected{% endif %}>==대분류==</option>
+                <!-- for문 써서 출력 -->
+                {% for major_class in major_classes %}
+                <option value="{{ major_class }}" {% if major_class == major_class_filter %}selected{% endif %}>{{ major_class }}</option>
+                {% endfor %}
+            </select>
+            <select name="detailClass" id="detailClass">
+                <option value="" {% if not detail_class_filter %}selected{% endif %}>==소분류==</option>
+                <!-- for문 써서 출력 -->
+                {% for detail_class in detail_classes %}
+                <option value="{{ detail_class }}" {% if detail_class == detail_class_filter %}selected{% endif %}>{{ detail_class }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">검색</button>
+            <button type="reset">
+                <a href="{% url 'calorie_dict' %}">초기화</a>
+            </button>
+        </div>
+    </form>
+
+    <!-- 정보 표시 박스 -->
+    <div class="dict_tbody">
+        <table>
+            <tr>
+                <th>식품명</th>
+                <th>지역/제조사</th>
+                <th>대분류</th>
+                <th>소분류</th>
+                <th>1회 제공량(g)</th>
+                <th>칼로리(kcal)</th>
+                <th>탄수화물</th>
+                <th>지방</th>
+                <th>단백질</th>
+            </tr>
+            {% for data in current_page_data %}
+            <tr>
+                <td><a href="{% url 'food_detail' data.food_code %}">{{ data.food_name }}</a></td>
+                <td>{{ data.maker }}</td>
+                <td>{{ data.major_class }}</td>
+                <td>{{ data.detail_class }}</td>
+                <td>{{ data.one_serve_amount_g_field }}</td>
+                <td>{{ data.calories }}</td>
+                <td>{{ data.carbohydrate }}</td>
+                <td>{{ data.fat }}</td>
+                <td>{{ data.protein }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- 페이지 번호 생성용 코드 -->
+    <div class="cal_pagination">
+        <span class="pageNums">
+            {% if current_page_data.has_previous %}
+                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">&laquo; 첫 페이지</a>
+                <a href="?page={{ current_page_data.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">이전</a>
+            {% endif %}
+
+            {% for i in page_range %}
+                {% if current_page_data.number == i %}
+                    <span class="current_page">{{ i }}</span>
+                {% else %}
+                    <a href="?page={{ i }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if current_page_data.has_next %}
+            <a href="?page={{ current_page_data.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">다음</a>
+            <a href="?page={{ current_page_data.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">마지막 페이지 &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</section>
+{% endblock content %}
