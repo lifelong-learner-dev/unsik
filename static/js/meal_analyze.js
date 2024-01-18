@@ -10,7 +10,7 @@ $(document).ready(function(){
         reader.onload = function(e) {
             var img = document.createElement('img');
             img.src = e.target.result;
-            img.style.maxWidth = '500px'; 
+            img.style.maxWidth = '700px'; 
             img.style.maxHeight = '500px';
             
             var preview = document.getElementById('preview');
@@ -62,3 +62,5 @@ function updateComment() {
 
     document.getElementById('time_comment').textContent  = commentText;
 }
+
+updateComment()
