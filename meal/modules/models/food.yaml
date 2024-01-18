@@ -1,0 +1,107 @@
+# YOLOv5 🚀 by Ultralytics, AGPL-3.0 license
+# COCO 2017 dataset http://cocodataset.org by Microsoft
+# Example usage: python train.py --data coco.yaml
+# parent
+# ├── yolov5
+# └── datasets
+#     └── coco  ← downloads here (20.1 GB)
+
+
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+path: ../datasets/food  # dataset root dir
+train: images # train images (relative to 'path') 118287 images
+val: images  # val images (relative to 'path') 5000 images
+test: labels  # 20288 of 40670 images, submit to https://competitions.codalab.org/competitions/20794
+
+# Classes
+names:
+  0: 쌀밥
+  1: 기타잡곡밥
+  2: 콩밥
+  3: 보리밥
+  4: 돌솥밥
+  5: 현미밥
+  6: 흑미밥
+  7: 감자밥
+  8: 곤드레밥
+  9: 김치볶음밥 
+  10: 주먹밥 
+  11: 볶음밥 
+  12: 일반비빔밥 
+  13: 전주비빔밥 
+  14: 삼선볶음밥 
+  15: 새우볶음밥 
+  16: 알밥 
+  17: 산채비빔밥  
+  18: 오므라이스 
+  19: 육회비빔밥 
+  20: 해물볶음밥 
+  21: 열무비빔밥 
+  22: 불고기덮밥 
+  23: 소고기국밥 
+  24: 송이덮밥 
+  25: 오징어덮밥 
+  26: 자장밥 
+  27: 잡채밥 
+  28: 잡탕밥 
+  29: 장어덮밥 
+  30: 제육덮밥 
+  31: 짬뽕밥 
+  32: 순대국밥 
+  33: 카레라이스 
+  34: 전주콩나물국밥 
+  35: 해물덮밥 
+  36: 회덮밥 
+  37: 소머리국밥 
+  38: 돼지국밥 
+  39: 하이라이스 
+  40: 김치김밥 
+  41: 농어초밥 
+  42: 문어초밥 
+  43: 새우초밥 
+  44: 새우튀김롤 
+  45: 샐러드김밥 
+  46: 광어초밥 
+  47: 소고기김밥 
+  48: 갈비삼각김밥 
+  49: 연어롤  
+  50: 연어초밥 
+  51: 유부초밥 
+  52: 장어초밥 
+  53: 참치김밥 
+  54: 참치마요삼각김밥 
+  55: 치즈김밥  
+  56: 캘리포니아롤 
+  57: 한치초밥 
+  58: 일반김밥 
+  59: 간자장 
+  60: 굴짬뽕 
+  61: 기스면 
+  62: 김치라면 
+  63: 김치우동 
+  64: 김치말이국수 
+  65: 닭칼국수 
+  66: 들깨칼국수 
+  67: 떡라면 
+  68: 라면 
+  69: 막국수 
+  70: 메밀국수 
+  71: 물냉면 
+
+# Download script/URL (optional)
+# download: |
+#   from utils.general import download, Path
+
+
+#   # Download labels
+#   segments = False  # segment or box labels
+#   dir = Path(yaml['path'])  # dataset root dir
+#   url = 'https://github.com/ultralytics/yolov5/releases/download/v1.0/'
+#   urls = [url + ('coco2017labels-segments.zip' if segments else 'coco2017labels.zip')]  # labels
+#   download(urls, dir=dir.parent)
+
+#   # Download data
+#   urls = ['http://images.cocodataset.org/zips/train2017.zip',  # 19G, 118k images
+#           'http://images.cocodataset.org/zips/val2017.zip',  # 1G, 5k images
+#           'http://images.cocodataset.org/zips/test2017.zip']  # 7G, 41k images (optional)
+#   download(urls, dir=dir / 'images', threads=3)

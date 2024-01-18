@@ -1,0 +1,47 @@
+header {
+    display: inline-flex;
+    width: 1020px;
+    height: 120px;
+    /* background-color: bisque; */
+}
+
+#nv_bar {
+    width: 100vh;
+    position: sticky;
+    top: 10px;
+    z-index: 10;
+}
+
+#nv_bar ul li {
+    list-style: none !important;
+}
+
+#logo_box {
+    width: 210px;
+}
+
+#logo_box > img {
+    padding: 5px;
+}
+
+#unsik_header_logo {
+    height: 100px;
+    margin: 10px;
+}
+
+#user_menu_section {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#user_info {
+    width: 95vh;
+    padding-top: 10px;
+    text-align: right;
+}
+
+#user_info ul > li {
+    display: inline-flex;
+    margin-left: 10px;
+}

@@ -1,0 +1,39 @@
+/* 칼로리 사전 */
+
+.calorie_dict_box {
+    width: 1020px;
+    margin: 0 auto;
+}
+
+.calorie_dict_box > h2 {
+    padding-bottom: 8px;
+    border-bottom: 2px solid black;
+}
+
+.dict_tbody > table {
+    margin: 18px auto;
+}
+
+.dict_tbody > table > tbody {
+    border-color: black;
+    border-width: 3px;
+}
+
+.dict_tbody > table > tbody > tr:first-child {
+    border-bottom: 2px solid;
+}
+
+.dict_tbody > table > tbody > tr:first-child > th {
+    padding: 7px;
+}
+
+.dict_tbody > table > tbody > tr > td {
+    padding-block-end: 10px;
+    padding-inline: 10px;
+}
+
+/* 상세정보 페이지 */
+
+.dict_tbody > #food_detail{
+    width: 400px;
+}
