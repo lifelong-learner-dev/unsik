@@ -1,3 +1,6 @@
+from .models import CalorieDictionary
+from django.db.models import Q
+import json
 import re
 
 allFoodDict = {
@@ -62,3 +65,40 @@ def check_food_code(food_name):
         # print(food_code)
         if food_code is not None:
             return food_code
+
+# DB에서 칼로리 합산해주는 함수
+def total_calories(food_code_list):
+    total_calorie = 0
+
+    total_carbohydrate = 0
+    total_protein = 0
+    total_suger = 0
+    total_natrium = 0
+    total_sfa = 0
+    total_fat = 0
+
+    try:
+        for fcode in food_code_list:
+            food_info = CalorieDictionary.objects.get(food_code=fcode)
+            food_calorie = food_info.calories
+            food_carbohydrate = food_info.carbohydrate
+            food_protein = food_info.protein
+            food_suger = food_info.suger
+            food_natrium = food_info.natrium
+            food_sfa = food_info.total_sfa
+            food_fat = food_info.fat
+            # print(food_calorie)
+            total_calorie += food_calorie
+            total_carbohydrate += food_carbohydrate
+            total_protein += food_protein
+            total_suger += food_suger
+            total_natrium += food_natrium
+            total_sfa += food_sfa
+            total_fat += food_fat
+    except food_info.DoesNotExist:
+        print("DB에 없는 기본키입니다.")
+
+    total_nutrient_list = [total_carbohydrate, total_protein, total_fat,
+                            total_suger, total_natrium, total_sfa]
+
+    return total_calorie, total_nutrient_list

@@ -2,6 +2,69 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
+### 2024/01/19 식사 분석 결과 DB 저장 기능 구현
+#### (01/12자 유저 인증, 로그인 함수 수정 내역은 아래에 있습니다.)
+
+> 식단 분석 페이지에서 유저가 고르거나 바꾼 음식이 식단 DB에 저장되도록 하는 기능이 어느정도 구현되었습니다.
+
++ 선행되어야 하는 작업이 존재하므로 아래 지침을 따라주시기 바랍니다.
+
+1. MySQL의 meal DB만 Drop 후 재생성 해주세요.  
+  postNum 키의 자동증가 (AUTO_INCREMENT) 미지정을 이유로 값이 들어갈 때 오류가 발생합니다. postNum 요소만 바꿔 meal 테이블만 새로 만들어주시면 됩니다.  
+  아래 명령어를 실행해주세요.
+
+  ```sql
+  DROP TABLE meal;
+
+  CREATE TABLE `meal` (
+    `postNum` BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `user_id` BIGINT NOT NULL,
+    `meal_date` DATETIME,
+    `meal_photo` VARCHAR(255),
+    `meal_info` TEXT,
+    `meal_type` VARCHAR(20),
+    `meal_calories` FLOAT,
+    `nutrient_info` TEXT
+  );
+
+  ALTER TABLE `meal` ADD FOREIGN KEY (`user_id`) REFERENCES `users_app_user` (`id`);
+  ```
+
+2. Django에서 필요한 모델들을 다시 가져와주세요.  
+  마이그레이션이 진행된 상태라 다시 할 필요는 없습니다. 다만 변경된 DB 정보는 업데이트 해 주어야 합니다.  
+  아래 명령어를 따라주세요.
+
+  ```cmd
+  python manage.py inspectdb
+  ```
+3. 받아온 db 정보 중 meal 항목을 찾아 meal/models.py에 붙여넣어주세요.
+
+  ```python
+  class Meal(models.Model):
+    postnum = models.BigAutoField(db_column='postNum', primary_key=True)  # Field name made lowercase.
+    user = models.ForeignKey('UsersAppUser', models.DO_NOTHING)
+    meal_date = models.DateTimeField(blank=True, null=True)
+    meal_photo = models.CharField(max_length=255, blank=True, null=True)
+    meal_info = models.TextField(blank=True, null=True)
+    meal_type = models.CharField(max_length=20, blank=True, null=True)
+    meal_calories = models.FloatField(blank=True, null=True)
+    nutrient_info = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'meal'
+  ```
+  postnum 항목에 **BigAutoField** 지정 여부와 user에 **ForeignKey** 지정을 확인해주세요.
+
+4. 테스트  
+  정보가 제대로 들어가는 지 테스트 합니다. 식단 분석 페이지에 사진을 올리고 CRUD 기능 테스트 해주세요.
+
+5. DB 입력 정보  
+  nutrient_info에 기입되는 리스트 순서입니다. 나트륨을 제외한 모든 무게 단위는 (g) 입니다.  
+  [총 탄수화물, 총 단백질, 총 지방, 총 당류, 총 나트륨(mg), 총 포화지방]
+
+---
+
 ### 2024/01/12 유저 인증, 로그인 함수 관련 수정
 
 주의! 아래 지침을 수행하기 전 DB에 저장된 파일들을 export 시키거나 백업해놓으시기 바랍니다.

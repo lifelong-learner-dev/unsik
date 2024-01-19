@@ -131,7 +131,7 @@
                 url: '{% url "meal_post" %}',
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    'meal_data': JSON.stringify(foodNames),
+                    'meal_data': JSON.stringify([foodNames, '{{ meal_image }}']),
                 },
                 success: function (data) {
                     if (data.success) {

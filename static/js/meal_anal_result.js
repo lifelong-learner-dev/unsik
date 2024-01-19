@@ -31,7 +31,7 @@ $(document).ready(function(){
     // add_input_box 즉 '입력창 추가' 버튼을 클릭했을 때
     $('#add_input_box').on('click', function(event) {
         const last_box = $('.input_container').last();
-        console.log(last_box)
+        // console.log(last_box)
 
         // input을 하나 만든다
         const add_input = $('<input>', {
