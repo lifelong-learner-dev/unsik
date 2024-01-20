@@ -128,7 +128,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '{% url "meal_post" %}',
+                url: '{% url "meal_post" %}', // 페이지 안에 삽입되어 Django 관리 하에 있을 때 사용 가능
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'meal_data': JSON.stringify([foodNames, '{{ meal_image }}']),
