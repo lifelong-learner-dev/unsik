@@ -208,7 +208,7 @@ def meal_post(request):
                 nutrient_info = json.dumps(nutrient_info)
             )
 
-            return JsonResponse({'success': True})
+            return JsonResponse({'success': True, 'meal_calories': meal_calories, 'nutrient_info': nutrient_info})
         else:
             return JsonResponse({'success': False, 'error': "올바르지 않은 데이터 형식"})
     else:

@@ -62,10 +62,8 @@
         <p>운식에 가입하여 정확한 식단 분석을 받아보세요!</p>
         {% endif %}
     </div>
-
-    <h2>영양소 정보</h2>
-    <div id="nutrient_information"></div>
-
+    <!-- <h2>영양소 정보</h2>
+    <div id="nutrient_information"></div> -->
 </aside>
 
 <script>
@@ -128,7 +126,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '{% url "meal_post" %}', // 페이지 안에 삽입되어 Django 관리 하에 있을 때 사용 가능
+                url: '{% url "meal_nutrient" %}', // 페이지 안에 삽입되어 Django 관리 하에 있을 때 사용 가능
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'meal_data': JSON.stringify([foodNames, '{{ meal_image }}']),
@@ -136,12 +134,14 @@
                 success: function (data) {
                     if (data.success) {
                         alert('저장 성공');
+                        console.log(data.meal_calories)
+                        console.log(data.nutrient_info)
                     } else {
                         alert('저장 실패' + data.error);
                     }
                 },
                 error: function(error) {
-                    alert('서버 오류', error);
+                    alert('서버 오류' + error);
                 }
             })
         });
