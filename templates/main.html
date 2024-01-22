@@ -2,16 +2,56 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/main_page.css' %}">
+<!-- 스타일 창은 다른 데 삽입되어 있으면 적용이 안 된다. -->
+<style>
+    .main_section {
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+        opacity: 0; /* 초기에는 숨겨진 상태 */
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .main_section.inView {
+        opacity: 1; /* 화면에 나타날 때 투명도를 조절하여 나타나는 효과 생성 */
+    }
+</style>
 <h2>운동 & 식단 관리 트레이너, 운식입니다.</h2>
-<section class="main_section clearfix">
-    <div id="imgDiv1">
+<section>
+    <div class="main_section clearfix">
         <img class="mainpic" src="{% static 'images/mainpic1.jpg' %}" alt="">
+        <div>
+            <h1>운동의 시작은 식단 관리부터!</h1>
+            <span>AI 카메라로 매일매일 분석 받는 나의 식단</span>
+            <button>체험해보기</button>
+        </div>
     </div>
-    <div id="imgDiv2">
+    <div class="main_section clearfix">
         <img class="mainpic" src="{% static 'images/mainpic2.jpg' %}" alt="">
+        <div>
+            <h1>목표 달성의 열쇠는 꾸준함!</h1>
+            <span>하루하루 기록하는 나의 운동 일지</span>
+            <button>운동기록하기</button>
+        </div>
     </div>
 </section>
 <script>
-    
+    const options = {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.5 // 변경 가능한 값, 0.5는 반이라는 의미
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("inView");
+            }
+        });
+    }, options);
+
+    const boxList = document.querySelectorAll(".main_section");
+
+    boxList.forEach((el) => observer.observe(el));
 </script>
 {% endblock content %}

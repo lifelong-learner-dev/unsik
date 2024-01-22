@@ -5,12 +5,13 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from django.utils import timezone
+from datetime import datetime, timedelta
 from .models import CalorieDictionary, Meal, UsersAppUser
 from .modules.meal_anal import predict_meal
-from .foodDict import check_food_code, total_calories
 from django.db.models import Q
-from datetime import datetime
 from uuid import uuid4
+import foodDict
 import json
 
 # Create your views here.
@@ -162,31 +163,36 @@ def meal_post(request):
 
         for food in meal_data_list[0]:
             # 정규성 검사 함수
-            food_code = check_food_code(food)
+            food_code = foodDict.check_food_code(food)
             if food_code is not None:
                 filtered_list.append(food_code)
         
         # 리스트 제대로 변환되어 출력된다.
         print(filtered_list)
 
-        meal_calories, nutrient_info = total_calories(filtered_list)
+        # 칼로리 합산하는 함수
+        meal_calories, nutrient_info = foodDict.total_calories(filtered_list)
         print(meal_calories)
         print(nutrient_info)
-
-        # 식사 시간 추가
-        # meal_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # print(meal_date)
 
         if request.user.is_authenticated:
             # print(user_id) 유저 id도 제대로 받아온다. bigint 값이다.
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 현재 시간 얻기
-            current_time = datetime.now().time()
-            # print(current_time)
+            current_time = timezone.localtime(timezone.now(), timezone=timezone.get_current_timezone())
+            # print(current_time.hour)
 
             # 테스트를 위한 임의 조작 시간
-            # current_time = datetime(2021, 9, 1, 9, 30, 11).time()
+            # current_time = datetime(2021, 8, 31, 23, 30, 11)
+
+            # 이건 꼼수인데, UTC로 저장되는 시간에 억지로 9시간을 추가해 저장하는 수법이다.
+            # 좀 짜증나지만, 이럴 경우 korea_time 변수에 담긴 시간은 한국 시간에서 9시간이 추가된 시간이다.
+            plus_9 = timedelta(hours=9)
+            korea_time = current_time + plus_9
+            print(current_time)
+            print(korea_time.strftime("%Y-%m-%d %H:%M:%S"))
+
             
             # 아침, 점심, 저녁, 간식 출력
             if 6 <= current_time.hour <= 9:
@@ -197,10 +203,13 @@ def meal_post(request):
                 meal_type = "저녁"
             else:
                 meal_type = "간식"
+
+            print(meal_type)
             
             Meal.objects.create(
                 user = user_instance,
-                meal_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                # meal_date = current_time.strftime("%Y-%m-%d %H:%M:%S"),
+                meal_date = korea_time,
                 meal_photo = meal_data_list[-1],
                 meal_info = json.dumps(filtered_list),
                 meal_type = meal_type,

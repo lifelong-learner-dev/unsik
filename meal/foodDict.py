@@ -102,3 +102,8 @@ def total_calories(food_code_list):
                             total_suger, total_natrium, total_sfa]
 
     return total_calorie, total_nutrient_list
+
+# DB에서 음식코드로 검색한 값만 돌려주는 함수
+def each_food_nutrients(food_code_list):
+    # 함수 작성 중
+    pass

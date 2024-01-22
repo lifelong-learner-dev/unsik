@@ -62,10 +62,12 @@
         <p>운식에 가입하여 정확한 식단 분석을 받아보세요!</p>
         {% endif %}
     </div>
-    <!-- <h2>영양소 정보</h2>
-    <div id="nutrient_information"></div> -->
+    <div id="nutrient_information" style="display: none;">
+        <h2>영양소 정보</h2>
+    </div>
 </aside>
 
+<!-- 마커 만들어주는 스크립트 -->
 <script>
     function createMarker(text, x, y, id) {
             const marker = document.createElement('div');
@@ -112,6 +114,8 @@
         }
     }
 </script>
+
+<!-- ajax 기능 -->
 <script>
     $(document).ready(function () {
         $('#submit_form').on('click', function() {
@@ -128,14 +132,37 @@
                 type: 'POST',
                 url: '{% url "meal_nutrient" %}', // 페이지 안에 삽입되어 Django 관리 하에 있을 때 사용 가능
                 data: {
+                    // form 제출 유효성 검사를 위해 csrf_token 같이 보내기
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'meal_data': JSON.stringify([foodNames, '{{ meal_image }}']),
                 },
                 success: function (data) {
                     if (data.success) {
                         alert('저장 성공');
+                        const remove_box = document.getElementById('modify_result');
+                        remove_box.innerHTML = '';
                         console.log(data.meal_calories)
-                        console.log(data.nutrient_info)
+                        console.log(data.nutrient_info[0])
+
+                        // 박스 스타일 block으로 설정
+                        const nutrient_box = document.getElementById('nutrient_information');
+                        nutrient_box.style.display = 'block';
+
+                        const meal_cal = $('<p>', {
+                            class: 'calorie_info',
+                            text: data.meal_calories,
+                        });
+
+                        const meal_nutrient_info = $('<p>', {
+                            class: 'test',
+                            text: `Protein: ${data.nutrient_info[0]}, Carbs: ${data.nutrient_info[1]},
+                             Fat: ${data.nutrient_info[2]}, Fiber: ${data.nutrient_info[3]},
+                             Calories: ${data.nutrient_info[4]}, Sugar: ${data.nutrient_info[5]}`,
+                        });
+                        $(nutrient_box).append(meal_cal);
+                        $(nutrient_box).append(meal_nutrient_info);
+
+                        // 출력만 확인하고 나머지 코드는 아직 작성 중
                     } else {
                         alert('저장 실패' + data.error);
                     }
