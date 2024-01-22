@@ -137,35 +137,41 @@
                     'meal_data': JSON.stringify([foodNames, '{{ meal_image }}']),
                 },
                 success: function (data) {
-                    if (data.success) {
-                        alert('저장 성공');
-                        const remove_box = document.getElementById('modify_result');
-                        remove_box.innerHTML = '';
-                        console.log(data.meal_calories)
-                        console.log(data.nutrient_info[0])
+                    const remove_box = document.getElementById('modify_result');
+                    remove_box.innerHTML = '';
 
-                        // 박스 스타일 block으로 설정
-                        const nutrient_box = document.getElementById('nutrient_information');
-                        nutrient_box.style.display = 'block';
+                    const nutrient_box = document.getElementById('nutrient_information');
+                    nutrient_box.style.display = 'block';
+                    $('#nutrient_information').html(data);
+                    // if (data.success) {
+                    //     alert('저장 성공');
+                    //     const remove_box = document.getElementById('modify_result');
+                    //     remove_box.innerHTML = '';
+                    //     console.log(data.meal_calories)
+                    //     console.log(data.nutrient_info[0])
 
-                        const meal_cal = $('<p>', {
-                            class: 'calorie_info',
-                            text: data.meal_calories,
-                        });
+                    //     // 박스 스타일 block으로 설정
+                    //     const nutrient_box = document.getElementById('nutrient_information');
+                    //     nutrient_box.style.display = 'block';
 
-                        const meal_nutrient_info = $('<p>', {
-                            class: 'test',
-                            text: `Protein: ${data.nutrient_info[0]}, Carbs: ${data.nutrient_info[1]},
-                             Fat: ${data.nutrient_info[2]}, Fiber: ${data.nutrient_info[3]},
-                             Calories: ${data.nutrient_info[4]}, Sugar: ${data.nutrient_info[5]}`,
-                        });
-                        $(nutrient_box).append(meal_cal);
-                        $(nutrient_box).append(meal_nutrient_info);
+                    //     const meal_cal = $('<p>', {
+                    //         class: 'calorie_info',
+                    //         text: data.meal_calories,
+                    //     });
 
-                        // 출력만 확인하고 나머지 코드는 아직 작성 중
-                    } else {
-                        alert('저장 실패' + data.error);
-                    }
+                    //     const meal_nutrient_info = $('<p>', {
+                    //         class: 'test',
+                    //         text: `Protein: ${data.nutrient_info[0]}, Carbs: ${data.nutrient_info[1]},
+                    //          Fat: ${data.nutrient_info[2]}, Fiber: ${data.nutrient_info[3]},
+                    //          Calories: ${data.nutrient_info[4]}, Sugar: ${data.nutrient_info[5]}`,
+                    //     });
+                    //     $(nutrient_box).append(meal_cal);
+                    //     $(nutrient_box).append(meal_nutrient_info);
+
+                    //     // 출력만 확인하고 나머지 코드는 아직 작성 중
+                    // } else {
+                    //     alert('저장 실패' + data.error);
+                    // }
                 },
                 error: function(error) {
                     alert('서버 오류' + error);

@@ -1,15 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>음식 검색 예제</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-</head>
-<body>
-</body>
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    #progress {
+        appearance: none;
+    }
+
+    #progress::-webkit-progress-bar{
+        background: #f0f0f0;
+        border-radius: 10px;
+        box-shadow: inset 3px 3px 10px #ccc;
+    }
+
+    #progress::-webkit-progress-value {
+        border-radius: 10px;
+        background: #0e65e7;
+        background: -webkit-linear-gradient(to right, #93F9B9, #1D976C);
+        background: linear-gradient(to right, #93F9B9, #1D976C);
+    }
+</style>
+{% for i in testDB %}
+{{ i }}
+{% endfor %}
+<!-- max 값을 칼로리로 준다면 진행바 최대치가 될 것이다. -->
+<progress id="progress" value="0" min="0" max="2200"></progress>
 <script>
-    
+    $(document).ready(function() {
+        $("#progress").animate({
+            // 애니메이션이 도달해야 하는 거리
+            value: 1570
+        }, {
+            duration: 3000,
+            step: function (currentValue) {
+                $("#progress").attr("value", currentValue);
+            },
+            // complete: function() {
+            //     $("#progress").attr("value", 70);
+            // }
+        });
+    });
 </script>
-</html>
+{% endblock content %}
