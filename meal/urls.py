@@ -5,6 +5,8 @@ urlpatterns = [
     path("", views.meal_index, name='meal_index'),
     path("meal_analyze", views.meal_analyze, name='meal_analyze'),
     path("meal_to_analyze", views.meal_to_analyze, name='meal_to_analyze'),
+    path("meal_history", views.meal_history, name='meal_history'),
+    path("meal_detail/<str:date>", views.meal_detail, name='meal_detail'),  
     path("calorie_dict", views.calorie_dict, name='calorie_dict'),
     path("calorie_dict/<str:food_code>/", views.food_detail, name='food_detail')
 ]
