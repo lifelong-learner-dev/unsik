@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-group">
-            <label for="exercise_duration">운동 시간(분):</label>
+            <label for="exercise_amount">운동 시간(분):</label>
             <input type="number" id="exercise_duration" name="exercise_duration" class="form-control" min="1">
         </div>
 
@@ -42,7 +42,11 @@
                 <input type="number" id="sets" name="sets" class="form-control" min="1">
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">기록하기</button>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">기록하기</button>
+        </form>
     </form>
 </div>
 
