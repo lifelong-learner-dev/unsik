@@ -36,3 +36,6 @@ poetry.lock
 
 # meal_photos 내 파일 
 meal_photos/
+
+# .pyc 파일
+*.pyc
