@@ -61,3 +61,49 @@ class UsersAppUser(models.Model):
     class Meta:
         managed = False
         db_table = 'users_app_user'
+
+class CalorieDictAllProcessed(models.Model):
+    food_code = models.TextField(blank=True, null=True)
+    food_name = models.TextField(blank=True, null=True)
+    maker = models.TextField(blank=True, null=True)
+    major_class = models.TextField(blank=True, null=True)
+    detail_class = models.TextField(blank=True, null=True)
+    one_serve_amount_g_field = models.FloatField(db_column='one_serve_amount(g)', blank=True, null=True)  # Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    total_amount_g_field = models.FloatField(db_column='total_amount(g)', blank=True, null=True)  # Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    calories = models.FloatField(blank=True, null=True)
+    water = models.FloatField(blank=True, null=True)
+    protein = models.FloatField(blank=True, null=True)
+    fat = models.FloatField(blank=True, null=True)
+    carbohydrate = models.FloatField(blank=True, null=True)
+    suger = models.FloatField(blank=True, null=True)
+    dietary_fiber = models.FloatField(blank=True, null=True)
+    natrium = models.FloatField(blank=True, null=True)
+    total_sfa = models.FloatField(blank=True, null=True)
+    total_tfa = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'calorie_dict_all_processed'
+
+class AdditionalFoodInfo(models.Model):
+    food_code = models.TextField(blank=True, null=True)
+    food_name = models.TextField(blank=True, null=True)
+    maker = models.TextField(blank=True, null=True)
+    major_class = models.TextField(blank=True, null=True)
+    detail_class = models.TextField(blank=True, null=True)
+    one_serve_amount_g_field = models.FloatField(db_column='one_serve_amount(g)', blank=True, null=True)  # Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    total_amount_g_field = models.FloatField(db_column='total_amount(g)', blank=True, null=True)  # Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    calories = models.FloatField(blank=True, null=True)
+    water = models.FloatField(blank=True, null=True)
+    protein = models.FloatField(blank=True, null=True)
+    fat = models.FloatField(blank=True, null=True)
+    carbohydrate = models.FloatField(blank=True, null=True)
+    suger = models.FloatField(blank=True, null=True)
+    dietary_fiber = models.FloatField(blank=True, null=True)
+    natrium = models.FloatField(blank=True, null=True)
+    total_sfa = models.FloatField(blank=True, null=True)
+    total_tfa = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'additional_food_info'

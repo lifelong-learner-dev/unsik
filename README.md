@@ -283,6 +283,20 @@
       > TEMPLATES의 DIRS에 BASE_DIR 추가
       > STATICFILES_DIR 추가
 
+### exercise 테이블 수정 sql
+```sql
+-- exercise_date를 datetime 타입으로 변경
+ALTER TABLE exercise MODIFY COLUMN exercise_date datetime;
+
+-- exercise_type을 ENUM 타입으로 변경
+ALTER TABLE exercise MODIFY COLUMN exercise_type ENUM('유산소', '웨이트');
+
+-- weight (무게)와 reps (횟수), sets(세트수) 컬럼 추가
+ALTER TABLE exercise ADD COLUMN weight int DEFAULT NULL;
+ALTER TABLE exercise ADD COLUMN reps int DEFAULT NULL;
+ALTER TABLE exercise ADD COLUMN sets int DEFAULT NULL;
+```
+
 ### 브랜치명 (lim) - 임덕현 (2024-01-22 16:50)
     > 나의 식단 히스토리 페이지 추가(meal_history)
       * 일단은 데이터가 몇개 없어서 전체 기간으로 그래프 그렸고 협의후 옵션 지정 예정
