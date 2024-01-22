@@ -11,7 +11,7 @@ from .models import CalorieDictionary, Meal, UsersAppUser
 from .modules.meal_anal import predict_meal
 from django.db.models import Q
 from uuid import uuid4
-import foodDict
+from .foodDict import *
 import json
 
 # Create your views here.
@@ -163,7 +163,7 @@ def meal_post(request):
 
         for food in meal_data_list[0]:
             # 정규성 검사 함수
-            food_code = foodDict.check_food_code(food)
+            food_code = check_food_code(food)
             if food_code is not None:
                 filtered_list.append(food_code)
         
@@ -171,7 +171,7 @@ def meal_post(request):
         print(filtered_list)
 
         # 칼로리 합산하는 함수
-        meal_calories, nutrient_info = foodDict.total_calories(filtered_list)
+        meal_calories, nutrient_info = total_calories(filtered_list)
         print(meal_calories)
         print(nutrient_info)
 
