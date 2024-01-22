@@ -25,7 +25,7 @@ class CalorieDictionary(models.Model):
         db_table = 'calorie_dictionary'
 
 class Meal(models.Model):
-    postnum = models.BigIntegerField(db_column='postNum', primary_key=True)  # Field name made lowercase.
+    postnum = models.BigAutoField(db_column='postNum', primary_key=True)  # Field name made lowercase.
     user = models.ForeignKey('UsersAppUser', models.DO_NOTHING)
     meal_date = models.DateTimeField(blank=True, null=True)
     meal_photo = models.CharField(max_length=255, blank=True, null=True)
