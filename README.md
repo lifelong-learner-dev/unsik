@@ -282,3 +282,10 @@
       > INSTALLED_APPS "rest_framework", "exercise", "meal" 추가
       > TEMPLATES의 DIRS에 BASE_DIR 추가
       > STATICFILES_DIR 추가
+
+### 브랜치명 (lim) - 임덕현 (2024-01-22 16:50)
+    > 나의 식단 히스토리 페이지 추가(meal_history)
+      * 일단은 데이터가 몇개 없어서 전체 기간으로 그래프 그렸고 협의후 옵션 지정 예정
+
+    > 식단 상세 페이지 추가(meal_detail)
+      * 섭취한 총 칼로리, 영양소 정보 추가로 부족한 영양소 계산해서 넣을 예정
