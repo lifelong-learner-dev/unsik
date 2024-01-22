@@ -1,7 +1,60 @@
 {% extends 'base.html' %}
-
+<!-- venv\Scripts\activate 가상환경 활성화 -->
+<!-- deactivate 비활성화 -->
 {% block content %}
-<h2>index 페이지</h2>
-운동 정보 제공 페이지 <br>
-운동 홈입니다.
+<div class="container">
+    <h2>운동 기록</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="exercise_name">운동 이름:</label>
+            <input type="text" id="exercise_name" name="exercise_name" class="form-control"
+                placeholder="예: 스쿼트, 벤치프레스, 조깅">
+        </div>
+        <div class="form-group">
+            <label for="exercise_date">날짜:</label>
+            <input type="datetime-local" id="exercise_date" name="exercise_date" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="exercise_type">운동 유형:</label>
+            <select id="exercise_type" name="exercise_type" class="form-control" onchange="toggleWeightFields()">
+                <option value="유산소">유산소</option>
+                <option value="웨이트">웨이트</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="exercise_duration">운동 시간(분):</label>
+            <input type="number" id="exercise_duration" name="exercise_duration" class="form-control" min="1">
+        </div>
+
+        <div id="weight_fields" style="display:none;">
+            <div class="form-group">
+                <label for="weight">무게(kg):</label>
+                <input type="number" id="weight" name="weight" class="form-control" min="1">
+            </div>
+            <div class="form-group">
+                <label for="reps">횟수:</label>
+                <input type="number" id="reps" name="reps" class="form-control" min="1">
+            </div>
+            <div class="form-group">
+                <label for="sets">세트 수:</label>
+                <input type="number" id="sets" name="sets" class="form-control" min="1">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">기록하기</button>
+    </form>
+</div>
+
+<script>
+    function toggleWeightFields() {
+        var exerciseType = document.getElementById('exercise_type').value;
+        var weightFields = document.getElementById('weight_fields');
+        if (exerciseType === '웨이트') {
+            weightFields.style.display = 'block';
+        } else {
+            weightFields.style.display = 'none';
+        }
+    }
+</script>
 {% endblock content %}
