@@ -2,6 +2,27 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
+### ghk 브랜치 : 2024/01/22 회원가입시 
+
+    >! 회원가입시 자동으로 daily 테이블에 레코드(기록) 생성
+    
+        > 1. users_app의 forms.py에 
+            > daily 테이블에 레코드 생성 코드 작성
+        
+        > 2. users_app의 models.py에
+            > daily 테이블 DB포함
+            > daily 테이블의 user 부분 
+              > 'UsersAppUser' => User로 변경
+        
+        > 3. sign_up.html에 목표몸무게 추가 
+
+    > ! 마이페이지 초안 작성 (!!! 추가 작업 진행 필요 초안만 작성됨 !!!)
+        > 1. my_page.html 생성 (users_app/templates/users_app)
+        > 2. views.py에 my_page function 생성 (users_app)
+        > 3. urls.py에 my_page url 추가 (users_app)
+        > 4. nvbar에 마이페이지 url 추가
+        > 5. my_page1.css 생성 (static/css)
+
 ### 2024/01/12 유저 인증, 로그인 함수 관련 수정
 
 주의! 아래 지침을 수행하기 전 DB에 저장된 파일들을 export 시키거나 백업해놓으시기 바랍니다.

@@ -34,3 +34,16 @@ class UsersAppUser(models.Model):
     class Meta:
         managed = False
         db_table = 'users_app_user'
+
+
+class Daily(models.Model):
+    postnum = models.BigAutoField(db_column='postNum', primary_key=True)  # Field name made lowercase.
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    total_meal_calories = models.FloatField(blank=True, null=True)
+    total_exercise_calories = models.FloatField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    current_weight = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'daily'
