@@ -45,7 +45,7 @@ class UserForm(UserCreationForm):
 class MypageUserForm(forms.ModelForm):
     user_activity = forms.ChoiceField(
         label="활동수준",
-        choices=(("active", "활동적"), ("deactive", "비활동적")),
+        choices=(("5", "매우 활발한 활동"),("4","활발한 활동"),("3","보통 활동"),("2","약간의 활동"), ("1","거의 활동이 없음")),
         widget=forms.RadioSelect  # 라디오 버튼 형태로 선택하도록 설정
     )
 
