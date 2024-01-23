@@ -9,6 +9,11 @@ header {
     width: 100vh;
     position: sticky;
     top: 10px;
+    z-index: 10;
+}
+
+#nv_bar ul li {
+    list-style: none !important;
 }
 
 #logo_box {

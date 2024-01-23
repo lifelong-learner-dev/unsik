@@ -27,9 +27,18 @@ def predict_meal(image):
         box_xywhn = result.boxes.xywhn.tolist()
     
     detections = {}
+    i = 1
 
     # 클래스 번호에 따라 {음식명: [좌표값]} 으로 묶어주는 for문
+    # 1차적인 문제는 해결했다. 논리가 제대로 동작 하나 살펴보자.
     for cls, coords in zip(class_num, box_xywhn):
-        detections[food_cls[cls]] = coords
+        if food_cls[cls] in detections.keys():
+            class_name = food_cls[cls] + str(i)
+            i += 1
+            detections[class_name] = coords
+        else:
+            detections[food_cls[cls]] = coords
+
+    # print(detections)
 
     return detections

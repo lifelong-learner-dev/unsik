@@ -2,10 +2,13 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/meal_analyze.css' %}">
+<script src="{% static 'js/meal_anal_result.js' %}"></script>
 <style>
-    #result_section {
+    #result_image_box {
         position: relative;
         display: inline-block;
+        z-index: 1;
     }
 
     .marker {
@@ -15,59 +18,160 @@
         padding: 5px;
         border-radius: 5px;
         font-size: 20px;
+        opacity: 0.6;
+    }
+
+    .marker:hover {
+        transition-duration: 0.5s;
+        background-color: darkred;
+        opacity: 1;
+        z-index: 40;
     }
 </style>
 <aside>
-    <div id="result_section">
-            {% if meal_image %}
-            <img src="{{ meal_image }}" alt="meal_image" id="meal_image" style="width: 700px;">
-            {% endif %}
-        </div>
-        <div>
-            <p>이 식단으로 예측했습니다. 이 정보가 맞나요?</p>
-            {% if detect_results %}
-                {% for result in detect_results %}
-                <p>{{ result }}</p>
-                {% endfor %}
-            {% endif %}
-            <!-- 이 아래에 식단이 떠야 한다. -->
-
-            <!-- 모든 식단 정보를 확인 후 사용자에게 컨펌시킨다. -->
-            <button id="confirm-button">맞음</button>
-            <button id="deny-button">틀림</button>
+    <div id="result_image_box">
+        {% if meal_image %}
+        <img src="{{ meal_image }}" alt="meal_image" id="meal_image" style="max-width: 700px; max-height: 500px;">
+        {% endif %}
     </div>
-
-    <h2>영양소 정보</h2>
-    <div id="nutrient_information"></div>
-    <h2>코멘트</h2>
-    <div id="time_comment"></div>
+    <!-- <div>
+        <button id="confirm-button">맞음</button>
+        <button id="deny-button">틀림</button>
+    </div> -->
+    <!-- 정보가 맞지 않다면 아래 박스 노출 -->
+    <div id="modify_result">
+        <p>이 식단으로 예측했습니다. 이 정보가 맞나요?</p>
+        <form method="post" id="meal_result_form" action="">
+            {% csrf_token %}
+            {% if detect_results %}
+                {% for key, values in detect_results.items %}
+                <div class="input_container">
+                    <input class="food-input" type="text" id="input_{{ key }}" name="{{ key }}" value="{{ key }}">
+                    <button type="button" class="remove_input">입력창 삭제</button>
+                    <ul class="search-results" style="display: none;"></ul>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>이 음식의 종류를 알 수 없습니다.</p>
+            {% endif %}
+        </form>
+        {% if user.is_authenticated %}
+        <button id="add_input_box">음식 추가</button>
+        <button type="submit" id="submit_form">완료</button>
+        {% else %}
+        <p>운식에 가입하여 정확한 식단 분석을 받아보세요!</p>
+        {% endif %}
+    </div>
+    <div id="nutrient_information" style="display: none;">
+        <h2>영양소 정보</h2>
+    </div>
 </aside>
 
+<!-- 마커 만들어주는 스크립트 -->
 <script>
-    function createMarker(text, x, y) {
-        const marker = document.createElement('div');
-        marker.className = 'marker';
-        marker.style.left = x + 'px';
-        marker.style.top = y + 'px';
-        marker.textContent = text;
-        return marker;
-    }
-
+    function createMarker(text, x, y, id) {
+            const marker = document.createElement('div');
+            marker.className = 'marker';
+            marker.id = 'marker_' + id;
+            marker.setAttribute('data-input-id', 'input_' + id);
+            marker.style.left = x + 'px';
+            marker.style.top = y + 'px';
+            marker.textContent = text;
+            marker.addEventListener('click', function() {
+                var inputId = marker.getAttribute('data-input-id');
+                var inputBox = document.getElementById(inputId);
+                inputBox.focus();
+            })
+            return marker;
+        }
     // 이미지 로드
     const img = document.getElementById('meal_image');
 
-    img.onload = function() {
+    img.onload = function () {
         var width = img.width;
         var height = img.height;
 
         console.log(width, height)
+        
         {% for key, values in detect_results.items %}
-        var tagWidth = width * {{ values.0 }};
-        var tagHeight = height * {{ values.1 }};
-
-        var marker = createMarker(`{{ key }}`, tagWidth, tagHeight);
-        document.getElementById('result_section').appendChild(marker);
+        createMarkerAndInput('{{ key }}', {{values.0}}, {{values.1}});
         {% endfor %}
+
+        function createMarkerAndInput(id, tagWidthFactor, tagHeightFactor) {
+            var tagWidth = width * tagWidthFactor;
+            var tagHeight = height * tagHeightFactor;
+
+            var marker = createMarker(id, tagWidth, tagHeight, id);
+            document.getElementById('result_image_box').appendChild(marker);
+
+            var inputBox = document.getElementById('input_' + id);
+            inputBox.setAttribute('data-marker-id', 'marker_' + id);
+            inputBox.addEventListener('input', function () {
+                var markerToUpdateId = inputBox.getAttribute('data-marker-id');
+                var markerToUpdate = document.getElementById(markerToUpdateId);
+                markerToUpdate.textContent = inputBox.value;
+            });
+        }
     }
+</script>
+
+<!-- ajax 기능 -->
+<script>
+    $(document).ready(function () {
+        $('#submit_form').on('click', function() {
+            // 음식 이름을 담을 배열 지정
+            var foodNames = [];
+
+            $('.food-input').each(function () {
+                var foodId = $(this).attr('name');
+                foodNames.push(foodId);
+            });
+            console.log(foodNames)
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "meal_nutrient" %}', // 페이지 안에 삽입되어 Django 관리 하에 있을 때 사용 가능
+                data: {
+                    // form 제출 유효성 검사를 위해 csrf_token 같이 보내기
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'meal_data': JSON.stringify([foodNames, '{{ meal_image }}']),
+                },
+                success: function (data) {
+                    if (data.success) {
+                        alert('저장 성공');
+                        const remove_box = document.getElementById('modify_result');
+                        remove_box.innerHTML = '';
+                        console.log(data.meal_calories)
+                        console.log(data.nutrient_info[0])
+
+                        // 박스 스타일 block으로 설정
+                        const nutrient_box = document.getElementById('nutrient_information');
+                        nutrient_box.style.display = 'block';
+
+                        const meal_cal = $('<p>', {
+                            class: 'calorie_info',
+                            text: data.meal_calories,
+                        });
+
+                        const meal_nutrient_info = $('<p>', {
+                            class: 'test',
+                            text: `Protein: ${data.nutrient_info[0]}, Carbs: ${data.nutrient_info[1]},
+                             Fat: ${data.nutrient_info[2]}, Fiber: ${data.nutrient_info[3]},
+                             Calories: ${data.nutrient_info[4]}, Sugar: ${data.nutrient_info[5]}`,
+                        });
+                        $(nutrient_box).append(meal_cal);
+                        $(nutrient_box).append(meal_nutrient_info);
+
+                        // 출력만 확인하고 나머지 코드는 아직 작성 중
+                    } else {
+                        alert('저장 실패' + data.error);
+                    }
+                },
+                error: function(error) {
+                    alert('서버 오류' + error);
+                }
+            })
+        });
+    });
 </script>
 {% endblock content %}

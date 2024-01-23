@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+<form action="{% url 'sign_up' %}" method="post" id="sign_up_form">
+    {% csrf_token %}
+    {% include 'form_errors.html' %}
+    <table id="sign_up_table">
+        <tr><th>아이디</th>
+            <td>{{ form.username }}
+                <button class="id_check" type="button" value="id_check">아이디 중복 확인</button>
+            </td>
+        </tr>
+        <tr><th>이메일</th>
+        <td>{{ form.email }}</td>
+        </tr>
+        <tr><th>비밀번호</th>
+            <td>{{ form.password1 }}</td>
+        </tr>
+        <tr><th>비밀번호 확인</th>
+            <td>{{ form.password2 }}</td>
+        </tr>
+        <tr><th>나이</th>
+            <td>{{ form.user_age }}</td>
+        </tr>
+        <tr><th>성별</th>
+            <td>
+                {{ form.user_gender }}
+            </td>
+        </tr>
+        <tr><th>키, 몸무게</th>
+            <td>
+                {{ form.user_height }}cm
+                {{ form.user_weight }}kg
+            </td>
+        </tr>
+        <tr><th>운동목적</th>
+            <td>
+                <label>건강<input type="radio" name="purpose" value="health"></label>
+                <label>체중 감량<input type="radio" name="purpose" value="diet"></label>
+                <label>벌크업<input type="radio" name="purpose" value="bulkup"></label>
+            </td>
+        </tr>
+        <tr><th>활동수준</th>
+            <td>
+                {{ form.user_activity }}
+            </td>
+        </tr>
+        <tr><th>목표몸무게</th>
+            <td>
+                {{ form.user_target_weight }}kg
+            </td>
+        </tr>
+    </table>
+    <button id="joinbtn" type="submit" value="join">가입</button>
+</form>
+<script src="{% static 'js/sign_up.js' %}"></script>
+{% endblock content %}
