@@ -17,7 +17,6 @@ from .models import Meal
 from .models import CalorieDictionary
 import json
 from django.db.models import Sum
-from datetime import datetime, timedelta
 import ast
 
 # Create your views here.
@@ -304,13 +303,28 @@ def meal_post(request):
             # (1) 날짜 기준으로 오늘 칼로리만 합산해오기
             today = datetime.now().date()
 
-            day_start = datetime.combine(today, datetime.min.time())
-            day_end = datetime.combine(today, datetime.max.time())
+            day_start = timezone.make_aware(datetime.combine(today, datetime.min.time()), timezone.get_current_timezone())
+            day_end = timezone.make_aware(datetime.combine(today, datetime.max.time()), timezone.get_current_timezone())
 
-            all_meal_today = Meal.objects.filter(user_id=request.user.id,
+            print(day_start)
+            print(day_end)
+
+            all_meal_today = Meal.objects.filter(user=request.user.id,
                                                  meal_date__range=(day_start, day_end))\
                                                  .aggregate(all_calories=Sum("meal_calories"))
-            calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else 0
+            
+            print(all_meal_today)
+            
+            ############################# 테스트용 코드
+            # meal_query = Meal.objects.filter(user_id=request.user.id, meal_date__range=(day_start, day_end))
+            # print("Query result:", meal_query)
+
+            # all_meal_today = meal_query.aggregate(all_calories=Sum("meal_calories"))
+            # print("Sum result:", all_meal_today['all_calories'])
+
+            ##############################
+
+            calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else meal_calories
 
             print(calorie_today)
 
@@ -328,13 +342,14 @@ def meal_post(request):
             mg_index = 4
             nutrient_gram[mg_index] /= 1000
             meal_calories = round(meal_calories, 2)
+            calorie_today = round(calorie_today, 2)
             trimed_nutrient = [round(n, 2) for n in nutrient_gram]
 
             context = {
                 'this_meal_cal': meal_calories,
                 'total_nutrient': trimed_nutrient,
                 'each_foods': each_foods,
-                'today_meal_cal': calorie_today,
+                'todays_total_cal': calorie_today,
                 'meal_type': meal_type,
             }
 
@@ -348,8 +363,22 @@ def meal_post(request):
 def test(request):
     id = request.user.id
 
-    user_meal = Meal.objects.filter(user_id=id)
-    for meal in user_meal:
-        # 왜 메서드 체이닝을 잊고 있었을까
-        print(meal.nutrient_info)
-    return render(request, 'meal/test.html', {'testDB': user_meal})
+    today = datetime.now().date()
+
+    day_start = timezone.make_aware(datetime.combine(today, datetime.min.time()), timezone.get_current_timezone())
+    day_end = timezone.make_aware(datetime.combine(today, datetime.max.time()), timezone.get_current_timezone())
+
+    print(day_start)
+    print(day_end)
+
+    all_meal_today = Meal.objects.filter(user=request.user.id,
+                                            meal_date__range=(day_start, day_end))\
+                                            .aggregate(all_calories=Sum("meal_calories"))
+    
+    print(all_meal_today)
+
+
+    # for meal in user_meal:
+    #     # 왜 메서드 체이닝을 잊고 있었을까
+    #     print(meal.nutrient_info)
+    return render(request, 'meal/test.html')
