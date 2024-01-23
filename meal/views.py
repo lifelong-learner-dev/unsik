@@ -67,6 +67,65 @@ def meal_history(request):
 def meal_detail(request, date):
     id = request.user.id
 
+    # 유저별 권장 영양섭취 계산
+    user_info = UsersAppUser.objects.filter(id=id).first()
+
+    user_height = user_info.user_height
+    user_weight = user_info.user_weight
+    user_gender = user_info.user_gender
+
+    user_birth_date = user_info.user_birth
+    current_date = datetime.now()
+
+    # 나이 계산
+    user_age = current_date.year - user_birth_date.year - ((current_date.month, current_date.day) < (user_birth_date.month, user_birth_date.day))
+
+    print('나이 : ' ,user_age)
+
+    if user_gender == 0:
+        user_bmr = 88.362 + (13.397 * user_weight) + (4.799 * user_height) - (5.677 * user_age)
+    elif user_gender == 1:
+        user_bmr = 447.593  + (9.247 * user_weight) + (3.098 * user_height) - (4.330 * user_age)
+    else:
+        user_bmr = 0.0
+    
+    # 활동 수준에 따른 BMR 값 변화
+    user_activity = user_info.user_activity
+
+    if user_activity == "5":
+        user_tdee = user_bmr * 1.2
+    elif user_activity == "4":
+        user_tdee = user_bmr * 1.375
+    elif user_activity == "3":
+        user_tdee = user_bmr * 1.55
+    elif user_activity == "2":
+        user_tdee = user_bmr * 1.725
+    elif user_activity == "1":
+        user_tdee = user_bmr * 1.9
+    else:
+        user_tdee = 0.0
+
+    # 단백질 총 칼로리의 10-35%
+    protein_min, protein_max = user_tdee * 0.10/4 , user_tdee * 0.35 / 4
+    # 지방 : 총 칼로리의 20-35 % 
+    fat_min, fat_max = user_tdee * 0.20 / 9, user_tdee * 0.35 / 9
+    # 탄수화물 : 총 칼로리의 45~65%
+    carbs_min, carbs_max = user_tdee * 0.45 / 4, user_tdee * 0.65 / 4
+    # 당류 에너지 섭취의 10% 미만
+    sugar_max = user_tdee * 0.10 / 4
+    # 식이섬류 하루에 25~30g 권장
+    fiber_recommended = 25 if user_gender == 1 else 30  # 여성의 경우 25g, 남성의 경우 30g
+    # 나트륨 : 1500mg 권장
+    natrium_recommended = 1500  # mg   
+
+    total_protein = 0.0
+    total_fat = 0.0
+    total_carbs = 0.0
+    total_sugar = 0.0
+    total_fiber = 0.0
+    total_natrium = 0.0
+        
+
     # 날짜 형식으로 변환 필요
     start_date = datetime.strptime(date, '%Y-%m-%d')
     end_date = start_date + timedelta(days=1)
@@ -90,15 +149,38 @@ def meal_detail(request, date):
                 meal_info[meal.meal_type]['foods'].append(menu.food_name)
                 meal_info[meal.meal_type]['calories'] += menu.calories
                 meal_info[meal.meal_type]['nutrients']['protein'] += menu.protein
+                total_protein += menu.protein
                 meal_info[meal.meal_type]['nutrients']['fat'] += menu.fat
+                total_fat += menu.fat
                 meal_info[meal.meal_type]['nutrients']['carbohydrate'] += menu.carbohydrate
+                total_carbs += menu.carbohydrate
                 meal_info[meal.meal_type]['nutrients']['suger'] += menu.suger
+                total_sugar += menu.suger
                 meal_info[meal.meal_type]['nutrients']['dietary_fiber'] += menu.dietary_fiber
+                total_fiber += menu.dietary_fiber
                 meal_info[meal.meal_type]['nutrients']['natrium'] += menu.natrium
+                total_natrium += menu.natrium
+    
+    deficient_nutrients = {}
+
+    if total_protein < protein_min:
+        deficient_nutrients['단백질'] = {'recommended': protein_min, 'actual': total_protein}
+    if total_fat < fat_min:
+        deficient_nutrients['지방'] = {'recommended': fat_min, 'actual': total_fat}
+    if total_carbs < carbs_min:
+        deficient_nutrients['탄수화물'] = {'recommended': carbs_min, 'actual': total_carbs}
+    if total_sugar > sugar_max:
+        deficient_nutrients['당류'] = {'recommended': sugar_max, 'actual': total_sugar}
+    if total_fiber < fiber_recommended:
+        deficient_nutrients['식이섬유'] = {'recommended': fiber_recommended, 'actual': total_fiber}
+    if total_natrium > natrium_recommended:
+        deficient_nutrients['나트륨'] = {'recommended': natrium_recommended, 'actual': total_natrium}
+
                 
     context = {
         'date': date,
         'meal_info': meal_info,
+        'deficient_nutrients' : deficient_nutrients
     }
 
     return render(request, 'meal/meal_detail.html', context)
