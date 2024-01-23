@@ -10,8 +10,8 @@ $(document).ready(function () {
         reader.onload = function (e) {
             var img = document.createElement('img');
             img.src = e.target.result;
-            img.style.maxWidth = '500px';
-            img.style.maxHeight = '500px';
+            img.style.maxWidth = '696px';
+            img.style.maxHeight = '496px';
 
             var preview = document.getElementById('preview');
             preview.innerHTML = '';
