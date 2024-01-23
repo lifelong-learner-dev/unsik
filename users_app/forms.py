@@ -9,7 +9,7 @@ class UserForm(UserCreationForm):
     user_gender = forms.ChoiceField(label="성별", choices=(("0", "남자"), ("1", "여자")))
     user_height = forms.IntegerField(label="키", max_value=300)
     user_weight = forms.IntegerField(label="몸무게", max_value=300)
-    user_activity = forms.ChoiceField(label="활동수준", choices=(("5", "매 활발한 활동"),("4","활발한 활동"),("3","보통 활동"),("2","약간의 활동"), ("1","거의 활동이 없음")))
+    user_activity = forms.ChoiceField(label="활동수준", choices=(("5", "매우 활발한 활동"),("4","활발한 활동"),("3","보통 활동"),("2","약간의 활동"), ("1","거의 활동이 없음")))
     user_target_weight = forms.IntegerField(label="목표몸무게", max_value=300)
 
     class Meta:
