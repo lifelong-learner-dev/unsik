@@ -341,17 +341,17 @@ def meal_post(request):
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 현재 시간 얻기
-            current_time = timezone.localtime(timezone.now(), timezone=timezone.get_current_timezone())
+            current_time = timezone.now()
             # print(current_time.hour)
 
             # 테스트를 위한 임의 조작 시간
-            # current_time = datetime(2024, 1, 24, 8, 20, 11)
+            # current_time = datetime(2024, 1, 23, 19, 40, 34)
 
             # 이건 꼼수인데, UTC로 저장되는 시간에 억지로 9시간을 추가해 저장하는 수법이다.
             # 좀 짜증나지만, 이럴 경우 korea_time 변수에 담긴 시간은 한국 시간에서 9시간이 추가된 시간이다.
-            korea_time = current_time + timedelta(hours=9)
-            print(current_time)
-            print(korea_time.strftime("%Y-%m-%d %H:%M:%S"))
+            # korea_time = current_time + timedelta(hours=9)
+            # print(current_time)
+            # print(korea_time.strftime("%Y-%m-%d %H:%M:%S"))
 
             
             # 아침, 점심, 저녁, 간식 출력
@@ -370,7 +370,7 @@ def meal_post(request):
             Meal.objects.create(
                 user = user_instance,
                 # meal_date = current_time.strftime("%Y-%m-%d %H:%M:%S"),
-                meal_date = korea_time,
+                meal_date = current_time,
                 meal_photo = meal_data_list[-1],
                 meal_info = json.dumps(filtered_list),
                 meal_type = meal_type,
@@ -383,10 +383,10 @@ def meal_post(request):
             # 이러면 장점이 html에서 장고 문법 사용이 가능해진다.
 
             # (1) 날짜 기준으로 오늘 칼로리만 합산해오기
-            today = datetime.now().date()
+            today = datetime.now()
 
-            day_start = timezone.make_aware(datetime.combine(today, datetime.min.time()), timezone.get_current_timezone())
-            day_end = timezone.make_aware(datetime.combine(today, datetime.max.time()), timezone.get_current_timezone())
+            day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
+            day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
 
             print(day_start)
             print(day_end)
@@ -447,12 +447,12 @@ def test(request):
     print(id)
 
     today = timezone.now()
-    print(today)
+    print(f"현재 시간 : {today}")
 
     day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
     day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
-    print(day_start)
-    print(day_end)
+    print(f"시작 날짜 : {day_start}")
+    print(f"종료 날짜 : {day_end}")
 
     all_meal_today = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])\
                                             .aggregate(all_calories=Sum("meal_calories"))
