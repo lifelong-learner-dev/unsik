@@ -1,5 +1,179 @@
-#mypage_calendar {
+/* 전체 페이지에 대한 기본 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 상단 섹션 스타일 */
+#mypage_top {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    margin-bottom: 20px;
+    width: 50%;
+    margin: 0 auto;
+}
+
+/* 사용자 정보 스타일 */
+#mypage_user_name,
+#mypage_user_target_weight,
+#mypage_user_activity {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+    padding: 10px;
+    margin: 10px 0 auto;
+    width: 30%;
+    /* 혹은 원하는 너비 */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 달력 스타일 */
+#mypage_calendar {
+    margin-top: 30px;
+    width: 50%;
+    /* 부모 컨테이너의 100%, 즉 화면의 50% */
+    margin: 0 auto;
+    /* 중앙 정렬 */
+}
+
+#calendar {
+    max-width: 50%;
+    /* 달력의 최대 너비를 부모의 100%로 설정 */
+    margin: 0 auto;
+    /* 중앙 정렬 */
+}
+
+/* 현재 키와 몸무게 스타일 */
+#mypage_current_height_weight {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    margin: 0 auto;
+    width: 50%;
+}
+
+#mypage_current_height,
+#mypage_current_weight {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+    padding: 10px;
+    width: 45%;
+    text-align: center;
+    margin: 20px;
+}
+
+/* 정보 변경 버튼 스타일 */
+#user_info_change {
+    display: block;
+    width: 200px;
+    padding: 10px;
+    margin: 20px auto;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#user_info_change:hover {
+    background: #0056b3;
+}
+
+/* 그래프 섹션 스타일 */
+#mypage_weight_graph,
+#mypage_calories_graph,
+#mypage_current_calories {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+    padding: 20px;
+    text-align: center;
+    width: 20%;
+    margin: 30px auto;
+}
+
+
+
+/* 상품 등록 */
+#form_tbl th {
+    background-color: #dc3030;
+    color: white;
+    width: 100px;
+    text-align: right;
+}
+
+#form_tbl td input {
+    border: solid 1px #dc3030;
+    width: 300px;
+    height: 30px;
+    box-shadow: 0 1px 1px 0;
+}
+
+#form_btn {
+    background-color: #dc3030;
+    width: 80px;
+    height: 35;
+    color: white;
+    border-radius: 5px;
+}
+
+/* 유저 정보 수정 제목 스타일링 */
+h3 {
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* 폼 스타일링 */
+.user-info-form {
+    width: 50%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+}
+
+/* 테이블 스타일링 */
+#form_tbl {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* 폼 내부 각 항목 스타일링 */
+.user-info-form p {
+    margin: 10px 0;
+}
+
+/* 라벨 스타일링 */
+.user-info-form label {
+    display: block;
+    text-align: left;
+    margin-left: 20px;
+}
+
+/* 인풋 필드 스타일링 */
+.user-info-form input[type='text'],
+.user-info-form input[type='number'],
+.user-info-form input[type='submit'] {
+    width: 90%;
+    padding: 10px;
+    margin: 10px auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 수정 버튼 스타일링 */
+.user-info-form input[type='submit'] {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.user-info-form input[type='submit']:hover {
+    background-color: #0056b3;
 }
