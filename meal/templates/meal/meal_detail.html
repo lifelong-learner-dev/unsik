@@ -1,22 +1,39 @@
-<h1>{{user.username}}님의 {{ date }} 식단 상세 정보</h1>
+{% load static %}
+<link rel="stylesheet" href="{% static '/css/meal_detail.css' %}">
 
-{% for meal_type, data in meal_info.items %}
-{% if data.foods %}
-<h2>{{ meal_type }}</h2>
-<ul>
-    {% for food in data.foods %}
-    <li>{{ food }}</li>
+<h1>{{user.username}}님의 {{ date }} 식단 상세 정보</h1>
+<div class="meal-card">
+    {% for meal_type, data in meal_info.items %}
+    {% if data.foods %}
+    <h2>{{ meal_type }}</h2>
+    <ul>
+        {% for food in data.foods %}
+        <li>{{ food }}</li>
+        {% endfor %}
+    </ul>
+    <p>총 칼로리: {{ data.calories|floatformat:2 }} kcal</p>
+    <p>영양소 정보:</p>
+    <ul>
+        <li>단백질: {{ data.nutrients.protein|floatformat:2 }}g</li>
+        <li>지방: {{ data.nutrients.fat|floatformat:2 }}g</li>
+        <li>탄수화물: {{ data.nutrients.carbohydrate|floatformat:2 }}g</li>
+        <li>당류: {{ data.nutrients.suger|floatformat:2 }}g</li>
+        <li>식이섬유: {{ data.nutrients.dietary_fiber|floatformat:2 }}g</li>
+        <li>나트륨: {{ data.nutrients.natrium|floatformat:2 }}mg</li>
+    </ul>
+    {% endif %}
     {% endfor %}
-</ul>
-<p>총 칼로리: {{ data.calories|floatformat:2 }} kcal</p>
-<p>영양소 정보:</p>
-<ul>
-    <li>단백질: {{ data.nutrients.protein|floatformat:2 }}g</li>
-    <li>지방: {{ data.nutrients.fat|floatformat:2 }}g</li>
-    <li>탄수화물: {{ data.nutrients.carbohydrate|floatformat:2 }}g</li>
-    <li>당류: {{ data.nutrients.suger|floatformat:2 }}g</li>
-    <li>식이섬유: {{ data.nutrients.dietary_fiber|floatformat:2 }}g</li>
-    <li>나트륨: {{ data.nutrients.natrium|floatformat:2 }}mg</li>
-</ul>
-{% endif %}
-{% endfor %}
+</div>
+<!-- 부족한 영양소 정보 표시 -->
+<div class="deficient-nutrients">
+    {% if deficient_nutrients %}
+    <h2>{{user.username}}님 {{date}}일의 영양소 종합</h2>
+    <ul>
+        {% for nutrient, values in deficient_nutrients.items %}
+        <li>{{ nutrient|title }}: 권장 {{ values.recommended|floatformat:2 }}g, 실제 섭취량 {{ values.actual|floatformat:2
+            }}g
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
