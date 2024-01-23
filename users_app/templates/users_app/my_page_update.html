@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/my_page1.css' %}">
+    <h3> 유저 정보 수정 </h3>
+    <form method ="post" class="user-info-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button id="form_btn" type="submit"> 수정 </button>
+    </form>
+
+{% endblock content %}
