@@ -65,3 +65,8 @@
     margin-bottom: 1em;
     border: 2px solid black;
 }
+
+#nutrient_info_box {
+    margin: 0 auto;
+    width: 80vw;
+}

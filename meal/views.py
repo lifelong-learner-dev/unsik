@@ -257,7 +257,6 @@ def meal_post(request):
         print(nutrient_info)
 
         if request.user.is_authenticated:
-            # print(user_id) 유저 id도 제대로 받아온다. bigint 값이다.
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 현재 시간 얻기
@@ -269,8 +268,7 @@ def meal_post(request):
 
             # 이건 꼼수인데, UTC로 저장되는 시간에 억지로 9시간을 추가해 저장하는 수법이다.
             # 좀 짜증나지만, 이럴 경우 korea_time 변수에 담긴 시간은 한국 시간에서 9시간이 추가된 시간이다.
-            plus_9 = timedelta(hours=9)
-            korea_time = current_time + plus_9
+            korea_time = current_time + timedelta(hours=9)
             print(current_time)
             print(korea_time.strftime("%Y-%m-%d %H:%M:%S"))
 
@@ -287,6 +285,7 @@ def meal_post(request):
 
             print(meal_type)
             
+            # DB에 저장
             Meal.objects.create(
                 user = user_instance,
                 # meal_date = current_time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -302,16 +301,55 @@ def meal_post(request):
             # ajax로 html 낑겨넣는 수법을 써 봐야겠다.
             # 이러면 장점이 html에서 장고 문법 사용이 가능해진다.
 
+            # (1) 날짜 기준으로 오늘 칼로리만 합산해오기
+            today = datetime.now().date()
+
+            day_start = datetime.combine(today, datetime.min.time())
+            day_end = datetime.combine(today, datetime.max.time())
+
+            all_meal_today = Meal.objects.filter(user_id=request.user.id,
+                                                 meal_date__range=(day_start, day_end))\
+                                                 .aggregate(all_calories=Sum("meal_calories"))
+            calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else 0
+
+            print(calorie_today)
+
+            # (2) filtered_list로 칼로리 딕셔너리에서 정보 빼오기
+            each_foods = []
+            for fcode in filtered_list:
+                food_info = get_object_or_404(CalorieDictionary, pk=fcode)
+                # food_info.carbohydrate 메서드 체이닝으로 정보 추출하면 될 듯
+                each_foods.append(food_info)
+            
+            # print(each_foods)
+            
+            # 모든 단위 g으로 바꾸기
+            nutrient_gram = nutrient_info
+            mg_index = 4
+            nutrient_gram[mg_index] /= 1000
+            meal_calories = round(meal_calories, 2)
+            trimed_nutrient = [round(n, 2) for n in nutrient_gram]
+
+            context = {
+                'this_meal_cal': meal_calories,
+                'total_nutrient': trimed_nutrient,
+                'each_foods': each_foods,
+                'today_meal_cal': calorie_today,
+                'meal_type': meal_type,
+            }
+
             # 그런데.... 이 함수 블록에서 해야되는 일이 너무 많아지는 게 흠이다.
-            return render(request, 'meal/meal_nutrient.html', {'meal_cal': meal_calories, 'nutrient': nutrient_info})
+            return render(request, 'meal/meal_nutrient.html', context)
         else:
             return JsonResponse({'success': False, 'error': "올바르지 않은 데이터 형식"})
     else:
         return JsonResponse({'success': False, 'error': "올바르지 않은 요청사항"})
 
 def test(request):
-    user_id = 4
+    id = request.user.id
 
-    user_meal = Meal.objects.filter(user=user_id).values_list()
-    print(user_meal.values())
+    user_meal = Meal.objects.filter(user_id=id)
+    for meal in user_meal:
+        # 왜 메서드 체이닝을 잊고 있었을까
+        print(meal.nutrient_info)
     return render(request, 'meal/test.html', {'testDB': user_meal})
