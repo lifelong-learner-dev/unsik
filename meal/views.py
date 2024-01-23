@@ -78,9 +78,9 @@ def meal_detail(request, date):
     current_date = datetime.now()
 
     # 나이 계산
-    user_age = current_date.year - user_birth_date.year - ((current_date.month, current_date.day) < (user_birth_date.month, user_birth_date.day))
+    user_age = current_date.year - user_birth_date.year - ((current_date.month, current_date.day) < (user_birth_date.month, user_birth_date.day)) -1
 
-    print('나이 : ' ,user_age)
+    # print('나이 : ' ,user_age)
 
     if user_gender == 0:
         user_bmr = 88.362 + (13.397 * user_weight) + (4.799 * user_height) - (5.677 * user_age)
