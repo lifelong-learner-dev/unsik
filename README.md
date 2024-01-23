@@ -303,3 +303,18 @@ ALTER TABLE exercise ADD COLUMN sets int DEFAULT NULL;
 
     > 식단 상세 페이지 추가(meal_detail)
       * 섭취한 총 칼로리, 영양소 정보 추가로 부족한 영양소 계산해서 넣을 예정
+
+### 브랜치명 (lim) - 임덕현 (2024-01-23)
+     > 유저 정보에서 유저 활동 수준 구분을 5개로 수정 (("5", "매 활발한 활동"),("4","활발한 활동"),("3","보통 활동"),("2","약간의 활동"), ("1","거의 활동이 없음")))
+
+     > 기존 데이터의 경우 오류가 날수 있기때문에 업데이트 필요
+     > UPDATE users_app_user
+        SET user_activity = CASE 
+          WHEN user_activity = 'active' THEN '4'
+          WHEN user_activity = 'deactive' THEN '2'
+          ELSE '3'
+        END;
+
+     > Users_app_user 테이블 컬럼명 변경 : [user_age -> user_birth] 컬럼값에 생년월일이 들어가기 때문에 혼선을 줄 수 있어 컬럼명 변경. Alter문 실행 필요
+        - Alter table users_app_user change user_age user_birth date 
+        - 컬럼명이 바뀌었으므로 migration 필요
