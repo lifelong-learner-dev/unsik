@@ -31,35 +31,66 @@ $(document).ready(function(){
     // add_input_box 즉 '입력창 추가' 버튼을 클릭했을 때
     $('#add_input_box').on('click', function(event) {
         const last_box = $('.input_container').last();
-        // console.log(last_box)
+        console.log(last_box)
 
-        // input을 하나 만든다
-        const add_input = $('<input>', {
-            type: 'text',
-            name: 'noname',
-            class: 'food-input',
-            placeholder: '음식 검색',
-        });
+        if (last_box.length > 0) {
+            // input을 하나 만든다
+            const add_input = $('<input>', {
+                type: 'text',
+                name: 'noname',
+                class: 'food-input',
+                placeholder: '음식 검색',
+            });
 
-        // 결과창
-        const newResultsContainer = $('<ul>', {
-            class: 'search-results',
-            style: 'display: none;',
-        });
+            // 결과창
+            const newResultsContainer = $('<ul>', {
+                class: 'search-results',
+                style: 'display: none;',
+            });
 
-        // input을 없앨 수 있는 버튼
-        const remove_btn = $('<button>', {
-            class: 'remove_input',
-            text: '입력창 삭제'
-        });
+            // input을 없앨 수 있는 버튼
+            const remove_btn = $('<button>', {
+                class: 'remove_input',
+                text: '입력창 삭제'
+            });
 
-        const newContainer = $('<div>', {
-            class: 'input_container'
-        }).append(add_input, remove_btn, newResultsContainer);
+            const newContainer = $('<div>', {
+                class: 'input_container'
+            }).append(add_input, remove_btn, newResultsContainer);
 
-        console.log(newContainer)
+            console.log(newContainer)
 
-        last_box.after(newContainer);
+            last_box.after(newContainer);
+            
+        } else {
+            let pBox = $('#not_detected');
+
+            const add_input = $('<input>', {
+                type: 'text',
+                name: 'noname',
+                class: 'food-input',
+                placeholder: '음식 검색',
+            });
+
+            // 결과창
+            const newResultsContainer = $('<ul>', {
+                class: 'search-results',
+                style: 'display: none;',
+            });
+
+            // input을 없앨 수 있는 버튼
+            const remove_btn = $('<button>', {
+                class: 'remove_input',
+                text: '입력창 삭제'
+            });
+
+            const newContainer = $('<div>', {
+                class: 'input_container'
+            }).append(add_input, remove_btn, newResultsContainer);
+
+            pBox.replaceWith(newContainer);
+        }
+
     });
 
     $(document).on('input', '.food-input', function(){
