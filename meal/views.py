@@ -298,8 +298,20 @@ def meal_post(request):
                 nutrient_info = json.dumps(nutrient_info)
             )
 
-            return JsonResponse({'success': True, 'meal_calories': meal_calories, 'nutrient_info': nutrient_info})
+            # return JsonResponse({'success': True, 'meal_calories': meal_calories, 'nutrient_info': nutrient_info})
+            # ajax로 html 낑겨넣는 수법을 써 봐야겠다.
+            # 이러면 장점이 html에서 장고 문법 사용이 가능해진다.
+
+            # 그런데.... 이 함수 블록에서 해야되는 일이 너무 많아지는 게 흠이다.
+            return render(request, 'meal/meal_nutrient.html', {'meal_cal': meal_calories, 'nutrient': nutrient_info})
         else:
             return JsonResponse({'success': False, 'error': "올바르지 않은 데이터 형식"})
     else:
         return JsonResponse({'success': False, 'error': "올바르지 않은 요청사항"})
+
+def test(request):
+    user_id = 4
+
+    user_meal = Meal.objects.filter(user=user_id).values_list()
+    print(user_meal.values())
+    return render(request, 'meal/test.html', {'testDB': user_meal})

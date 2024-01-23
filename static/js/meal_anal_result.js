@@ -31,7 +31,7 @@ $(document).ready(function(){
     // add_input_box 즉 '입력창 추가' 버튼을 클릭했을 때
     $('#add_input_box').on('click', function(event) {
         const last_box = $('.input_container').last();
-        // console.log(last_box)
+        console.log(last_box)
 
         // input을 하나 만든다
         const add_input = $('<input>', {
@@ -57,9 +57,16 @@ $(document).ready(function(){
             class: 'input_container'
         }).append(add_input, remove_btn, newResultsContainer);
 
-        console.log(newContainer)
+        if (last_box.length > 0) {
+            console.log(newContainer)
+            last_box.after(newContainer);
 
-        last_box.after(newContainer);
+        } else {
+            let pBox = $('#not_detected');
+            pBox.replaceWith(newContainer);
+
+        }
+
     });
 
     $(document).on('input', '.food-input', function(){
