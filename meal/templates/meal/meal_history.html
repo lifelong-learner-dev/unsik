@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script type="text/javascript">
+    var dates = {{ dates | safe }};
+    var calories = {{ calories | safe}};
+</script>
+<section>
+    <h3><b>{{user.username}}님은 {{max_continuous}}일째 식단관리중입니다</b></h3>
+    <div>
+        <canvas id="caloriesChart"></canvas>
+    </div>
+</section>
+
+{% endblock content %}

@@ -1,43 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-    #progress {
-        appearance: none;
-    }
-
-    #progress::-webkit-progress-bar{
-        background: #f0f0f0;
-        border-radius: 5px;
-        box-shadow: inset 3px 3px 10px #b5b5b5;
-    }
-
-    #progress::-webkit-progress-value {
-        border-radius: 5px;
-        /* background: #fff879; */
-        /* background: -webkit-linear-gradient(to right, #1739a9, #98c016); */
-        background: linear-gradient(to right, #7fcf9d, #0e9c13);
+    .chart-container {
+        display: inline-flex;
+        justify-content: space-evenly;
+        margin: 0 auto;
+        position: relative;
+        width:80vw;
+        height:40vh;
+        /* background-color: rgb(155, 255, 155); */
     }
 </style>
-{% for i in testDB %}
-{{ i }}
-{% endfor %}
-<!-- max 값을 칼로리로 준다면 진행바 최대치가 될 것이다. -->
-<progress id="progress" value="0" min="0" max="2200"></progress>
+<div class="chart-container">
+    <div>
+        <p>탄수화물 괴물이당</p>
+    </div>
+    <canvas id="myChart"></canvas>
+</div>
 <script>
-    $(document).ready(function() {
-        let calories = 2130
-        $("#progress").animate({
-            // 애니메이션이 도달해야 하는 거리
-            value: calories
-        }, {
-            duration: 3000,
-            step: function (currentValue) {
-                $("#progress").attr("value", currentValue);
+var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+        labels: ['탄수화물', '단백질', '지방', '당류', '나트륨', '포화지방'],
+        datasets: [{
+            label: "그램",
+            data: [122.49, 133.74, 120.84, 17.45, 12.59, 14.39],
+            backgroundColor: [
+                'rgba(155, 255, 155, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+            ],
+            pointBackgroundColor: [
+                'rgb(255, 99, 132)'
+            ],
+            pointHoverBackgroundColor: [
+                '#fff',
+            ],
+            pointHoverBorderColor: [
+                'rgb(255, 99, 132)',
+            ]
+        }]
+    },
+    options: {
+        scale: {
+            angleLines: {
+                display: false
             },
-            complete: function() {
-                $("#progress").attr("value", calories);
+            ticks: {
+                suggestedMin: 50,
+                suggestedMax: 150
             }
-        });
-    });
+        }
+    }
+});
 </script>
 {% endblock content %}

@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import UsersAppUser
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from .forms import UserForm
 
 # Create your views here.
@@ -61,3 +61,9 @@ def id_check(request):
 #         if form.is_valid():
 #             password = form.cleaned_data['password']
 #             password_check = form.cleaned_data['confirm']
+    
+
+def my_page(request, username):
+
+    my_page_user = get_object_or_404(get_user_model(), username=username, is_active=True)
+    return render(request, "users_app/my_page.html", {"my_page_user":my_page_user,})

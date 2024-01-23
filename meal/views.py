@@ -1,7 +1,8 @@
+from collections import defaultdict
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
@@ -12,7 +13,12 @@ from .modules.meal_anal import predict_meal
 from django.db.models import Q
 from uuid import uuid4
 from .foodDict import *
+from .models import Meal
+from .models import CalorieDictionary
 import json
+from django.db.models import Sum
+from datetime import datetime, timedelta
+import ast
 
 # Create your views here.
 
@@ -20,7 +26,82 @@ def meal_index(request):
     return render(request, 'meal/meal_index.html' )
 
 def meal_analyze(request):
+
     return render(request, 'meal/meal_analyze.html')
+
+def meal_history(request):
+    id = request.user.id
+
+    meals = Meal.objects.filter(user_id=id)\
+                        .values('meal_date')\
+                        .annotate(total_calories=Sum('meal_calories'))\
+                        .order_by('meal_date')
+
+    continuous_days = 0
+    max_continuous = 0
+    previous_date = None
+
+    for meal in meals:
+        meal_date = meal['meal_date']
+        if previous_date and (meal_date - previous_date).days == 1:
+            continuous_days += 1
+        else:
+            max_continuous = max(max_continuous, continuous_days)
+            continuous_days = 1
+        previous_date = meal_date
+    
+    max_continuous = max(max_continuous, continuous_days)
+
+    dates = [meal['meal_date'].strftime('%Y-%m-%d') for meal in meals]
+    calories = [meal['total_calories'] for meal in meals]
+
+    context = {
+        'title': '그래프',
+        'dates': json.dumps(dates),
+        'calories': json.dumps(calories),
+        'max_continuous': max_continuous
+    }
+
+    return render(request, 'meal/meal_history.html', context)
+
+def meal_detail(request, date):
+    id = request.user.id
+
+    # 날짜 형식으로 변환 필요
+    start_date = datetime.strptime(date, '%Y-%m-%d')
+    end_date = start_date + timedelta(days=1)
+
+    meals = Meal.objects.filter(user_id=id, meal_date__range=(start_date, end_date))
+
+    # meal_type 별로 분류
+    meal_info = {'아침': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
+                 '점심': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
+                 '저녁': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
+                 '간식': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)}}
+
+
+    for meal in meals:
+        meal_info_list = ast.literal_eval(meal.meal_info)
+
+        for info in meal_info_list:
+            menu = CalorieDictionary.objects.filter(food_code=info).first()
+
+            if menu is not None:
+                meal_info[meal.meal_type]['foods'].append(menu.food_name)
+                meal_info[meal.meal_type]['calories'] += menu.calories
+                meal_info[meal.meal_type]['nutrients']['protein'] += menu.protein
+                meal_info[meal.meal_type]['nutrients']['fat'] += menu.fat
+                meal_info[meal.meal_type]['nutrients']['carbohydrate'] += menu.carbohydrate
+                meal_info[meal.meal_type]['nutrients']['suger'] += menu.suger
+                meal_info[meal.meal_type]['nutrients']['dietary_fiber'] += menu.dietary_fiber
+                meal_info[meal.meal_type]['nutrients']['natrium'] += menu.natrium
+                
+    context = {
+        'date': date,
+        'meal_info': meal_info,
+    }
+
+    return render(request, 'meal/meal_detail.html', context)
 
 # 이미지 파일명에 고유번호를 부여해주는 함수
 def rename_imagefile_to_uuid(filename):
@@ -176,7 +257,6 @@ def meal_post(request):
         print(nutrient_info)
 
         if request.user.is_authenticated:
-            # print(user_id) 유저 id도 제대로 받아온다. bigint 값이다.
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 현재 시간 얻기
@@ -188,8 +268,7 @@ def meal_post(request):
 
             # 이건 꼼수인데, UTC로 저장되는 시간에 억지로 9시간을 추가해 저장하는 수법이다.
             # 좀 짜증나지만, 이럴 경우 korea_time 변수에 담긴 시간은 한국 시간에서 9시간이 추가된 시간이다.
-            plus_9 = timedelta(hours=9)
-            korea_time = current_time + plus_9
+            korea_time = current_time + timedelta(hours=9)
             print(current_time)
             print(korea_time.strftime("%Y-%m-%d %H:%M:%S"))
 
@@ -206,6 +285,7 @@ def meal_post(request):
 
             print(meal_type)
             
+            # DB에 저장
             Meal.objects.create(
                 user = user_instance,
                 # meal_date = current_time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -221,16 +301,55 @@ def meal_post(request):
             # ajax로 html 낑겨넣는 수법을 써 봐야겠다.
             # 이러면 장점이 html에서 장고 문법 사용이 가능해진다.
 
+            # (1) 날짜 기준으로 오늘 칼로리만 합산해오기
+            today = datetime.now().date()
+
+            day_start = datetime.combine(today, datetime.min.time())
+            day_end = datetime.combine(today, datetime.max.time())
+
+            all_meal_today = Meal.objects.filter(user_id=request.user.id,
+                                                 meal_date__range=(day_start, day_end))\
+                                                 .aggregate(all_calories=Sum("meal_calories"))
+            calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else 0
+
+            print(calorie_today)
+
+            # (2) filtered_list로 칼로리 딕셔너리에서 정보 빼오기
+            each_foods = []
+            for fcode in filtered_list:
+                food_info = get_object_or_404(CalorieDictionary, pk=fcode)
+                # food_info.carbohydrate 메서드 체이닝으로 정보 추출하면 될 듯
+                each_foods.append(food_info)
+            
+            # print(each_foods)
+            
+            # 모든 단위 g으로 바꾸기
+            nutrient_gram = nutrient_info
+            mg_index = 4
+            nutrient_gram[mg_index] /= 1000
+            meal_calories = round(meal_calories, 2)
+            trimed_nutrient = [round(n, 2) for n in nutrient_gram]
+
+            context = {
+                'this_meal_cal': meal_calories,
+                'total_nutrient': trimed_nutrient,
+                'each_foods': each_foods,
+                'today_meal_cal': calorie_today,
+                'meal_type': meal_type,
+            }
+
             # 그런데.... 이 함수 블록에서 해야되는 일이 너무 많아지는 게 흠이다.
-            return render(request, 'meal/meal_nutrient.html', {'meal_cal': meal_calories, 'nutrient': nutrient_info})
+            return render(request, 'meal/meal_nutrient.html', context)
         else:
             return JsonResponse({'success': False, 'error': "올바르지 않은 데이터 형식"})
     else:
         return JsonResponse({'success': False, 'error': "올바르지 않은 요청사항"})
 
 def test(request):
-    user_id = 4
+    id = request.user.id
 
-    user_meal = Meal.objects.filter(user=user_id).values_list()
-    print(user_meal.values())
+    user_meal = Meal.objects.filter(user_id=id)
+    for meal in user_meal:
+        # 왜 메서드 체이닝을 잊고 있었을까
+        print(meal.nutrient_info)
     return render(request, 'meal/test.html', {'testDB': user_meal})

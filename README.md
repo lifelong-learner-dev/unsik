@@ -77,6 +77,102 @@
 
 ---
 
+### 2024/01/22 DB 저장 시간 오차 수정
+
+    > DB에 저장되는 meal_date가 현재 시각보다 -9시 늦는 것을 확인했습니다. views.py 이외 따로 건드린 것은 없습니다.
+
+    > 메인 페이지 css가 현재 디자인 변경 중에 있습니다.
+
+    > views.py와 foodDict.py에 새로 작성 중인 함수가 몇 있습니다. 아직 구현이 완벽히 되지 않았습니다.
+
+    > meal_analyze_result.html 아래에 ajax 기능이 동작하고 있습니다. 테스트겸 작성한 코드들이 즐비합니다.
+
+---
+
+### 2024/01/19 식사 분석 결과 DB 저장 기능 구현
+#### (01/12자 유저 인증, 로그인 함수 수정 내역은 아래에 있습니다.)
+
+> 식단 분석 페이지에서 유저가 고르거나 바꾼 음식이 식단 DB에 저장되도록 하는 기능이 어느정도 구현되었습니다.
+
++ 선행되어야 하는 작업이 존재하므로 아래 지침을 따라주시기 바랍니다.
+
+1. MySQL의 meal DB만 Drop 후 재생성 해주세요.  
+  postNum 키의 자동증가 (AUTO_INCREMENT) 미지정을 이유로 값이 들어갈 때 오류가 발생합니다. postNum 요소만 바꿔 meal 테이블만 새로 만들어주시면 됩니다.  
+  아래 명령어를 실행해주세요.
+
+  ```sql
+  DROP TABLE meal;
+
+  CREATE TABLE `meal` (
+    `postNum` BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `user_id` BIGINT NOT NULL,
+    `meal_date` DATETIME,
+    `meal_photo` VARCHAR(255),
+    `meal_info` TEXT,
+    `meal_type` VARCHAR(20),
+    `meal_calories` FLOAT,
+    `nutrient_info` TEXT
+  );
+
+  ALTER TABLE `meal` ADD FOREIGN KEY (`user_id`) REFERENCES `users_app_user` (`id`);
+  ```
+
+2. Django에서 필요한 모델들을 다시 가져와주세요.  
+  마이그레이션이 진행된 상태라 다시 할 필요는 없습니다. 다만 변경된 DB 정보는 업데이트 해 주어야 합니다.  
+  아래 명령어를 따라주세요.
+
+  ```cmd
+  python manage.py inspectdb
+  ```
+3. 받아온 db 정보 중 meal 항목을 찾아 meal/models.py에 붙여넣어주세요.
+
+  ```python
+  class Meal(models.Model):
+    postnum = models.BigAutoField(db_column='postNum', primary_key=True)  # Field name made lowercase.
+    user = models.ForeignKey('UsersAppUser', models.DO_NOTHING)
+    meal_date = models.DateTimeField(blank=True, null=True)
+    meal_photo = models.CharField(max_length=255, blank=True, null=True)
+    meal_info = models.TextField(blank=True, null=True)
+    meal_type = models.CharField(max_length=20, blank=True, null=True)
+    meal_calories = models.FloatField(blank=True, null=True)
+    nutrient_info = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'meal'
+  ```
+  postnum 항목에 **BigAutoField** 지정 여부와 user에 **ForeignKey** 지정을 확인해주세요.
+
+4. 테스트  
+  정보가 제대로 들어가는 지 테스트 합니다. 식단 분석 페이지에 사진을 올리고 CRUD 기능 테스트 해주세요.
+
+5. DB 입력 정보  
+  nutrient_info에 기입되는 리스트 순서입니다. 나트륨을 제외한 모든 무게 단위는 (g) 입니다.  
+  [총 탄수화물, 총 단백질, 총 지방, 총 당류, 총 나트륨(mg), 총 포화지방]
+
+---
+
+### ghk 브랜치 : 2024/01/22 회원가입시 
+
+    >! 회원가입시 자동으로 daily 테이블에 레코드(기록) 생성
+    
+        > 1. users_app의 forms.py에 
+            > daily 테이블에 레코드 생성 코드 작성
+        
+        > 2. users_app의 models.py에
+            > daily 테이블 DB포함
+            > daily 테이블의 user 부분 
+              > 'UsersAppUser' => User로 변경
+        
+        > 3. sign_up.html에 목표몸무게 추가 
+
+    > ! 마이페이지 초안 작성 (!!! 추가 작업 진행 필요 초안만 작성됨 !!!)
+        > 1. my_page.html 생성 (users_app/templates/users_app)
+        > 2. views.py에 my_page function 생성 (users_app)
+        > 3. urls.py에 my_page url 추가 (users_app)
+        > 4. nvbar에 마이페이지 url 추가
+        > 5. my_page1.css 생성 (static/css)
+
 ### 2024/01/12 유저 인증, 로그인 함수 관련 수정
 
 주의! 아래 지침을 수행하기 전 DB에 저장된 파일들을 export 시키거나 백업해놓으시기 바랍니다.
@@ -186,3 +282,24 @@
       > INSTALLED_APPS "rest_framework", "exercise", "meal" 추가
       > TEMPLATES의 DIRS에 BASE_DIR 추가
       > STATICFILES_DIR 추가
+
+### exercise 테이블 수정 sql
+```sql
+-- exercise_date를 datetime 타입으로 변경
+ALTER TABLE exercise MODIFY COLUMN exercise_date datetime;
+
+-- exercise_type을 ENUM 타입으로 변경
+ALTER TABLE exercise MODIFY COLUMN exercise_type ENUM('유산소', '웨이트');
+
+-- weight (무게)와 reps (횟수), sets(세트수) 컬럼 추가
+ALTER TABLE exercise ADD COLUMN weight int DEFAULT NULL;
+ALTER TABLE exercise ADD COLUMN reps int DEFAULT NULL;
+ALTER TABLE exercise ADD COLUMN sets int DEFAULT NULL;
+```
+
+### 브랜치명 (lim) - 임덕현 (2024-01-22 16:50)
+    > 나의 식단 히스토리 페이지 추가(meal_history)
+      * 일단은 데이터가 몇개 없어서 전체 기간으로 그래프 그렸고 협의후 옵션 지정 예정
+
+    > 식단 상세 페이지 추가(meal_detail)
+      * 섭취한 총 칼로리, 영양소 정보 추가로 부족한 영양소 계산해서 넣을 예정
