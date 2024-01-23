@@ -17,7 +17,6 @@ from .models import Meal
 from .models import CalorieDictionary
 import json
 from django.db.models import Sum
-from datetime import datetime, timedelta
 import ast
 
 # Create your views here.
@@ -346,7 +345,7 @@ def meal_post(request):
             # print(current_time.hour)
 
             # 테스트를 위한 임의 조작 시간
-            # current_time = datetime(2021, 8, 31, 23, 30, 11)
+            # current_time = datetime(2024, 1, 24, 8, 20, 11)
 
             # 이건 꼼수인데, UTC로 저장되는 시간에 억지로 9시간을 추가해 저장하는 수법이다.
             # 좀 짜증나지만, 이럴 경우 korea_time 변수에 담긴 시간은 한국 시간에서 9시간이 추가된 시간이다.
@@ -429,9 +428,24 @@ def meal_post(request):
 
 def test(request):
     id = request.user.id
+    print(id)
 
-    user_meal = Meal.objects.filter(user_id=id)
-    for meal in user_meal:
-        # 왜 메서드 체이닝을 잊고 있었을까
-        print(meal.nutrient_info)
-    return render(request, 'meal/test.html', {'testDB': user_meal})
+    today = timezone.now()
+    print(today)
+
+    day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
+    day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
+    print(day_start)
+    print(day_end)
+
+    all_meal_today = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])\
+                                            .aggregate(all_calories=Sum("meal_calories"))
+    calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else 0
+    print(all_meal_today)
+    print(calorie_today)
+
+    # user_meal = Meal.objects.filter(user_id=id)
+    # for meal in user_meal:
+    #     # 왜 메서드 체이닝을 잊고 있었을까
+    #     print(meal.nutrient_info)
+    return render(request, 'meal/test.html')
