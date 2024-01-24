@@ -18,6 +18,7 @@ from .models import CalorieDictionary
 import json
 from django.db.models import Sum
 import ast
+import pytz
 
 # Create your views here.
 
@@ -341,19 +342,24 @@ def meal_post(request):
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 현재 시간 얻기
-            current_time = timezone.now()
-            # print(current_time.hour)
+            # current_time = timezone.localtime(timezone.now(), timezone=timezone.get_current_timezone())
 
-            # 테스트를 위한 임의 조작 시간
-            # current_time = datetime(2024, 1, 23, 19, 40, 34)
-
-            # 이건 꼼수인데, UTC로 저장되는 시간에 억지로 9시간을 추가해 저장하는 수법이다.
-            # 좀 짜증나지만, 이럴 경우 korea_time 변수에 담긴 시간은 한국 시간에서 9시간이 추가된 시간이다.
-            # korea_time = current_time + timedelta(hours=9)
+            # plus_9 = timedelta(hours=9)
+            # korea_time = current_time + plus_9
             # print(current_time)
             # print(korea_time.strftime("%Y-%m-%d %H:%M:%S"))
 
-            
+            korea_timezone = pytz.timezone('Asia/Seoul')
+
+            current_time = datetime.now(korea_timezone)
+
+            # ISO 형식의 문자열로 변환 (예: 2024-01-24T15:00:00+09:00)
+            iso_formatted_time = current_time.isoformat()
+
+            print(f"ISO FORMAT 시간 : {iso_formatted_time}")
+
+            print(f"현재 시간 : {current_time}")
+
             # 아침, 점심, 저녁, 간식 출력
             if 6 <= current_time.hour <= 9:
                 meal_type = "아침"
@@ -370,7 +376,8 @@ def meal_post(request):
             Meal.objects.create(
                 user = user_instance,
                 # meal_date = current_time.strftime("%Y-%m-%d %H:%M:%S"),
-                meal_date = current_time,
+                # meal_date = iso_formatted_time,
+                meal_date = None,
                 meal_photo = meal_data_list[-1],
                 meal_info = json.dumps(filtered_list),
                 meal_type = meal_type,
@@ -443,22 +450,25 @@ def meal_post(request):
         return JsonResponse({'success': False, 'error': "올바르지 않은 요청사항"})
 
 def test(request):
+
     id = request.user.id
     print(id)
 
     today = timezone.now()
     print(f"현재 시간 : {today}")
 
+    print(datetime.now())
+
     day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
     day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
-    print(f"시작 날짜 : {day_start}")
-    print(f"종료 날짜 : {day_end}")
+    # print(f"시작 날짜 : {day_start}")
+    # print(f"종료 날짜 : {day_end}")
 
     all_meal_today = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])\
                                             .aggregate(all_calories=Sum("meal_calories"))
     calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else 0
-    print(all_meal_today)
-    print(calorie_today)
+    # print(all_meal_today)
+    # print(calorie_today)
 
     # user_meal = Meal.objects.filter(user_id=id)
     # for meal in user_meal:
