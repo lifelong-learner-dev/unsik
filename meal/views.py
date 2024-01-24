@@ -16,11 +16,12 @@ from .foodDict import *
 from .models import Meal
 from .models import CalorieDictionary
 import json
-from django.db.models import Sum
+# from django.db.models import Sum
 from datetime import datetime, timedelta
 import ast
 
 # Create your views here.
+
 
 def meal_index(request):
     return render(request, 'meal/meal_index.html' )
@@ -32,34 +33,34 @@ def meal_analyze(request):
 def meal_history(request):
     id = request.user.id
 
-    meals = Meal.objects.filter(user_id=id)\
-                        .values('meal_date')\
-                        .annotate(total_calories=Sum('meal_calories'))\
-                        .order_by('meal_date')
+    meals = Meal.objects.filter(user_id=id).order_by('meal_date')
 
-    continuous_days = 0
-    max_continuous = 0
-    previous_date = None
+    today = datetime.today()
+    first_day_of_month = today.replace(day=1)
+    next_month = today.replace(day=28) + timedelta(days=4)
+    last_day_of_month = next_month - timedelta(days=next_month.day)
 
+    # 날짜별 칼로리를 계산
+    calories_by_date = defaultdict(int)
     for meal in meals:
-        meal_date = meal['meal_date']
-        if previous_date and (meal_date - previous_date).days == 1:
-            continuous_days += 1
-        else:
-            max_continuous = max(max_continuous, continuous_days)
-            continuous_days = 1
-        previous_date = meal_date
-    
-    max_continuous = max(max_continuous, continuous_days)
+        date_only = meal.meal_date.date()
+        if first_day_of_month.date() <= date_only <= last_day_of_month.date():
+            calories_by_date[date_only] += meal.meal_calories
 
-    dates = [meal['meal_date'].strftime('%Y-%m-%d') for meal in meals]
-    calories = [meal['total_calories'] for meal in meals]
+    # 달 계산
+    all_dates = [first_day_of_month.date() + timedelta(days=x) for x in range((last_day_of_month - first_day_of_month).days + 1)]
+    dates = [date.strftime('%Y-%m-%d') for date in all_dates]
+    calories = [calories_by_date[date] for date in all_dates]
 
+    # 데이터가 있는 날짜
+    days_with_data = sum(1 for date, cal in calories_by_date.items() if cal > 0)
+
+    # context에 추가
     context = {
         'title': '그래프',
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
-        'max_continuous': max_continuous
+        'days_with_data': days_with_data  # 이번달중 데이터가 있는 날짜
     }
 
     return render(request, 'meal/meal_history.html', context)

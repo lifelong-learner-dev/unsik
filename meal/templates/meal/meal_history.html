@@ -6,7 +6,7 @@
     var calories = {{ calories | safe}};
 </script>
 <section>
-    <h3><b>{{user.username}}님은 {{max_continuous}}일째 식단관리중입니다</b></h3>
+    <h3><b>{{user.username}}님은 이번달에 {{days_with_data}}일을 식단관리 하셨습니다.</b></h3>
     <div>
         <canvas id="caloriesChart"></canvas>
     </div>

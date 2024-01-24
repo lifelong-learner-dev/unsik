@@ -1,5 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static '/css/meal_detail.css' %}">
+<!-- <script src="{% static 'js/meal_detail.js' %}"></script> -->
 
 <h1>{{user.username}}님의 {{ date }} 식단 상세 정보</h1>
 <div class="meal-card">
@@ -21,6 +22,9 @@
         <li>식이섬유: {{ data.nutrients.dietary_fiber|floatformat:2 }}g</li>
         <li>나트륨: {{ data.nutrients.natrium|floatformat:2 }}mg</li>
     </ul>
+    <!-- <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+        <canvas id="{{ meal_type }}Chart"></canvas>
+    </div> -->
     {% endif %}
     {% endfor %}
 </div>
@@ -30,8 +34,7 @@
     <h2>{{user.username}}님 {{date}}일의 영양소 종합</h2>
     <ul>
         {% for nutrient, values in deficient_nutrients.items %}
-        <li>{{ nutrient|title }}: 권장 {{ values.recommended|floatformat:2 }}g, 실제 섭취량 {{ values.actual|floatformat:2
-            }}g
+        <li>{{ nutrient|title }}: 권장 {{ values.recommended|floatformat:2 }}g, 실제 섭취량 {{ values.actual|floatformat:2}}g
         </li>
         {% endfor %}
     </ul>
