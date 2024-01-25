@@ -1,144 +1,183 @@
-<style>
-    #progress {
-        width: 60%;
-        appearance: none;
-    }
-
-    #progress::-webkit-progress-bar{
-        background: #f0f0f0;
-        border-radius: 5px;
-        box-shadow: inset 3px 3px 10px #b5b5b5;
-    }
-
-    #progress::-webkit-progress-value {
-        border-radius: 5px;
-        /* background: #fff879; */
-        /* background: -webkit-linear-gradient(to right, #1739a9, #98c016); */
-        background: linear-gradient(to right, #7fcf9d, #0e9c13);
-    }
-
-    #progress.overweight::-webkit-progress-value {
-        transition: 6s linear;
-        background: linear-gradient(to right, #f28585, #ca1c1c);
-    }
-
-    #nutrient_info_box {
-        margin: 0 auto;
-    }
-
-    #nutrient_table {
-        margin: 0 auto;
-    }
-
-    .chart-container {
-        display: inline-flex;
-        justify-content: space-evenly;
-        margin: 0 auto;
-        position: relative;
-        width: 80vw;
-        height: 55vh;
-        /* background-color: rgb(155, 255, 155); */
-    }
-</style>
-<div id="nutrient_info_box">
-    <ul>
-        <li>식단 전체 칼로리 : {{ this_meal_cal }}</li>
-        <li>탄수화물 : {{ total_nutrient.0 }}</li>
-        <li>단백질 : {{ total_nutrient.1 }}</li>
-        <li>지방 : {{ total_nutrient.2 }}</li>
-        <li>당류 : {{ total_nutrient.3 }}</li>
-        <li>나트륨 : {{ total_nutrient.4 }}</li>
-        <li>포화지방 : {{ total_nutrient.5 }}</li>
-    </ul>
-    <p>영양소 정보 : {{ total_nutrient }}</p>
-    <p>오늘 섭취량 : {{ todays_total_cal }}</p>
+{% load static %}
+<div class="chart-container">
+    <canvas id="nutrient_chart"></canvas>
+    <script>
+        $(document).ready(function() {
+            let maxCalories = $("#progress").attr("max");
+            // console.log(maxCalories);
+            let calories = {{ todays_total_cal }}
+            $("#progress").animate({
+                // 애니메이션이 도달해야 하는 거리
+                value: calories
+            }, {
+                duration: 3000,
+                step: function (currentValue) {
+                    $("#progress").attr("value", currentValue);
+                },
+                complete: function() {
+                    $("#progress").attr("value", calories);
+    
+                    if (calories > maxCalories) {
+                        $("#progress").addClass("overweight");
+                    }
+                }
+            });
+    
+            // 차트 그려주는 기능
+            var ctx = $("#nutrient_chart");
+            var nutrientChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['탄수화물', '단백질', '지방', '당류', '식이섬유', '포화지방'],
+                    // labels: ['탄수화물', '단백질', '지방'],
+                    datasets: [{
+                        label: "현재 식단",
+                        data: [{{ total_nutrient.0 }},
+                               {{ total_nutrient.1 }},
+                               {{ total_nutrient.2 }},
+                               {{ total_nutrient.3 }},
+                               {{ total_nutrient.7 }}, 
+                               {{ total_nutrient.5 }}, ],
+                        backgroundColor: [
+                            'rgba(155, 255, 155, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(155, 255, 155, 1)',
+                        ],
+                        pointBackgroundColor: [
+                            'rgb(255, 99, 132)'
+                        ],
+                        pointHoverBackgroundColor: [
+                            '#fff',
+                        ],
+                        pointHoverBorderColor: [
+                            'rgb(255, 99, 132)',
+                        ]
+                    },
+                    {
+                        label: "오늘 전체 식사량",
+                        data: [{{ todays_total_nut.0 }},
+                               {{ todays_total_nut.1 }},
+                               {{ todays_total_nut.2 }},
+                               {{ todays_total_nut.3 }},
+                               {{ todays_total_nut.7 }}, 
+                               {{ todays_total_nut.5 }}, ],
+                        backgroundColor: [ // 박스 배경 색상
+                            'rgba(58, 58, 218, 0.2)',
+                        ],
+                        borderColor: [ // 경계 색상
+                            'rgba(58, 58, 218, 1)',
+                        ],
+                        pointBackgroundColor: [ // 포인터 배경색
+                            'rgb(255, 99, 132)'
+                        ],
+                        pointHoverBackgroundColor: [ // 마우스 올리면 바뀌는 점
+                            '#fff',
+                        ],
+                        pointHoverBorderColor: [ // 마우스 올리면 바뀌는 경계선
+                            'rgb(255, 99, 132)',
+                        ]
+                    },
+                    {
+                        label: "{{ user }}님 하루 적정 식사량",
+                        data: [367, 155, 160, 100, 100, 100 ],
+                        backgroundColor: [ // 박스 배경 색상
+                            'rgba(58, 58, 218, 0.2)',
+                        ],
+                        borderColor: [ // 경계 색상
+                            'rgba(58, 58, 218, 1)',
+                        ],
+                        pointBackgroundColor: [ // 포인터 배경색
+                            'rgb(255, 99, 132)'
+                        ],
+                        pointHoverBackgroundColor: [ // 마우스 올리면 바뀌는 점
+                            '#fff',
+                        ],
+                        pointHoverBorderColor: [ // 마우스 올리면 바뀌는 경계선
+                            'rgb(255, 99, 132)',
+                        ]
+                    }
+                    ]
+                },
+                options: {
+                    scale: {
+                        angleLines: {
+                            display: false
+                        },
+                        ticks: {
+                            suggestedMin: 50,
+                            suggestedMax: 150
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</div>
+<div id="progressbar">
+    <p>오늘 섭취량 : {{ todays_total_cal }} / 2200</p>
     <progress id="progress" value="0" min="0" max="2200">삽입</progress>
+</div>
+<div id="nutrient_info_box">
+    <table id="meal_info_chart">
+        <tr>
+            <th>식단 칼로리</th>
+            <th>탄수화물</th>
+            <th>단백질</th>
+            <th>지방</th>
+            <th>포화지방</th>
+            <th>당</th>
+            <th>나트륨</th>
+            <th>식이섬유</th>
+        </tr>
+        <tr>
+            <td>{{ this_meal_cal }}kcal</td>
+            <td>{{ total_nutrient.0 }}g</td>
+            <td>{{ total_nutrient.1 }}g</td>
+            <td>{{ total_nutrient.2 }}g</td>
+            <td>{{ total_nutrient.5 }}g</td>
+            <td>{{ total_nutrient.3 }}g</td>
+            <td>{{ total_nutrient.4 }}g</td>
+            <td>{{ total_nutrient.7 }}g</td>
+        </tr>
+    </table>
     <details>
-        <summary>상세보기</summary>
+        <summary id="summary_btn">개별 음식 영양 정보</summary>
         <table id="nutrient_table">
             <tr>
                 <th>음식명</th>
                 <th>칼로리</th>
+                <th>수분</th>
+                <th>탄수화물</th>
                 <th>단백질</th>
                 <th>지방</th>
+                <th>포화지방</th>
+                <th>당</th>
+                <th>나트륨</th>
+                <th>식이섬유</th>
             </tr>
             {% for food in each_foods %}
             <tr>
                 <td>{{ food.food_name }}</td>
-                <td>{{ food.calories }}</td>
-                <td>{{ food.protein }}</td>
-                <td>{{ food.fat }}</td>
+                <td>{{ food.calories }}kcal</td>
+                <td>{{ food.water }}ml</td>
+                <td>{{ food.carbohydrate }}g</td>
+                <td>{{ food.protein }}g</td>
+                <td>{{ food.fat }}g</td>
+                <td>{{ food.total_sfa }}g</td>
+                <td>{{ food.suger }}g</td>
+                <td>{{ food.natrium }}mg</td>
+                <td>{{ food.dietary_fiber }}g</td>
             </tr>
             {% endfor %}
         </table>
     </details>
-    <div class="chart-container">
-        <div>
-            <p>{{ meal_type }} 식사 영양 밸런스</p>
-            <p>탄수화물을 너무 많이 드셨어요</p>
-        </div>
-        <canvas id="nutrient_chart"></canvas>
+</div>
+<div class="display_flex">
+    <h2>{{ user }}님의 {{ meal_type }}식단 분석</h2>
+    <p>(대답 예시)</p>
+    <div>
+        <img class="warning_sign" src="{% static 'images/warning-sign.png' %}" alt="warning-sign">
+        <p>나트륨 섭취량이 너무 많아요! 하루 권장량 (성인 : 2300mg) 이하로 줄여주세요.</p>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        let maxCalories = $("#progress").attr("max");
-        // console.log(maxCalories);
-        let calories = {{ todays_total_cal }}
-        $("#progress").animate({
-            // 애니메이션이 도달해야 하는 거리
-            value: calories
-        }, {
-            duration: 3000,
-            step: function (currentValue) {
-                $("#progress").attr("value", currentValue);
-            },
-            complete: function() {
-                $("#progress").attr("value", calories);
-
-                if (calories > maxCalories) {
-                    $("#progress").addClass("overweight");
-                }
-            }
-        });
-
-        // 차트 그려주는 기능
-        var ctx = $("#nutrient_chart");
-        var nutrientChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: ['탄수화물', '단백질', '지방', '당류', '나트륨', '포화지방'],
-                datasets: [{
-                    label: "그램",
-                    data: {{ total_nutrient }},
-                    backgroundColor: [
-                        'rgba(155, 255, 155, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                    ],
-                    pointBackgroundColor: [
-                        'rgb(255, 99, 132)'
-                    ],
-                    pointHoverBackgroundColor: [
-                        '#fff',
-                    ],
-                    pointHoverBorderColor: [
-                        'rgb(255, 99, 132)',
-                    ]
-                }]
-            },
-            options: {
-                scale: {
-                    angleLines: {
-                        display: false
-                    },
-                    ticks: {
-                        suggestedMin: 50,
-                        suggestedMax: 150
-                    }
-                }
-            }
-        });
-    });
-</script>

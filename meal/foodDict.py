@@ -76,6 +76,8 @@ def total_calories(food_code_list):
     total_natrium = 0
     total_sfa = 0
     total_fat = 0
+    total_tfa = 0
+    total_dietary_fiber = 0
 
     try:
         for fcode in food_code_list:
@@ -87,6 +89,9 @@ def total_calories(food_code_list):
             food_natrium = food_info.natrium
             food_sfa = food_info.total_sfa
             food_fat = food_info.fat
+            food_tfa = food_info.total_tfa
+            food_dietary_fiber = food_info.dietary_fiber
+            
             # print(food_calorie)
             total_calorie += food_calorie
             total_carbohydrate += food_carbohydrate
@@ -95,11 +100,14 @@ def total_calories(food_code_list):
             total_natrium += food_natrium
             total_sfa += food_sfa
             total_fat += food_fat
+            total_tfa += food_tfa
+            total_dietary_fiber += food_dietary_fiber
+
     except food_info.DoesNotExist:
         print("DB에 없는 기본키입니다.")
 
-    total_nutrient_list = [total_carbohydrate, total_protein, total_fat,
-                            total_suger, total_natrium, total_sfa]
+    total_nutrient_list = [total_carbohydrate, total_protein, total_fat, total_suger,
+                           total_natrium, total_sfa, total_tfa, total_dietary_fiber]
 
     return total_calorie, total_nutrient_list
 

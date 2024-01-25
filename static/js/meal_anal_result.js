@@ -14,6 +14,7 @@ $(document).ready(function(){
 
     // remove_input 클래스가 부여된 버튼을 클릭했을 때
     $('#meal_result_form').on('click', '.remove_input', function(event) {
+        var inputBox = $(this).parent(".input_container");
         var input = $(this).prev('input');
         var markerId = input.data('marker-id');
         var searchUl = $(this).next('ul');
@@ -25,6 +26,7 @@ $(document).ready(function(){
         input.remove();
         marker.remove();
         searchUl.remove();
+        inputBox.remove();
         $(this).remove();
     });
 
@@ -84,7 +86,7 @@ $(document).ready(function(){
 
                 $.each(data.results, function(index, result) {
                     // console.log(result.food_code)
-                    var resultItem = $('<li>' + result.name + "|" + result.maker + '</li>');
+                    var resultItem = $('<li>' + result.name + " | " + result.maker + '</li>');
 
                     resultItem.click(function() {
                         var currentInput = $(this).closest('.input_container').find('.food-input');

@@ -287,7 +287,7 @@ def calorie_dict(request):
 
     page_range = paginator.page_range[start_index:end_index]
 
-    return render(request, 'meal/calorie_dictionary.html', {
+    context = {
         'current_page_data':curruent_page_data,
         'page_range':page_range,
         'major_classes':major_classes,
@@ -295,7 +295,9 @@ def calorie_dict(request):
         'search_query': search_query,
         'major_class_filter': major_class_filter,
         'detail_class_filter': detail_class_filter,
-        })
+        }
+
+    return render(request, 'meal/calorie_dictionary.html', context)
 
 # 칼로리 사전에 걸린 링크 기본키로 음식 상세정보 출력
 def food_detail(request, food_code):
@@ -308,7 +310,7 @@ def food_search(request):
     search_word = request.GET.get('searchWord', '')
     # print(search_word)
 
-    results = CalorieDictionary.objects.filter(food_name__icontains=search_word)[:10]
+    results = CalorieDictionary.objects.filter(food_name__icontains=search_word)[:20]
     
     data = {'results': [{'food_code': result.food_code, 'name': result.food_name, 'maker': result.maker} for result in results]}
 
@@ -342,21 +344,10 @@ def meal_post(request):
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 현재 시간 얻기
-            # current_time = timezone.localtime(timezone.now(), timezone=timezone.get_current_timezone())
+            # current_time = datetime.now()
 
-            # plus_9 = timedelta(hours=9)
-            # korea_time = current_time + plus_9
-            # print(current_time)
-            # print(korea_time.strftime("%Y-%m-%d %H:%M:%S"))
-
-            korea_timezone = pytz.timezone('Asia/Seoul')
-
-            current_time = datetime.now(korea_timezone)
-
-            # ISO 형식의 문자열로 변환 (예: 2024-01-24T15:00:00+09:00)
-            iso_formatted_time = current_time.isoformat()
-
-            print(f"ISO FORMAT 시간 : {iso_formatted_time}")
+            # 테스트를 위한 임의 조작 시간
+            current_time = datetime(2024, 1, 25, 18, 55, 34)
 
             print(f"현재 시간 : {current_time}")
 
@@ -373,19 +364,18 @@ def meal_post(request):
             print(meal_type)
             
             # DB에 저장
-            Meal.objects.create(
-                user = user_instance,
-                # meal_date = current_time.strftime("%Y-%m-%d %H:%M:%S"),
-                # meal_date = iso_formatted_time,
-                meal_date = None,
-                meal_photo = meal_data_list[-1],
-                meal_info = json.dumps(filtered_list),
-                meal_type = meal_type,
-                meal_calories = meal_calories,
-                nutrient_info = json.dumps(nutrient_info)
-            )
+            # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            # return JsonResponse({'success': True, 'meal_calories': meal_calories, 'nutrient_info': nutrient_info})
+            # Meal.objects.create(
+            #     user = user_instance,
+            #     meal_date = current_time,
+            #     meal_photo = meal_data_list[-1],
+            #     meal_info = json.dumps(filtered_list),
+            #     meal_type = meal_type,
+            #     meal_calories = meal_calories,
+            #     nutrient_info = json.dumps(nutrient_info)
+            # )
+
             # ajax로 html 낑겨넣는 수법을 써 봐야겠다.
             # 이러면 장점이 html에서 장고 문법 사용이 가능해진다.
 
@@ -395,23 +385,22 @@ def meal_post(request):
             day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
             day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
 
-            print(day_start)
-            print(day_end)
+            # print(day_start)
+            # print(day_end)
 
             all_meal_today = Meal.objects.filter(user=request.user.id,
                                                  meal_date__range=(day_start, day_end))\
                                                  .aggregate(all_calories=Sum("meal_calories"))
             
             print(all_meal_today)
-            
-            ############################# 테스트용 코드
-            # meal_query = Meal.objects.filter(user_id=request.user.id, meal_date__range=(day_start, day_end))
-            # print("Query result:", meal_query)
 
-            # all_meal_today = meal_query.aggregate(all_calories=Sum("meal_calories"))
-            # print("Sum result:", all_meal_today['all_calories'])
+            todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
+            total_nutrient_sum = [0] * 6
 
-            ##############################
+            for meal in todays_nutrients:
+                meal_nutrient_text = meal.nutrient_info
+                meal_nutrient_list = eval(meal_nutrient_text)
+                total_nutrient_sum = [x + y for x, y in zip(total_nutrient_sum, meal_nutrient_list)]
 
             calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else meal_calories
 
@@ -430,19 +419,21 @@ def meal_post(request):
             nutrient_gram = nutrient_info
             mg_index = 4
             nutrient_gram[mg_index] /= 1000
+            total_nutrient_sum[mg_index] /= 1000
             meal_calories = round(meal_calories, 2)
             calorie_today = round(calorie_today, 2)
             trimed_nutrient = [round(n, 2) for n in nutrient_gram]
+            total_nutrient = [round(n, 2) for n in total_nutrient_sum]
 
             context = {
                 'this_meal_cal': meal_calories,
                 'total_nutrient': trimed_nutrient,
                 'each_foods': each_foods,
                 'todays_total_cal': calorie_today,
+                'todays_total_nut': total_nutrient,
                 'meal_type': meal_type,
             }
 
-            # 그런데.... 이 함수 블록에서 해야되는 일이 너무 많아지는 게 흠이다.
             return render(request, 'meal/meal_nutrient.html', context)
         else:
             return JsonResponse({'success': False, 'error': "올바르지 않은 데이터 형식"})
@@ -450,25 +441,36 @@ def meal_post(request):
         return JsonResponse({'success': False, 'error': "올바르지 않은 요청사항"})
 
 def test(request):
+    # 테스트용 코드
+    # 아직 테스트케이스 만들고 설정하는 방법을 잘 모르겠다
 
     id = request.user.id
     print(id)
 
-    today = timezone.now()
+    today = datetime.now()
     print(f"현재 시간 : {today}")
-
-    print(datetime.now())
 
     day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
     day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
-    # print(f"시작 날짜 : {day_start}")
-    # print(f"종료 날짜 : {day_end}")
+    print(f"시작 날짜 : {day_start}")
+    print(f"종료 날짜 : {day_end}")
 
-    all_meal_today = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])\
-                                            .aggregate(all_calories=Sum("meal_calories"))
-    calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else 0
-    # print(all_meal_today)
-    # print(calorie_today)
+    todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
+
+    print(todays_nutrients)
+
+    total_nutrient_sum = [0] * 6
+
+    for meal in todays_nutrients:
+        meal_nutrient_text = meal.nutrient_info
+        meal_nutrient_list = eval(meal_nutrient_text)
+        total_nutrient_sum = [x + y for x, y in zip(total_nutrient_sum, meal_nutrient_list)]
+
+    mg_index = 4
+    total_nutrient_sum[mg_index] /= 1000
+
+    total_nutrient = [round(n, 2) for n in total_nutrient_sum]
+    print(total_nutrient)
 
     # user_meal = Meal.objects.filter(user_id=id)
     # for meal in user_meal:
