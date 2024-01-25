@@ -3,9 +3,12 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/my_page1.css' %}">
 <link rel="stylesheet" href="{% static 'css/mypage_calendar.css' %}">
+<script src="{% static 'js/my_page_weight_history.js' %}"></script>
+<script src="{% static 'js/my_page_calories_history.js' %}"></script>
+
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 
-    <script>
+<script>
 
       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
@@ -13,12 +16,21 @@
           initialView: 'dayGridMonth',
           height: '300px', // 달력의 높이 설정
           aspectRatio: 1.0, // 가로 대비 세로 비율 조절 (1.0은 기본값)
-          locale: 'ko' // 한국어 설정 추가
+          locale: 'ko', // 한국어 설정 추가
+          events: {{ events|safe }}
         });
         calendar.render();
       });
 
 </script>
+<script>
+    var dates = {{dates|safe}};
+    var weights = {{weights|safe}};
+    var meal_calories = {{meal_calories|safe}};
+    var exercise_calories = {{exercise_calories|safe}}
+</script>
+
+
 {% csrf_token %}
 <section>
     <div id="mypage_top">
@@ -47,13 +59,13 @@
     </div>
     <a href="{% url 'my_page_update' my_page_user.username %}" id="user_info_change" class="btn btn-primary">키, 몸무게 정보 변경</a>
     <div id="mypage_weight_graph">
-        몸무게 그래프 여기 들어가고
+         <canvas id="weightsChart"></canvas>
     </div>
     <div id="mypage_calories_graph">
-        칼로리 그래프 여기 들어가고
+        <canvas id="caloriesChart"></canvas>
     </div>
     <div id="mypage_current_calories">
-        현재까지 섭취한 하루 칼로리 여기 들어가고
+        <b>오늘 하루 총 섭취 칼로리 :</b> {{todays_meal_calories_sum}}
     </div>
 </section>
 {% endblock content %}
