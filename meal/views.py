@@ -347,7 +347,7 @@ def meal_post(request):
             # current_time = datetime.now()
 
             # 테스트를 위한 임의 조작 시간
-            current_time = datetime(2024, 1, 25, 18, 55, 34)
+            current_time = datetime(2024, 1, 26, 19, 22, 34)
 
             print(f"현재 시간 : {current_time}")
 
@@ -376,8 +376,7 @@ def meal_post(request):
             #     nutrient_info = json.dumps(nutrient_info)
             # )
 
-            # ajax로 html 낑겨넣는 수법을 써 봐야겠다.
-            # 이러면 장점이 html에서 장고 문법 사용이 가능해진다.
+            ############ DB 저장 완료 후 로직 #############
 
             # (1) 날짜 기준으로 오늘 칼로리만 합산해오기
             today = datetime.now()
@@ -392,18 +391,23 @@ def meal_post(request):
                                                  meal_date__range=(day_start, day_end))\
                                                  .aggregate(all_calories=Sum("meal_calories"))
             
-            print(all_meal_today)
+            # print(all_meal_today)
 
             todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
-            total_nutrient_sum = [0] * 6
 
-            for meal in todays_nutrients:
-                meal_nutrient_text = meal.nutrient_info
-                meal_nutrient_list = eval(meal_nutrient_text)
-                total_nutrient_sum = [x + y for x, y in zip(total_nutrient_sum, meal_nutrient_list)]
+            if todays_nutrients is not None:
+                total_nutrient_sum = [0] * 8
+
+                for meal in todays_nutrients:
+                    meal_nutrient_text = meal.nutrient_info
+                    meal_nutrient_list = eval(meal_nutrient_text)
+                    total_nutrient_sum = [x + y for x, y in zip(total_nutrient_sum, meal_nutrient_list)]
+            else:
+                todays_nutrients = nutrient_info
 
             calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else meal_calories
 
+            print(f"전체 영양소 : {total_nutrient_sum}")
             print(calorie_today)
 
             # (2) filtered_list로 칼로리 딕셔너리에서 정보 빼오기
@@ -415,15 +419,20 @@ def meal_post(request):
             
             # print(each_foods)
             
+            # (3) 함수로 보낸 값 받아오기
+            nurtient_proportion, warnings_dict, user_max_calorie = nutrient_quotes(request.user.id, today, calorie_today, total_nutrient_sum)
+            
             # 모든 단위 g으로 바꾸기
             nutrient_gram = nutrient_info
-            mg_index = 4
-            nutrient_gram[mg_index] /= 1000
-            total_nutrient_sum[mg_index] /= 1000
+            # mg_index = 4
+            # nutrient_gram[mg_index] /= 1000
+            # total_nutrient_sum[mg_index] /= 1000
             meal_calories = round(meal_calories, 2)
             calorie_today = round(calorie_today, 2)
             trimed_nutrient = [round(n, 2) for n in nutrient_gram]
             total_nutrient = [round(n, 2) for n in total_nutrient_sum]
+
+            print(f"오늘의 영양소 : {trimed_nutrient}")
 
             context = {
                 'this_meal_cal': meal_calories,
@@ -432,6 +441,9 @@ def meal_post(request):
                 'todays_total_cal': calorie_today,
                 'todays_total_nut': total_nutrient,
                 'meal_type': meal_type,
+                'nurtient_proportion': nurtient_proportion,
+                'warnings_dict': warnings_dict,
+                'user_max_calorie': user_max_calorie,
             }
 
             return render(request, 'meal/meal_nutrient.html', context)
