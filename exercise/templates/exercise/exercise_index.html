@@ -7,7 +7,7 @@
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="exercise_name">운동 이름:</label>
+            <label for="exercise_name">운동 이름: {{user.username}}</label>
             <input type="text" id="exercise_name" name="exercise_name" class="form-control"
                 placeholder="예: 스쿼트, 벤치프레스, 조깅">
         </div>
@@ -42,7 +42,8 @@
                 <input type="number" id="sets" name="sets" class="form-control" min="1">
             </div>
         </div>
-        <form method="post">
+        <br>
+        <form method="post" action="{% url 'record_exercise' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">기록하기</button>

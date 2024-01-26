@@ -394,6 +394,12 @@ ALTER TABLE exercise MODIFY COLUMN exercise_type ENUM('유산소', '웨이트');
 ALTER TABLE exercise ADD COLUMN weight int DEFAULT NULL;
 ALTER TABLE exercise ADD COLUMN reps int DEFAULT NULL;
 ALTER TABLE exercise ADD COLUMN sets int DEFAULT NULL;
+
+-- 외래키 설정 01/23 추가
+ALTER TABLE exercise ADD FOREIGN KEY (`user_id`) REFERENCES `users_app_user` (`id`);
+-- postNum 자동 증가로 변경
+ALTER TABLE exercise DROP PRIMARY KEY;
+ALTER TABLE exercise MODIFY COLUMN postNum BIGINT AUTO_INCREMENT PRIMARY KEY;
 ```
 
 ### 브랜치명 (lim) - 임덕현 (2024-01-22 16:50)
