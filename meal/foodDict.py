@@ -1,4 +1,4 @@
-from .models import CalorieDictionary
+from .models import CalorieDictionary, UsersAppUser
 from django.db.models import Q
 import json
 import re
@@ -34,7 +34,7 @@ allFoodDict = {
     "단무지": "D018389",
     "피자": "D000297",
     "라면": "D018163",
-    "쌀밥": "R000062",
+    "쌀밥": "D018226",
     "콩나물무침": "D018152",
     "양념치킨": "D000475",
     "미역국": "D018071",
@@ -76,6 +76,8 @@ def total_calories(food_code_list):
     total_natrium = 0
     total_sfa = 0
     total_fat = 0
+    total_tfa = 0
+    total_dietary_fiber = 0
 
     try:
         for fcode in food_code_list:
@@ -87,6 +89,9 @@ def total_calories(food_code_list):
             food_natrium = food_info.natrium
             food_sfa = food_info.total_sfa
             food_fat = food_info.fat
+            food_tfa = food_info.total_tfa
+            food_dietary_fiber = food_info.dietary_fiber
+            
             # print(food_calorie)
             total_calorie += food_calorie
             total_carbohydrate += food_carbohydrate
@@ -95,15 +100,121 @@ def total_calories(food_code_list):
             total_natrium += food_natrium
             total_sfa += food_sfa
             total_fat += food_fat
+            total_tfa += food_tfa
+            total_dietary_fiber += food_dietary_fiber
+
     except food_info.DoesNotExist:
         print("DB에 없는 기본키입니다.")
 
-    total_nutrient_list = [total_carbohydrate, total_protein, total_fat,
-                            total_suger, total_natrium, total_sfa]
+    total_nutrient_list = [total_carbohydrate, total_protein, total_fat, total_suger,
+                           total_natrium, total_sfa, total_tfa, total_dietary_fiber]
 
     return total_calorie, total_nutrient_list
 
 # DB에서 음식코드로 검색한 값만 돌려주는 함수
-def each_food_nutrients(food_code_list):
-    # 함수 작성 중
-    pass
+def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
+    # todays_nutrients의 길이는 8이다.
+
+    natrium_today = todays_nutrients[4]
+    dietary_fiber_today = todays_nutrients[-1]
+    five_nut_list = todays_nutrients.copy()
+
+    # 이 중 index 4, index 7은 나트륨과 식이섬유이므로 비율 계산에서 빠진다.
+    del five_nut_list[4]
+    del five_nut_list[-1]
+
+    nurtient_proportion = []
+    for nutrient in five_nut_list:
+        nurtient_proportion.append(round(float(nutrient) / sum(five_nut_list) * 100, 2))
+
+    # user_daily_calorie 값이 곧 max 값이 된다.
+    user_info = UsersAppUser.objects.filter(id=id).first()
+    user_info
+    user_max_calorie = user_info.user_daily_calorie
+
+    # !! 현재 DB에는 칼로리 값이 없다. 따라서 임시로 지정한다 !!
+    if user_max_calorie is None:
+        user_max_calorie = 2200
+
+    warnings_dict = {}
+
+    if not 7 <= current_time.hour < 20:
+        time_warning = "불규칙한 식사는 건강에 좋지 않아요."
+        if current_time.hour < 7:
+            time_warning += " 새벽 시간에 음식 섭취를 피해주세요."
+            warnings_dict["식사 시간"] = time_warning
+        if current_time.hour > 20:
+            time_warning += " 가급적 저녁 8시 이전까지 식사를 마쳐주세요."
+            warnings_dict["식사 시간"] = time_warning
+
+    if todays_calorie > user_max_calorie:
+        calorie_quote = "하루 권장량보다 많이 드셨어요!"
+        # 만약 목표가 체중 감량이라면
+        calorie_quote += " 고열량 식품, 과식을 주의해주세요."
+        warnings_dict["칼로리"] = calorie_quote
+
+    # 탄수화물
+    if nurtient_proportion[0] < 45:
+        carbohydrate_quote = "탄수화물 비중이 45% 이하에요. 부족한 탄수화물은 일상생활에 지장을 줄 수 있어요."
+        warnings_dict["탄수화물"] = carbohydrate_quote
+    elif nurtient_proportion[0] > 65:
+        carbohydrate_quote = "탄수화물 비중이 65% 이상입니다! 탄수화물 과다 섭취는 비만의 원인이에요."
+        # 만약 목표가 체중 감량이라면
+        warnings_dict["탄수화물"] = carbohydrate_quote
+
+    # 단백질
+    if nurtient_proportion[1] < 7:
+        protein_quote = "단백질 비중이 7% 이하에요. 부족한 단백질은 신체 활동에 좋지 않아요."
+        # 만약 목표가 벌크업이라면
+        # "충분한 단백질이 멋진 근육을 만들어요."
+        warnings_dict["단백질"] = protein_quote
+    elif nurtient_proportion[1] > 20:
+        protein_quote = "단백질 비중이 20% 이상입니다! 과도한 단백질 섭취는 칼슘을 배출하여 뼈와 신장을 약화시켜요."
+        warnings_dict["단백질"] = protein_quote
+
+    # 지방
+    if nurtient_proportion[2] > 30:
+        fat_quote = "지방 비중이 30% 이상입니다! 하루 권장량 이상 섭취하면 비만과 고혈압을 유발할 수 있어요."
+        warnings_dict["지방"] = fat_quote
+        # 지방을 줄이고 단백질 비중을 늘려 꾸준히 운동해보세요!
+
+    # 나트륨
+    if natrium_today > 2300:
+        natrium_quote = "나트륨 섭취량이 너무 높아요! 성인병 예방을 위해 하루 권장량 2300mg 이하로 낮춰주세요."
+        warnings_dict["나트륨"] = natrium_quote
+
+    # 당
+    if nurtient_proportion[3] > 20:
+        suger_quote = "당 비중이 20% 이상입니다! 당뇨병 환자라면 주의해주세요."
+        warnings_dict["당"] = suger_quote
+
+    # 포화지방
+    if nurtient_proportion[4] > 7:
+        sfat_quote = "포화지방 비중이 7% 이상입니다! 성인병 예방을 위해 가급적 낮추는 것이 좋아요. 불포화지방이나 단백질로 대체해보세요."
+        warnings_dict["포화지방"] = sfat_quote
+
+    # 트랜스지방
+    if nurtient_proportion[5] > 1:
+        tfat_quote = "트랜스지방 비중이 1% 이상으로 높아요! 패스트푸드나 튀긴 음식은 주의해주세요."
+        warnings_dict["트랜스지방"] = tfat_quote
+
+    # 식이섬유
+    if dietary_fiber_today < 23:
+        dietary_fiber_quote = "식이섬유 섭취량이 23g 이하입니다."
+
+        # 단백질 비중이 20% 이상일 경우 : "육류를 줄이고 채소 식단을 구성해보아요."
+        if nurtient_proportion[1] > 20:
+            dietary_fiber_quote += " 육류를 줄이고 채소 식단을 구성해보아요."
+
+        # 당 비중이 20% 이상일 경우 : "주스나 잼보다 생과일을 섭취해보아요."
+        if nurtient_proportion[3] > 20:
+            dietary_fiber_quote += " 주스나 잼보다 생과일을 섭취해보아요."
+
+        warnings_dict["식이섬유"] = dietary_fiber_quote
+    
+    print(nurtient_proportion)
+    print(warnings_dict)
+
+    # 돌려줄 값 :
+    # 전체 비율 리스트, 위험 감지된 경고문, max 칼로리 값
+    return nurtient_proportion, warnings_dict, user_max_calorie

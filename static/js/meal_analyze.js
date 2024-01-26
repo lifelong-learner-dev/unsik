@@ -10,8 +10,8 @@ $(document).ready(function () {
         reader.onload = function (e) {
             var img = document.createElement('img');
             img.src = e.target.result;
-            img.style.maxWidth = '500px';
-            img.style.maxHeight = '500px';
+            img.style.maxWidth = '696px';
+            img.style.maxHeight = '496px';
 
             var preview = document.getElementById('preview');
             preview.innerHTML = '';
@@ -52,12 +52,16 @@ function updateComment() {
     } else if (hours >= 11 && hours <= 14) {
         // 점심 시간대 (11시-14시)
         commentText = '점심 시간입니다! 균형 잡힌 식사로 에너지를 충전하세요.';
-    } else if (hours >= 18 && hours <= 20) {
+    } else if (hours >= 18 && hours < 19) {
         // 저녁 시간대 (18시-20시)
-        commentText = '저녁 시간이네요. 하루를 마무리하는 든든한 식사를 즐기세요.';
+        commentText = '저녁 시간입니다! 하루를 마무리하는 든든한 식사를 즐기세요.';
+    } else if (hours >= 19) {
+        // 저녁 시간 오버
+        commentText = '야식은 되도록 피해주세요! 늦은 식사는 좋지 않아요.';
     } else {
         // 그 외
         commentText = '식사 시간이 아닙니다. 건강한 간식을 섭취해 보세요!';
+
     }
 
     document.getElementById('time_comment').textContent = commentText;

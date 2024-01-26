@@ -17,7 +17,7 @@
         color: white;
         padding: 5px;
         border-radius: 5px;
-        font-size: 20px;
+        font-size: 15px;
         opacity: 0.6;
     }
 
@@ -28,10 +28,10 @@
         z-index: 40;
     }
 </style>
-<aside>
+<aside id="analyze_box" class="display_flex">
     <div id="result_image_box">
         {% if meal_image %}
-        <img src="{{ meal_image }}" alt="meal_image" id="meal_image" style="max-width: 700px; max-height: 500px;">
+        <img src="{{ meal_image }}" alt="meal_image" id="meal_image" style="max-width: 500px; max-height: 500px;">
         {% endif %}
     </div>
     <!-- 예측한 식단 불러와 띄워주기 -->
@@ -140,12 +140,13 @@
                         'meal_data': JSON.stringify([foodNames, '{{ meal_image }}']),
                     },
                     success: function (data) {
-                        const remove_box = document.getElementById('modify_result');
-                        remove_box.innerHTML = '';
+                        const remove_box = $('#modify_result');
+                        remove_box.after(data);
+                        remove_box.remove();
 
-                        const nutrient_box = document.getElementById('nutrient_information');
-                        nutrient_box.style.display = 'block';
-                        $('#nutrient_information').html(data);
+                        // const nutrient_box = $('#analyze_box');
+                        // nutrient_box.after(data);
+                        // $('#nutrient_information').html(data);
                         // if (data.success) {
                         //     alert('저장 성공');
                         //     const remove_box = document.getElementById('modify_result');
