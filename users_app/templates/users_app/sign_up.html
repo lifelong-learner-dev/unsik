@@ -8,7 +8,8 @@
     <table id="sign_up_table">
         <tr>
             <th>아이디</th>
-            <td>{{ form.username }}
+            <td>{{ form.username }}</td>
+            <td rowspan="6">
                 <button class="id_check" type="button" value="id_check">아이디 중복 확인</button>
             </td>
         </tr>
@@ -44,9 +45,7 @@
         <tr>
             <th>운동목적</th>
             <td>
-                <label>건강<input type="radio" name="purpose" value="health"></label>
-                <label>체중 감량<input type="radio" name="purpose" value="diet"></label>
-                <label>벌크업<input type="radio" name="purpose" value="bulkup"></label>
+                {{ form.user_exercise_purpose }}
             </td>
         </tr>
         <tr>

@@ -30,6 +30,7 @@ class UsersAppUser(models.Model):
     user_activity = models.CharField(max_length=255, blank=True, null=True)
     user_daily_calorie = models.IntegerField(blank=True, null=True)
     user_target_weight = models.IntegerField(blank=True, null=True)
+    user_exercise_purpose = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         managed = False

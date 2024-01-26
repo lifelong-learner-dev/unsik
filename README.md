@@ -2,6 +2,17 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
+### 2024/01/29 컬럼 생성
+
+users_app_user 테이블에 새로운 컬럼이 추가되었습니다. 운동목표를 저장하기 위한 컬럼입니다. default 값은 NULL 입니다.
+
+```sql
+ALTER TABLE `unsik_db`.`users_app_user` 
+ADD COLUMN `user_exercise_purpose` VARCHAR(45) NULL DEFAULT NULL AFTER `user_target_weight`;
+```
+
+forms.py에서 가입 시 이 테이블에 값을 넣으려고 합니다.
+
 ### 2024/01/26 식사 분석 알고리즘 및 CSS 배치 수정
 
     > 식사 분석 페이지의 전반적인 CSS를 손 보고 있습니다. 아직 만져야 할 부분들이 많습니다.
