@@ -10,6 +10,13 @@
     <div>
         <canvas id="caloriesChart"></canvas>
     </div>
+    <br><br>
+    {% if recommend %}
+    <div>
+        <p>{{user.username}} 님을 위한 식단추천</p>
+        <li>{{recommend}}</li>
+    </div>
+    {% endif %}
 </section>
 
 {% endblock content %}

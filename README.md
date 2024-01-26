@@ -345,3 +345,19 @@ ALTER TABLE exercise ADD COLUMN sets int DEFAULT NULL;
      > Users_app_user 테이블 컬럼명 변경 : [user_age -> user_birth] 컬럼값에 생년월일이 들어가기 때문에 혼선을 줄 수 있어 컬럼명 변경. Alter문 실행 필요
         - Alter table users_app_user change user_age user_birth date 
         - 컬럼명이 바뀌었으므로 migration 필요
+
+### 브랜치명 (lim) - 임덕현 (2024-01-26)
+      > 식단 추천을 위한 Menu table Create
+          create table menu(
+            menu_id int not null auto_increment primary key,
+              menu_type varchar(20), # 메뉴구분
+              menu_classification varchar(20), # 식단 구분 
+            menu_dtl varchar(100),
+              calories float
+          );
+      
+      > python manage.py inspectdb 명령어를 사용하여 models.py에 menu테이블 추가 필요
+
+      > meal_hitory 페이지 그래프 기간 한달로변경 & 텍스트는 한달중 데이터가 있는 날짜 카운트
+      
+      > 따로 올린 기준을 바탕으로 메뉴 3개정도 select 해 추천해줄 예정 

@@ -107,3 +107,14 @@ class AdditionalFoodInfo(models.Model):
     class Meta:
         managed = False
         db_table = 'additional_food_info'
+
+class Menu(models.Model):
+    menu_id = models.AutoField(primary_key=True)
+    menu_type = models.CharField(max_length=20, blank=True, null=True)
+    menu_classification = models.CharField(max_length=20, blank=True, null=True)
+    menu_dtl = models.CharField(max_length=100, blank=True, null=True)
+    calories = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'menu'

@@ -15,6 +15,7 @@ from uuid import uuid4
 from .foodDict import *
 from .models import Meal
 from .models import CalorieDictionary
+from .models import Menu
 import json
 # from django.db.models import Sum
 from datetime import datetime, timedelta
@@ -34,6 +35,13 @@ def meal_history(request):
     id = request.user.id
 
     meals = Meal.objects.filter(user_id=id).order_by('meal_date')
+
+    menu = Menu.objects.all().first()
+
+    if menu is None : 
+        recommend = None
+    else:
+        recommend = menu.menu_dtl
 
     today = datetime.today()
     first_day_of_month = today.replace(day=1)
@@ -60,7 +68,8 @@ def meal_history(request):
         'title': '그래프',
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
-        'days_with_data': days_with_data  # 이번달중 데이터가 있는 날짜
+        'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
+        'recommend': recommend
     }
 
     return render(request, 'meal/meal_history.html', context)
