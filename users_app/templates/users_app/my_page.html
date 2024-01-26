@@ -2,42 +2,58 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/my_page1.css' %}">
-<div id="mypage_top">
-    <div id="mypage_user_name">
-        사용자 이름: {{ my_page_user.username }}
-    </div>
-    <div id="mypage_user_target_weight">
-        목표 체중: {{ my_page_user.user_target_weight }}kg
-        <button>변경</button>
-    </div>
-    <div id="mypage_user_activity">
-        활동 수준: {{ my_page_user.user_activity }}
-    </div>
-</div>
+<link rel="stylesheet" href="{% static 'css/mypage_calendar.css' %}">
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 
-<div id="mypage_calendar">
-    <button id="prev_month">&lt;</button>
-    <div id="calendar">여기에 달력 넣기</div>
-    <button id="next_month">&gt;</button>
-</div>
+    <script>
 
-<div id="mypage_current_height_weight">
-    <div id="mypage_current_height">
-        현재 키: {{ my_page_user.user_height }}cm
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          height: '300px', // 달력의 높이 설정
+          aspectRatio: 1.0, // 가로 대비 세로 비율 조절 (1.0은 기본값)
+          locale: 'ko' // 한국어 설정 추가
+        });
+        calendar.render();
+      });
+
+</script>
+{% csrf_token %}
+<section>
+    <div id="mypage_top">
+        <div id="mypage_user_name">
+            사용자 이름: {{ my_page_user.username }}
+        </div>
+        <div id="mypage_user_target_weight">
+            목표 체중: {{ my_page_user.user_target_weight }}kg
+        </div>
+        <div id="mypage_user_activity">
+            활동 수준: {{ my_page_user.user_activity }}
+        </div>
     </div>
-    <button id="today_h_button" type="submit" value="today_h">변경</button>    
-    <div id="mypage_current_weight">
-        현재 몸무게: {{ my_page_user.user_weight }}kg
+
+    <div id="mypage_calendar">
+        <div id="calendar"></div>
     </div>
-    <button id="today_w_button" type="submit" value="today_w">변경</button>
-</div>
-<div id="mypage_weight_graph">
-    몸무게 그래프 여기 들어가고
-</div>
-<div id="mypage_calories_graph">
-    칼로리 그래프 여기 들어가고
-</div>
-<div id="mypage_current_calories">
-    현재까지 섭취한 하루 칼로리 여기 들어가고
-</div>
+
+    <div id="mypage_current_height_weight">
+        <div id="mypage_current_height">
+            현재 키: {{ my_page_user.user_height }}cm
+        </div>
+        <div id="mypage_current_weight">
+            현재 몸무게: {{ my_page_user.user_weight }}kg
+        </div>
+    </div>
+    <a href="{% url 'my_page_update' my_page_user.username %}" id="user_info_change" class="btn btn-primary">키, 몸무게 정보 변경</a>
+    <div id="mypage_weight_graph">
+        몸무게 그래프 여기 들어가고
+    </div>
+    <div id="mypage_calories_graph">
+        칼로리 그래프 여기 들어가고
+    </div>
+    <div id="mypage_current_calories">
+        현재까지 섭취한 하루 칼로리 여기 들어가고
+    </div>
+</section>
 {% endblock content %}

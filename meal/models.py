@@ -50,7 +50,7 @@ class UsersAppUser(models.Model):
     is_staff = models.IntegerField()
     is_active = models.IntegerField()
     date_joined = models.DateTimeField()
-    user_age = models.DateField(blank=True, null=True)
+    user_birth = models.DateField(blank=True, null=True)
     user_gender = models.IntegerField(blank=True, null=True)
     user_height = models.FloatField(blank=True, null=True)
     user_weight = models.FloatField(blank=True, null=True)

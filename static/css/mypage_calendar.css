@@ -1,0 +1,34 @@
+/* 년과 월 텍스트 크기 조절 */
+.fc-toolbar-title {
+    font-size: 25px !important;
+    /* 크기를 12px로 조정 */
+}
+
+/* "오늘" 버튼 스타일 조정 */
+.fc-today-button.fc-button.fc-button-primary {
+    font-size: 15px !important;
+    /* 폰트 크기를 10px로 조정 */
+    padding: 3px 6px !important;
+    /* 패딩 축소 */
+    margin-right: 10px !important;
+    /* 오른쪽 여백을 10px로 조정하여 간격을 더 벌림 */
+}
+
+/* "오늘" 버튼 옆의 버튼들 스타일 조정 */
+.fc-next-button.fc-button.fc-button-primary,
+.fc-prev-button.fc-button.fc-button-primary {
+    font-size: 15px !important;
+    /* 폰트 크기를 10px로 조정 */
+    padding: 3px 6px !important;
+    /* 패딩 축소 */
+}
+
+/* 년도/월과 버튼들 사이의 간격을 더 벌리기 위한 스타일 */
+.fc-toolbar-chunk {
+    margin-right: 15px !important;
+    /* 오른쪽 여백을 조정하여 간격을 더 벌림 */
+}
+
+.fc-daygrid-day-number {
+    font-size: 15px !important;
+}

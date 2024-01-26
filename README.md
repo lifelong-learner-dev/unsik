@@ -2,6 +2,33 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
+
+### 2024/01/23 
+### 임덕현님 수정하신 내용 merge + 마이페이지, 유저 정보(키, 몸무게) 수정페이지 백엔드+프론트엔드 1차 완료
+    > 추가 작업 필요한 내용
+      > 그래프 추가될 예정
+      > 달력에 식단, 운동 테이블에 기록된 내용이 있으면 달력에 표시될 수 있도록 시도할 예정
+
+    > 작업한 내용
+      > 마이페이지 백엔드
+        > forms.py 
+          > MypageUserForm 클래스 추가
+        > views.py
+          > 키, 몸무게 정보 수정을 위한 my_page_update 기능 생성
+        > urls.py
+          > 수정을 위한 url 추가
+        
+      > 마이페이지 프론트엔드
+        > my_page.html
+          > 수정버튼에 수정 페이지 url 추가
+        > my_page_update.html
+          > 키, 몸무게 수정 페이지 생성
+        > my_page1.css
+          > my_page.html과 my_page_update.html css 작성
+        > mypage_calendar.css
+          > full calendar 라이브러리 관련 css 추가
+
+
 ### 2024/01/22 DB 저장 시간 오차 수정
 
     > DB에 저장되는 meal_date가 현재 시각보다 -9시 늦는 것을 확인했습니다. views.py 이외 따로 건드린 것은 없습니다.
@@ -309,3 +336,18 @@ ALTER TABLE exercise MODIFY COLUMN postNum BIGINT AUTO_INCREMENT PRIMARY KEY;
 
     > 식단 상세 페이지 추가(meal_detail)
       * 섭취한 총 칼로리, 영양소 정보 추가로 부족한 영양소 계산해서 넣을 예정
+
+### 브랜치명 (lim) - 임덕현 (2024-01-23)
+     > 유저 정보에서 유저 활동 수준 구분을 5개로 수정 (("5", "매 활발한 활동"),("4","활발한 활동"),("3","보통 활동"),("2","약간의 활동"), ("1","거의 활동이 없음")))
+
+     > 기존 데이터의 경우 오류가 날수 있기때문에 업데이트 필요
+     > UPDATE users_app_user
+        SET user_activity = CASE 
+          WHEN user_activity = 'active' THEN '4'
+          WHEN user_activity = 'deactive' THEN '2'
+          ELSE '3'
+        END;
+
+     > Users_app_user 테이블 컬럼명 변경 : [user_age -> user_birth] 컬럼값에 생년월일이 들어가기 때문에 혼선을 줄 수 있어 컬럼명 변경. Alter문 실행 필요
+        - Alter table users_app_user change user_age user_birth date 
+        - 컬럼명이 바뀌었으므로 migration 필요

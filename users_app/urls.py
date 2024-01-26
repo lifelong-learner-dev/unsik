@@ -8,5 +8,6 @@ urlpatterns = [
     path("id_check", views.id_check, name='id_check'),
     path("sign_in", views.sign_in, name='sign_in'),
     path("sign_out", views.sign_out, name='sign_out'),
-    re_path(r'^(?P<username>[\w.@+-]+)/$', views.my_page, name='my_page')
+    re_path(r'^(?P<username>[\w.@+-]+)/$', views.my_page, name='my_page'),
+    re_path(r'^update/(?P<username>[\w.@+-]+)/$', views.my_page_update, name='my_page_update'),
 ]
