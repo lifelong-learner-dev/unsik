@@ -2,6 +2,78 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
+### 2024/01/26 식사 분석 알고리즘 및 CSS 배치 수정
+
+    > 식사 분석 페이지의 전반적인 CSS를 손 보고 있습니다. 아직 만져야 할 부분들이 많습니다.
+
+    > 알고리즘은 제대로 들어가는 느낌입니다. 다만 추가로 고려되어야 할 사항들이 있어 알고리즘이 완성된 단계는 아닙니다.
+
+    > views.py meal_post 함수의 meal 테이블 기록 기능이 임시로 비활성화 되어 있습니다. DB 기록이 안 될 경우 이 부분을 확인해주시기 바랍니다.
+
+#### 변경 내역
+
+1. foodDict.py 함수 추가
+2. views.py 함수 수정
+3. meal_analyze.css 수정
+
+---
+
+### 2024/01/25 CSS 스타일 레이아웃 수정
+
+meal 테이블 nutrient_info 행에 추가되는 정보가 추가되었습니다.
+
+기존 : [총 탄수화물, 총 단백질, 총 지방, 총 당류, 총 나트륨(mg), 총 포화지방]  
+추가 : [총 탄수화물, 총 단백질, 총 지방, 총 당류, 총 나트륨(mg), 총 포화지방, 총 트랜스지방, 총 식이섬유]  
+
+테스트를 위해 Meal DB로 기록하는 기능이 임시로 비활성화 되어 있습니다.
+
+식단 분석 페이지 CSS 계속 작업 중입니다. 식사 알고리즘은 아직 구축 단계에 있습니다.
+
+### 2024/01/24 시간 저장 오차 수정
+
+시간이 계속 UTC로 변경되어 들어가는 문제는 Django의 settings.py 내부에 정의된 설정 때문인 것으로 잠정 결론 지었습니다.
+
+1. settings.py에서 아래 옵션을 False로 바꿉니다.
+
+```python
+USE_TZ = False
+```
+
+2. 또한 meal 테이블에 들어가는 Date 값을 자동 입력하기 위해 models.py 에서 아래처럼 바꿔줍니다.
+
+```python
+meal_date = models.DateTimeField(auto_now_add=True)
+```
+
+3. auto_now_add=True 의 의미는 자동 기입을 허용한다는 말입니다. 그 말은 views.py에서 시간을 받아와 기입할 필요가 없다는 것입니다.  
+meal/views.py 370번 줄을 확인해주세요.
+
+```python
+Meal.objects.create(
+    user = user_instance,
+    # meal_date = current_time.strftime("%Y-%m-%d %H:%M:%S"),
+    # meal_date = iso_formatted_time,
+    # meal_date = current_time,
+    meal_photo = meal_data_list[-1],
+    meal_info = json.dumps(filtered_list),
+    meal_type = meal_type,
+    meal_calories = meal_calories,
+    nutrient_info = json.dumps(nutrient_info)
+)
+```
+
+날짜 기입란이 모두 비활성화 되었습니다. migration은 따로 필요 없습니다. 작동 테스트 후 문제가 있다면 알려주세요.
+
+---
+### 2024/01/25 ghk브랜치 (김근형)
+    > 마이페이지 완료
+      > 달력에 식단, 운동 관련 표시 완료
+      > 몸무게 그래프 출력 완료
+      > 식단으로 인한 섭취 칼로리와
+        운동으로 인한 소비 칼로리 그래프에 표시 완료
+
+    > 마이페이지 수정 페이지 완료
+
 
 ### 2024/01/23 
 ### 임덕현님 수정하신 내용 merge + 마이페이지, 유저 정보(키, 몸무게) 수정페이지 백엔드+프론트엔드 1차 완료
@@ -322,6 +394,12 @@ ALTER TABLE exercise MODIFY COLUMN exercise_type ENUM('유산소', '웨이트');
 ALTER TABLE exercise ADD COLUMN weight int DEFAULT NULL;
 ALTER TABLE exercise ADD COLUMN reps int DEFAULT NULL;
 ALTER TABLE exercise ADD COLUMN sets int DEFAULT NULL;
+
+-- 외래키 설정 01/23 추가
+ALTER TABLE exercise ADD FOREIGN KEY (`user_id`) REFERENCES `users_app_user` (`id`);
+-- postNum 자동 증가로 변경
+ALTER TABLE exercise DROP PRIMARY KEY;
+ALTER TABLE exercise MODIFY COLUMN postNum BIGINT AUTO_INCREMENT PRIMARY KEY;
 ```
 
 ### 브랜치명 (lim) - 임덕현 (2024-01-22 16:50)
@@ -345,3 +423,19 @@ ALTER TABLE exercise ADD COLUMN sets int DEFAULT NULL;
      > Users_app_user 테이블 컬럼명 변경 : [user_age -> user_birth] 컬럼값에 생년월일이 들어가기 때문에 혼선을 줄 수 있어 컬럼명 변경. Alter문 실행 필요
         - Alter table users_app_user change user_age user_birth date 
         - 컬럼명이 바뀌었으므로 migration 필요
+
+### 브랜치명 (lim) - 임덕현 (2024-01-26)
+      > 식단 추천을 위한 Menu table Create
+          create table menu(
+            menu_id int not null auto_increment primary key,
+              menu_type varchar(20), # 메뉴구분
+              menu_classification varchar(20), # 식단 구분 
+            menu_dtl varchar(100),
+              calories float
+          );
+      
+      > python manage.py inspectdb 명령어를 사용하여 models.py에 menu테이블 추가 필요
+
+      > meal_hitory 페이지 그래프 기간 한달로변경 & 텍스트는 한달중 데이터가 있는 날짜 카운트
+      
+      > 따로 올린 기준을 바탕으로 메뉴 3개정도 select 해 추천해줄 예정 

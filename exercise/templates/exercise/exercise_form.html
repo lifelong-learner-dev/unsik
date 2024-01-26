@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+<!-- venv\Scripts\activate 가상환경 활성화 -->
+<!-- deactivate 비활성화 -->
+{% block content %}
+<div class="container">
+    <h2>운동 기록</h2>
+    <form method="post" onsubmit="return exerciseUploadCheck()">
+        {% csrf_token %}
+        <table id="form_tbl">
+            <tr>
+                <th>{{ form.exercise_date.label_tag }}</th>
+                <td>{{ form.exercise_date }}</td>
+            </tr>
+
+            <tr>
+                <th>{{ form.exercise_type.label_tag }}</th>
+                <td>{{ form.exercise_type }}</td>
+            </tr>
+
+            <tr>
+                <th>{{ form.exercise_name.label_tag }}</th>
+                <td>{{ form.exercise_name }}</td>
+            </tr>
+
+            <tr>
+                <th>{{ form.exercise_amount.label_tag }}</th>
+                <td>{{ form.exercise_amount }}</td>
+            </tr>
+
+            <tr>
+                <th>{{ form.calories_burned.label_tag }}</th>
+                <td>{{ form.calories_burned }}</td>
+            </tr>
+
+            <tr class="weight-fields">
+                <th>{{ form.weight.label_tag }}</th>
+                <td>{{ form.weight }}</td>
+            </tr>
+
+            <tr class="weight-fields">
+                <th>{{ form.reps.label_tag }}</th>
+                <td>{{ form.reps }}</td>
+            </tr>
+
+            <tr class="weight-fields">
+                <th>{{ form.sets.label_tag }}</th>
+                <td>{{ form.sets }}</td>
+            </tr>
+
+            <!-- <div>{{ form.errors }}</div> -->
+        </table>
+        <br>
+        <button id="form_btn" type="submit">기록하기</button>
+    </form>
+</div>
+<script>
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     var exerciseTypeField = document.querySelector('.exercise-type-field');
+    //     var weightFields = document.querySelectorAll('.weight-fields');
+
+    //     function toggleWeightFields() {
+    //         if (exerciseTypeField.value === '웨이트') {
+    //             weightFields.forEach(function (field) {
+    //                 field.style.display = 'table-row';
+    //             });
+    //         } else {
+    //             weightFields.forEach(function (field) {
+    //                 field.style.display = 'none';
+    //             });
+    //         }
+    //     }
+
+    //     toggleWeightFields();
+
+    //     exerciseTypeField.addEventListener('change', function () {
+    //         toggleWeightFields();
+    //     });
+    // });
+
+    function toggleWeightFields() {
+        var exerciseTypeSelect = document.getElementById('exercise_type');
+        var weightFields = document.getElementById('weight-fields');
+
+        if (exerciseTypeSelect.value === '웨이트') {
+            weightFields.style.display = 'block';
+        } else {
+            weightFields.style.display = 'none';
+        }
+    }
+
+    function exerciseUploadCheck() {
+        var exerciseDate = document.getElementById('id_exercise_date').value;
+        var exerciseType = document.getElementById('id_exercise_type').value;
+        var exerciseName = document.getElementById('id_exercise_name').value;
+        var exerciseAmount = document.getElementById('id_exercise_amount').value;
+
+        if (!exerciseDate || !exerciseType || !exerciseName || !exerciseAmount) {
+            alert('빈칸을 채워주세요');
+            return false;
+        }
+        return true;
+    };
+</script>
+{% endblock content %}

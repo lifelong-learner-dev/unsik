@@ -1,5 +1,23 @@
+.display_flex {
+    display: inline-flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
 #analysis-section {
     display: none;
+}
+
+#analyze_box {
+    display: inline-flex;
+    width: 85%;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+#analyze_box > {
+    margin: 0 auto;
 }
 
 #preview {
@@ -16,17 +34,12 @@
     border: 2px solid black;
 }
 
-/* #preview > img {
-    margin-top: 1em;
-    margin-bottom: 1em;
-    border: 2px solid black;
-} */
-
 #preview > p {
     margin-top: 200px;
 }
 
 #meal_image {
+    border: 2px solid black;
     z-index: 1;
 }
 
@@ -36,37 +49,152 @@
 }
 
 #analyze-button {
+    border: 2px solid #0fa80a;
+    border-radius: 0.6rem;
+    color: #0fa80a;
+    cursor: pointer;
     font-size: x-large;
     font-weight: 500;
     width: 150px;
     height: 50px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
 }
+
+#analyze-button:hover {
+    color: #fff;
+    outline: 0;
+    box-shadow: 0 0 40px 40px #0fa80a inset;
+}
+
 
 .input_container{
     position: relative;
+    margin-top: 1em;
+}
+
+.input_container > input {
+    margin-right: 10px;
 }
 
 .search-results {
     position: absolute;
     background-color: white;
-    border: 2px solid red;
+    border: 2px solid #27531c;
     z-index: 5;
 }
 
-.search-results > li:hover {
-    color: #2fe12f;
-    transition-duration: 0.5s;
+.search-results > li {
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
 }
 
-#result_image_box {
+.search-results > li:hover {
+    color: #0e610e;
+    transition-duration: 0.2s;
+}
+
+/* #result_image_box {
     margin-left: auto;
     margin-right: auto;
     margin-top: 1em;
     margin-bottom: 1em;
     border: 2px solid black;
+} */
+
+#nutrient_info_box {
+    margin: 0 auto;
+}
+
+#progress {
+    width: 75%;
+    appearance: none;
+}
+
+#progress::-webkit-progress-bar{
+    background: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: inset 3px 3px 10px #b5b5b5;
+}
+
+#progress::-webkit-progress-value {
+    border-radius: 5px;
+    /* background: #fff879; */
+    /* background: -webkit-linear-gradient(to right, #1739a9, #98c016); */
+    background: linear-gradient(to right, #7fcf9d, #0e9c13);
+}
+
+#progress.overweight::-webkit-progress-value {
+    transition: 6s linear;
+    background: linear-gradient(to right, #f28585, #ca1c1c);
+}
+
+#progressbar {
+    margin: 10px 0 10px 0;
+    display: inline-flex;
+    justify-content: space-evenly;
+    align-items: baseline;
+    width: 90%;
 }
 
 #nutrient_info_box {
     margin: 0 auto;
-    width: 80vw;
+    width: 100%;
+}
+
+#meal_info_chart {
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* #meal_info_chart > tbody:first-child {
+    border-top: 3px solid #0fa80a;
+} */
+
+#meal_info_chart > tbody > tr:first-child {
+    color: #ffffff;
+    font-weight: 500;
+    background-color: #0fa80a;
+}
+
+#meal_chart_title {
+    font-weight: 500;
+    font-size: x-large;
+}
+
+#meal_info_chart > tbody > tr > th, td {
+
+    padding: 10px;
+}
+
+#nutrient_table {
+    width: 100%;
+    margin: 0 auto;
+}
+
+#summary_btn {
+    margin-top: 20px;
+    font-size: larger;
+    font-weight: 600;
+}
+
+.chart-container {
+    display: inline-flex;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    position: relative;
+    width: 50%;
+    height: 50vh;
+    /* background-color: rgb(58, 58, 218); */
+}
+
+.barchart-container {
+    display: inline-flex;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    width: 100%;
+    height: 50vh;
+}
+
+.warning_sign {
+    width: 50px;
 }
