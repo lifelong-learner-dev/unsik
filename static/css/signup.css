@@ -1,6 +1,54 @@
 #sign_up_form {
+    border: 5px solid rgb(16, 169, 16);
+    border-radius: 20px;
+    box-shadow: 3px 5px 5px rgba(118, 118, 118, 0.6);
+    padding: 15px;
     margin: 0 auto;
-    width: 700px;
+    width: 32rem;
     display: flex;
     flex-direction: column;
+}
+
+#sign_up_table {
+    flex-grow: 1;
+}
+
+#sign_up_table th {
+    width: 8em;
+    text-align: left;
+    border-right: 3px solid rgba(0, 205, 0, 0.486);
+}
+
+#sign_up_table div {
+    flex-grow: 1;
+    display: inline-flex;
+}
+
+#id_username {
+    width: 56%!important;
+    margin-right: 9px;
+}
+
+.id_check {
+    border: 2px solid green;
+    width: 40%;
+    font-size: 13px;
+    font-weight: 600;
+    height: 28px;
+}
+
+#id_user_height {
+    margin-right: 5px;
+}
+
+#height_weight {
+    width: 100%;
+}
+
+#sign_up_table input {
+    width: 100%;
+}
+
+#joinbtn {
+    margin-top: 10px;
 }

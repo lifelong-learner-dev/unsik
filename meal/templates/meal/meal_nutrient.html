@@ -3,7 +3,7 @@
     <canvas id="nutrient_chart"></canvas>
 </div>
 <div id="progressbar">
-    <p>오늘 섭취량 : {{ todays_total_cal }} / 2200</p>
+    <p>오늘 섭취량 : {{ todays_total_cal }} / {{ user_max_calorie }}</p>
     <progress id="progress" value="0" min="0" max="{{ user_max_calorie }}">삽입</progress>
 </div>
 <div id="nutrient_info_box">
@@ -246,15 +246,22 @@
                         barThickness:15,
                     },
                     {
-                        label: '포화지방',
+                        label: '당',
                         data: [{{ nurtient_proportion.3 }}],
+                        backgroundColor: 'rgba(255, 206, 255, 0.5)',
+                        borderColor: 'rgba(172, 47, 234, 1)',
+                        barThickness:15,
+                    },
+                    {
+                        label: '포화지방',
+                        data: [{{ nurtient_proportion.4 }}],
                         backgroundColor: 'rgba(255, 206, 255, 0.5)',
                         borderColor: 'rgba(255, 206, 255, 1)',
                         barThickness:15,
                     },
                     {
                         label: '트랜스지방',
-                        data: [{{ nurtient_proportion.4 }}],
+                        data: [{{ nurtient_proportion.5 }}],
                         backgroundColor: 'rgba(54, 162, 2, 0.5)',
                         borderColor: 'rgba(54, 162, 2, 1)',
                         barThickness:15,
