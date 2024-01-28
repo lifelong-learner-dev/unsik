@@ -4,17 +4,24 @@
 {% block content %}
 <div class="container">
     <h2>운동 기록</h2>
-    <form method="post" onsubmit="return exerciseUploadCheck()">
+    <form method="post" onsubmit="return exerciseUploadCheck()" class="exercise-form">
         {% csrf_token %}
-        <table id="form_tbl">
+        <table id="form_tbl" class="table">
             <tr>
                 <th>{{ form.exercise_date.label_tag }}</th>
                 <td>{{ form.exercise_date }}</td>
             </tr>
 
             <tr>
-                <th>{{ form.exercise_type.label_tag }}</th>
-                <td>{{ form.exercise_type }}</td>
+                <th>운동 유형:</th>
+                <td>
+                    <label class="radio-label">
+                        <input type="radio" name="exercise_type" value="유산소" checked="checked"> 유산소
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="exercise_type" value="웨이트"> 웨이트
+                    </label>
+                </td>
             </tr>
 
             <tr>
@@ -23,7 +30,7 @@
             </tr>
 
             <tr>
-                <th>{{ form.exercise_amount.label_tag }}</th>
+                <th>운동 지속 시간(분):</th>
                 <td>{{ form.exercise_amount }}</td>
             </tr>
 
@@ -50,55 +57,90 @@
             <!-- <div>{{ form.errors }}</div> -->
         </table>
         <br>
-        <button id="form_btn" type="submit">기록하기</button>
+        <button id="form_btn" type="submit" class="btn btn-primary">기록하기</button>
     </form>
 </div>
 <script>
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     var exerciseTypeField = document.querySelector('.exercise-type-field');
-    //     var weightFields = document.querySelectorAll('.weight-fields');
-
-    //     function toggleWeightFields() {
-    //         if (exerciseTypeField.value === '웨이트') {
-    //             weightFields.forEach(function (field) {
-    //                 field.style.display = 'table-row';
-    //             });
-    //         } else {
-    //             weightFields.forEach(function (field) {
-    //                 field.style.display = 'none';
-    //             });
-    //         }
-    //     }
-
-    //     toggleWeightFields();
-
-    //     exerciseTypeField.addEventListener('change', function () {
-    //         toggleWeightFields();
-    //     });
-    // });
-
     function toggleWeightFields() {
-        var exerciseTypeSelect = document.getElementById('exercise_type');
-        var weightFields = document.getElementById('weight-fields');
+        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type"]');
+        var weightFields = document.querySelectorAll('.weight-fields');
 
-        if (exerciseTypeSelect.value === '웨이트') {
-            weightFields.style.display = 'block';
-        } else {
-            weightFields.style.display = 'none';
-        }
+        exerciseTypeRadios.forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                if (radio.value === '웨이트') {
+                    weightFields.forEach(function (field) {
+                        field.style.display = 'table-row';
+                    });
+                } else {
+                    weightFields.forEach(function (field) {
+                        field.style.display = 'none';
+                    });
+                }
+            });
+        });
     }
+
+    toggleWeightFields();
 
     function exerciseUploadCheck() {
         var exerciseDate = document.getElementById('id_exercise_date').value;
-        var exerciseType = document.getElementById('id_exercise_type').value;
+        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type"]');
         var exerciseName = document.getElementById('id_exercise_name').value;
         var exerciseAmount = document.getElementById('id_exercise_amount').value;
 
-        if (!exerciseDate || !exerciseType || !exerciseName || !exerciseAmount) {
+        // 체크된 라디오 버튼의 값을 가져오기
+        var selectedExerciseType = Array.from(exerciseTypeRadios).find(radio => radio.checked).value;
+
+        if (!exerciseDate || !exerciseName || !exerciseAmount) {
             alert('빈칸을 채워주세요');
             return false;
         }
+
+        if (selectedExerciseType === '웨이트') {
+            var weight = document.getElementById('id_weight').value;
+            var reps = document.getElementById('id_reps').value;
+            var sets = document.getElementById('id_sets').value;
+
+            if (!weight || !reps || !sets) {
+                alert('무게, 횟수, 세트 수를 입력해주세요.');
+                return false;
+            }
+        }
+
         return true;
     };
 </script>
+<style>
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .radio-label {
+        margin-right: 20px;
+    }
+
+    .weight-fields {
+        display: none;
+    }
+
+    #form_btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+
+
 {% endblock content %}
