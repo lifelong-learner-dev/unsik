@@ -376,15 +376,15 @@ def meal_post(request):
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            Meal.objects.create(
-                user = user_instance,
-                meal_date = current_time,
-                meal_photo = meal_data_list[-1],
-                meal_info = json.dumps(filtered_list),
-                meal_type = meal_type,
-                meal_calories = meal_calories,
-                nutrient_info = json.dumps(nutrient_info)
-            )
+            # Meal.objects.create(
+            #     user = user_instance,
+            #     meal_date = current_time,
+            #     meal_photo = meal_data_list[-1],
+            #     meal_info = json.dumps(filtered_list),
+            #     meal_type = meal_type,
+            #     meal_calories = meal_calories,
+            #     nutrient_info = json.dumps(nutrient_info)
+            # )
 
             ############ DB 저장 완료 후 로직 #############
 
@@ -469,17 +469,21 @@ def test(request):
     id = request.user.id
     print(id)
 
-    today = datetime.now()
+    asia_seoul = pytz.timezone('Asia/Seoul')
+    today = datetime.now().replace(tzinfo=asia_seoul)
+    timezone_today = timezone.now().replace(tzinfo=asia_seoul)
     print(f"현재 시간 : {today}")
+    print(f"타임존 시간 : {timezone_today}")
+    print(timezone_today)
 
-    day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
-    day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
+    day_start = timezone.datetime.combine(timezone_today, timezone.datetime.min.time())
+    day_end = timezone.datetime.combine(timezone_today, timezone.datetime.max.time())
     print(f"시작 날짜 : {day_start}")
     print(f"종료 날짜 : {day_end}")
 
     todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
 
-    print(todays_nutrients)
+    print(todays_nutrients.first().meal_date)
 
     total_nutrient_sum = [0] * 6
 

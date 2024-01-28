@@ -210,10 +210,10 @@
         });
 
         $(function(){
-            dslosChart.init();
+            BarChart.init();
         });
 
-        const dslosChart = {
+        const BarChart = {
             losChart : null, 
             chartData : {
                 labels: ['영양소 비율'],
@@ -223,7 +223,7 @@
                         data: [{{ nurtient_proportion.0 }}],
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         borderColor: 'rgba(255,99,132,1)',
-                        borderWidth:1 ,
+                        // borderWidth: 1,
                         barThickness:15,
                         borderSkipped:false ,
                         borderRadius: [
@@ -248,7 +248,7 @@
                     {
                         label: '당',
                         data: [{{ nurtient_proportion.3 }}],
-                        backgroundColor: 'rgba(255, 206, 255, 0.5)',
+                        backgroundColor: 'rgba(172, 47, 234, 0.5)',
                         borderColor: 'rgba(172, 47, 234, 1)',
                         barThickness:15,
                     },
@@ -273,35 +273,37 @@
             },
 
             init: function(){
-                dslosChart.initChart(); 
+                BarChart.initChart(); 
             },
             initChart: function(){
             // if(this.losChart != undefined) this.losChart.destroy();
             
-            dslosChart.losChart = new Chart($('#nut_proportion_chart'), {
+            BarChart.losChart = new Chart($('#nut_proportion_chart'), {
                     type: 'bar', 
                 // data: dslosChart.chartData,
                 });
             
-            dslosChart.getLosChart();
+            BarChart.getLosChart();
 
             },
             getLosChart: function(){
 
-                dslosChart.losChart.data = dslosChart.chartData;
+                BarChart.losChart.data = BarChart.chartData;
                 
-                dslosChart.losChart.options.plugins.datalabels = {display: false };
-                dslosChart.losChart.options = {
+                BarChart.losChart.options.plugins.datalabels = {display: false };
+                BarChart.losChart.options = {
                 indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
                 scales : {
                     x : {stacked: true, display:false},
                     y : {stacked: true,},
                 },
                 plugins : { 
-                    legend :{display:false}, 
+                    legend :{display:true}, 
                 }
                 }
-                dslosChart.losChart.update();
+                BarChart.losChart.update();
             },
 
         

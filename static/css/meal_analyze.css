@@ -129,7 +129,7 @@
 }
 
 #progressbar {
-    margin: 10px 0 10px 0;
+    margin: 20px 0 10px 0;
     display: inline-flex;
     justify-content: space-evenly;
     align-items: baseline;
@@ -192,7 +192,7 @@
     justify-content: space-evenly;
     margin: 0 auto;
     width: 100%;
-    height: 50vh;
+    height: 12vh;
 }
 
 .warning_sign {
