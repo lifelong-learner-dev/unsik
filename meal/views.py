@@ -8,6 +8,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime, timedelta
+
 from .models import CalorieDictionary, Meal, UsersAppUser
 from .modules.meal_anal import predict_meal
 from django.db.models import Q
@@ -20,6 +21,8 @@ import json
 # from django.db.models import Sum
 import ast
 import pytz
+from django.db.models import QuerySet
+from random import sample
 
 # Create your views here.
 
@@ -36,12 +39,33 @@ def meal_history(request):
 
     meals = Meal.objects.filter(user_id=id).order_by('meal_date')
 
-    menu = Menu.objects.all().first()
+    chk_meal_type = '일반식'
+
+    # current_time = datetime.now(pytz.utc)
+
+    # seven_days_ago = current_time - timedelta(days=7)
+
+    # recent_meals = Meal.objects.filter(user_id=id, meal_date__gte=seven_days_ago).order_by('meal_date')
+
+    # print('recent_meals : ' , recent_meals)
+
+
+    menu = Menu.objects.filter(menu_classification=chk_meal_type)
+
+    # random_menus = sample(list(menu), min(len(menu), 3))
+
+    recommended = []
 
     if menu is None : 
         recommend = None
     else:
-        recommend = menu.menu_dtl
+        random_menus = sample(list(menu), min(len(menu), 3))
+
+        for data in random_menus:
+            # print('data : ',type(data.menu_dtl))
+            recommended.append([data.menu_dtl])
+
+    # print('recommended' ,recommended)
 
     today = datetime.today()
     first_day_of_month = today.replace(day=1)
@@ -69,7 +93,7 @@ def meal_history(request):
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
-        'recommend': recommend
+        'recommend': recommended
     }
 
     return render(request, 'meal/meal_history.html', context)
