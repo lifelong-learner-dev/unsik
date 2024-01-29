@@ -20,7 +20,7 @@ from .models import Meal
 from .models import CalorieDictionary
 from .models import Menu
 import json
-# from django.db.models import Sum
+from django.db.models import Sum
 import ast
 from random import sample
 
