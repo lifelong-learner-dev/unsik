@@ -26,6 +26,7 @@ urlpatterns = [
     path("exercise/", include("exercise.urls")),
     path("meal/", include("meal.urls")),
     path("users/", include("users_app.urls")),
+    path("fitness_grade/", include("community.urls")),
 ]
 
 if settings.DEBUG:

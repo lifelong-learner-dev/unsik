@@ -9,7 +9,7 @@
         </li>
         <li><a href="{% url 'record_exercise' %}">운동 기록하기</a></li>
         <li>
-            <a href="#">커뮤니티</a>
+            <a href="{% url 'fitness_grade' %}">나의 운동 등급(AI)</a>
             <ul class="submenu">
                 <li><a href="#">오늘의 운동 인증</a></li>
                 <li><a href="#">질문있어요</a></li>
@@ -49,7 +49,7 @@
                 <li><a href="">나의 운동 기록</a></li>
                 <li><a href="">나의 정보 수정</a></li>
             </ul>
-        </li> -->
+        </li>
     </ul>
     {% endif %}
 </nav>

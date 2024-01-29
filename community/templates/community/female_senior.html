@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link href="{% static 'css/fitness_grade.css' %}" rel="stylesheet">
+<script src="{% static 'js/female_senior_predict.js' %}"></script>
+<script src="{% static 'js/accordion.js' %}"></script>
+
+<h2>여성 노인 페이지</h2>
+<div class="container">
+    <section class="measure-section">
+        <h2>어떻게 운동을 측정하는지 확인하세요</h2>
+        <!-- 운동별 섹션 -->
+        <div class="accordion">
+            <button class="accordion-button">앉아윗몸앞으로 굽히기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/ydKH9ybDUZ4" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">의자에앉았다일어서기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/D7KExoUhSA0" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">2분제자리걷기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/aYdPb99PcOw" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">악력검사</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/0NyiYjRJL_c" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+    <section class="predict-section">    
+        <form id="predict-form" method="post" class="predict-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="sit_and_reach">앉아윗몸앞으로 굽히기(cm)</label>
+                <input type="text" id="sit_and_reach" name="sit_and_reach" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="chair_stand_test">의자에앉았다일어서기(회)</label>
+                <input type="text" id="chair_stand_test" name="chair_stand_test" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="two_minute_step_test">2분제자리걷기(회)</label>
+                <input type="text" id="two_minute_step_test" name="two_minute_step_test" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="grip_strength_left">악력_좌(kg)</label>
+                <input type="text" id="grip_strength_left" name="grip_strength_left" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="grip_strength_right">악력_우(kg)</label>
+                <input type="text" id="grip_strength_right" name="grip_strength_right" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">확인</button>
+                <input type="reset" class="btn-reset" value="리셋">
+            </div>
+        </form>
+        <p id="prediction_result" class="result"></p>
+    </section>
+</div>
+{% endblock content %}
