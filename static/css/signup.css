@@ -13,8 +13,13 @@
     flex-grow: 1;
 }
 
+#sign_up_table tr {
+    margin-bottom: 10px;
+}
+
 #sign_up_table th {
     width: 8em;
+    font-weight: normal;
     text-align: left;
     border-right: 3px solid rgba(0, 205, 0, 0.486);
 }
@@ -33,7 +38,6 @@
     border: 2px solid green;
     width: 40%;
     font-size: 13px;
-    font-weight: 600;
     height: 28px;
 }
 

@@ -376,15 +376,15 @@ def meal_post(request):
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            # Meal.objects.create(
-            #     user = user_instance,
-            #     meal_date = current_time,
-            #     meal_photo = meal_data_list[-1],
-            #     meal_info = json.dumps(filtered_list),
-            #     meal_type = meal_type,
-            #     meal_calories = meal_calories,
-            #     nutrient_info = json.dumps(nutrient_info)
-            # )
+            Meal.objects.create(
+                user = user_instance,
+                meal_date = current_time,
+                meal_photo = meal_data_list[-1],
+                meal_info = json.dumps(filtered_list),
+                meal_type = meal_type,
+                meal_calories = meal_calories,
+                nutrient_info = json.dumps(nutrient_info)
+            )
 
             ############ DB 저장 완료 후 로직 #############
 

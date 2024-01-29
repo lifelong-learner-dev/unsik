@@ -10,6 +10,12 @@
     color: #000;
 }
 
+.calorie_dict_box a:hover {
+    color: #1eb211;
+    font-weight: 900;
+    text-decoration: underline #1eb211;
+}
+
 /* 검색바 */
 
 .searchBar {

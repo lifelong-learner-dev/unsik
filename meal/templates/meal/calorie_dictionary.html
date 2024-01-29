@@ -64,8 +64,8 @@
     <div class="cal_pagination">
         <span class="pageNums">
             {% if current_page_data.has_previous %}
-                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">&laquo; 첫 페이지</a>
-                <a href="?page={{ current_page_data.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">이전</a>
+                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">첫 페이지</a>
+                <a href="?page={{ current_page_data.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">&laquo;</a>
             {% endif %}
 
             {% for i in page_range %}
@@ -77,8 +77,8 @@
             {% endfor %}
 
             {% if current_page_data.has_next %}
-            <a href="?page={{ current_page_data.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">다음</a>
-            <a href="?page={{ current_page_data.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">마지막 페이지 &raquo;</a>
+            <a href="?page={{ current_page_data.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">&raquo;</a>
+            <a href="?page={{ current_page_data.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if major_class_filter %}&majorClass={{ major_class_filter }}{% endif %}{% if detail_class_filter %}&detailClass={{ detail_class_filter }}{% endif %}">마지막 페이지</a>
             {% endif %}
         </span>
     </div>
