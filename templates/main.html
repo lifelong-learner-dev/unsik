@@ -42,7 +42,7 @@
         <div class="onPicContents">
             <h1>운동의 시작은 식단 관리부터!</h1>
             <span>AI 카메라로 매일매일 분석 받는 나의 식단</span>
-            <button>체험해보기</button>
+            <a href="{% url 'meal_analyze' %}">체험해보기</a>
         </div>
     </div>
     <div class="main_section mainView clearfix">
@@ -50,7 +50,14 @@
         <div class="onPicContents">
             <h1>목표 달성의 열쇠는 꾸준함!</h1>
             <span>하루하루 기록하는 나의 운동 일지</span>
-            <button>운동기록하기</button>
+            {% if user.is_authenticated %}
+            <!-- <button onclick="location.href=">운동기록하기</button> -->
+            <a href="{% url 'record_exercise' %}">운동기록하기</a>
+            {% else %}
+            <!-- <button onclick="location.href=">회원가입하기</button> -->
+            <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a>
+            <a href="{% url 'sign_up' %}">회원가입</a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -76,15 +83,19 @@
     // 마우스 올리면 나타나고 내리면 사라지는 애니메이션
     function displayInfo(infoElement) {
         let picInfo = infoElement.querySelector('.onPicContents');
+        let picture = infoElement.querySelector('.mainpic');
         if (picInfo) {
             picInfo.style.top = '0';
+            picture.style.transform = 'scale(1.2)';
         }
     }
 
     function hideInfo(infoElement) {
         let picInfo = infoElement.querySelector('.onPicContents');
+        let picture = infoElement.querySelector('.mainpic');
         if (picInfo) {
             picInfo.style.top = '100%';
+            picture.style.transform = 'scale(1.0)';
         }
     }
 
