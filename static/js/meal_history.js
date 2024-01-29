@@ -8,8 +8,8 @@ $(document).ready(function () {
             labels: dates, // x축 레이블로 날짜 사용
             datasets: [{
                 label: '칼로리', // 데이터셋의 레이블
-                backgroundColor: 'rgba(255, 99, 132, 0.2)', // 그래프 내부 색
-                borderColor: 'rgba(255, 99, 132, 1)', // 선 색
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Green,
+                borderColor: 'green', // 선 색
                 borderWidth: 1,
                 data: calories, // y축 데이터로 칼로리 사용
                 barThickness: 30

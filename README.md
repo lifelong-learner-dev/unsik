@@ -439,3 +439,13 @@ ALTER TABLE exercise MODIFY COLUMN postNum BIGINT AUTO_INCREMENT PRIMARY KEY;
       > meal_hitory 페이지 그래프 기간 한달로변경 & 텍스트는 한달중 데이터가 있는 날짜 카운트
       
       > 따로 올린 기준을 바탕으로 메뉴 3개정도 select 해 추천해줄 예정 
+
+### 브랜치명 (lim) - 임덕현 (2024-01-29)
+      > 메인페이지의 회원가입1, 회원가입2중 현재 사용하는 회원가입2 -> 회원가입 변경, 회원가입1 주석처리
+      
+      > 로그인 안한 사용자에게 마이페이지 숨김 처리
+
+      > meal_history페이지 식단 추천 추가 (7일간 먹은 칼로리 기준으로 일단 구현 조건 추가 예정)
+
+      > meal_hitory, meal_detail페이지 css수정
+      

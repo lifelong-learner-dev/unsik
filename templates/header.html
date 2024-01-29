@@ -12,20 +12,20 @@
             <ul>
                 <li><a href="#">{{ user }}님 로그인</a></li>
                 <li><a href="{% url 'sign_out' %}">로그아웃</a></li>
-                <li><a href="{% url 'sign_up' %}">회원가입</a></li>
+                <!-- <li><a href="{% url 'sign_up' %}">회원가입</a></li> -->
             </ul>
             {% else %}
             <ul>
                 <li><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a></li>
-                <li><a href="#" data-bs-toggle="modal" data-bs-target="#signupModal">회원가입</a></li>
-                <li><a href="{% url 'sign_up' %}">회원가입2</a></li>
+                <!-- <li><a href="#" data-bs-toggle="modal" data-bs-target="#signupModal">회원가입</a></li> -->
+                <li><a href="{% url 'sign_up' %}">회원가입</a></li>
             </ul>
             {% endif %}
         </div>
         {% include 'nvbar.html' %}
     </section>
 
-        <!-- 로그인 모달 -->
+    <!-- 로그인 모달 -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -49,8 +49,8 @@
                         <!-- SNS 로그인 버튼들 -->
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-warning">카카오톡 로그인</button>
-                            <button type="button" class="btn btn-success">네이버 로그인</button>  
-                            <button type="button" class="btn btn-primary">구글 로그인</button>  
+                            <button type="button" class="btn btn-success">네이버 로그인</button>
+                            <button type="button" class="btn btn-primary">구글 로그인</button>
                             <button type="submit" class="btn btn-info">로그인</button>
                         </div>
                     </form>

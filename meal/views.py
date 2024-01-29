@@ -9,6 +9,8 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import datetime, timedelta
 
+from .services import get_personal_recommended_nutrient, get_recommend_mealtype
+
 from .models import CalorieDictionary, Meal, UsersAppUser
 from .modules.meal_anal import predict_meal
 from django.db.models import Q
@@ -20,8 +22,6 @@ from .models import Menu
 import json
 # from django.db.models import Sum
 import ast
-import pytz
-from django.db.models import QuerySet
 from random import sample
 
 # Create your views here.
@@ -39,16 +39,9 @@ def meal_history(request):
 
     meals = Meal.objects.filter(user_id=id).order_by('meal_date')
 
-    chk_meal_type = '일반식'
+    chk_meal_type = get_recommend_mealtype(id)
 
-    # current_time = datetime.now(pytz.utc)
-
-    # seven_days_ago = current_time - timedelta(days=7)
-
-    # recent_meals = Meal.objects.filter(user_id=id, meal_date__gte=seven_days_ago).order_by('meal_date')
-
-    # print('recent_meals : ' , recent_meals)
-
+    # print('chk_meal_type : ' , chk_meal_type)
 
     menu = Menu.objects.filter(menu_classification=chk_meal_type)
 
@@ -57,7 +50,8 @@ def meal_history(request):
     recommended = []
 
     if menu is None : 
-        recommend = None
+        # recommend = None
+        pass
     else:
         random_menus = sample(list(menu), min(len(menu), 3))
 
@@ -87,12 +81,16 @@ def meal_history(request):
     # 데이터가 있는 날짜
     days_with_data = sum(1 for date, cal in calories_by_date.items() if cal > 0)
 
+    for i in range(len(recommended)):
+        recommended[i] = recommended[i][0].split(', ')
+
     # context에 추가
     context = {
         'title': '그래프',
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
+        'meal_type': chk_meal_type,
         'recommend': recommended
     }
 
@@ -114,43 +112,17 @@ def meal_detail(request, date):
     # 나이 계산
     user_age = current_date.year - user_birth_date.year - ((current_date.month, current_date.day) < (user_birth_date.month, user_birth_date.day)) -1
 
-    # print('나이 : ' ,user_age)
-
-    if user_gender == 0:
-        user_bmr = 88.362 + (13.397 * user_weight) + (4.799 * user_height) - (5.677 * user_age)
-    elif user_gender == 1:
-        user_bmr = 447.593  + (9.247 * user_weight) + (3.098 * user_height) - (4.330 * user_age)
-    else:
-        user_bmr = 0.0
-    
     # 활동 수준에 따른 BMR 값 변화
     user_activity = user_info.user_activity
 
-    if user_activity == "5":
-        user_tdee = user_bmr * 1.2
-    elif user_activity == "4":
-        user_tdee = user_bmr * 1.375
-    elif user_activity == "3":
-        user_tdee = user_bmr * 1.55
-    elif user_activity == "2":
-        user_tdee = user_bmr * 1.725
-    elif user_activity == "1":
-        user_tdee = user_bmr * 1.9
-    else:
-        user_tdee = 0.0
-
-    # 단백질 총 칼로리의 10-35%
-    protein_min, protein_max = user_tdee * 0.10/4 , user_tdee * 0.35 / 4
-    # 지방 : 총 칼로리의 20-35 % 
-    fat_min, fat_max = user_tdee * 0.20 / 9, user_tdee * 0.35 / 9
-    # 탄수화물 : 총 칼로리의 45~65%
-    carbs_min, carbs_max = user_tdee * 0.45 / 4, user_tdee * 0.65 / 4
-    # 당류 에너지 섭취의 10% 미만
-    sugar_max = user_tdee * 0.10 / 4
-    # 식이섬류 하루에 25~30g 권장
-    fiber_recommended = 25 if user_gender == 1 else 30  # 여성의 경우 25g, 남성의 경우 30g
-    # 나트륨 : 1500mg 권장
-    natrium_recommended = 1500  # mg   
+    nutrient_res = get_personal_recommended_nutrient(user_height, user_weight, user_gender, user_age, user_activity)
+   
+    protein_min = nutrient_res["protein_min"]
+    fat_min = nutrient_res["fat_min"]
+    carbs_min = nutrient_res["carbs_min"]
+    sugar_max = nutrient_res["sugar_max"]
+    fiber_recommended = nutrient_res["fiber_recommended"]
+    natrium_recommended = nutrient_res["natrium_recommended"]
 
     total_protein = 0.0
     total_fat = 0.0
