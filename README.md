@@ -2,6 +2,31 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
+### 2024/01/29 DB 새로운 컬럼 생성 및 CSS 수정
+
+오늘의 변경 사항
+
+  > 1. users_app_user 테이블의 새로운 컬럼 추가.
+  > 2. 상단메뉴, 메인페이지 CSS 변경
+  > 3. 슬라이드 쇼 기능 구현
+
+ - users_app_user 테이블에 새로운 컬럼이 추가되었습니다. 운동목표를 저장하기 위한 컬럼입니다. default 값은 NULL 입니다.
+
+```sql
+ALTER TABLE `unsik_db`.`users_app_user` 
+ADD COLUMN `user_exercise_purpose` VARCHAR(45) NULL DEFAULT NULL AFTER `user_target_weight`;
+```
+
+users_app/forms.py에서 가입 시 이 테이블에 값을 넣으려고 합니다. 따라서 forms.py에도 변경된 항목이 있습니다.
+
+마이그레이션 필요 시 수행해주세요.
+
+ - 메인페이지의 전반적인 CSS가 변경 단계에 있습니다. 공통 색상은 아직 정해지지 않았지만 대부분 초록 / 파란색 계열로 갈피가 잡힌 듯 합니다.
+
+ - ## merge 작업 시 CSS를 주의해주세요.
+
+---
+
 ### 2024/01/26 식사 분석 알고리즘 및 CSS 배치 수정
 
     > 식사 분석 페이지의 전반적인 CSS를 손 보고 있습니다. 아직 만져야 할 부분들이 많습니다.

@@ -44,4 +44,5 @@ header {
 #user_info ul > li {
     display: inline-flex;
     margin-left: 10px;
+    font-size: small;
 }

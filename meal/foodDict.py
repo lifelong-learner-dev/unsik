@@ -129,12 +129,41 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
 
     # user_daily_calorie 값이 곧 max 값이 된다.
     user_info = UsersAppUser.objects.filter(id=id).first()
-    user_info
-    user_max_calorie = user_info.user_daily_calorie
 
-    # !! 현재 DB에는 칼로리 값이 없다. 따라서 임시로 지정한다 !!
-    if user_max_calorie is None:
-        user_max_calorie = 2200
+    # 1. max 칼로리 구하는 공식. 몸무게, 키, 나이 필요
+    user_weight = user_info.user_weight
+    user_height = user_info.user_height
+
+    # 1-1 나이 구하기
+    user_birth_date = user_info.user_birth
+    user_age = current_time.year - user_birth_date.year - ((current_time.month, current_time.day) < (user_birth_date.month, user_birth_date.day)) -1
+    
+    print(user_age)
+
+    # 유저가 남자라면
+    if user_info.user_gender == 0:
+        user_base_calorie = (10 * user_weight) + (6.25 * user_height) - (5 * user_age) + 5
+    else:
+        # 여자라면
+        user_base_calorie = (10 * user_weight) + (6.25 * user_height) - (5 * user_age) - 161
+
+    print(f"유저 기초대사량 : {user_base_calorie}")
+
+    # 활동계수 곱
+    if user_info.user_activity == "1":
+        user_max_calorie = user_base_calorie * 1.2
+    elif user_info.user_activity == "2":
+        user_max_calorie = user_base_calorie * 1.375
+    elif user_info.user_activity == "3":
+        user_max_calorie = user_base_calorie * 1.55
+    elif user_info.user_activity == "4":
+        user_max_calorie = user_base_calorie * 1.725
+    else:
+        user_max_calorie = user_base_calorie * 1.725
+
+    print(f"유저 : {user_max_calorie}")
+
+    user_exercise_purpose = user_info.user_exercise_purpose
 
     warnings_dict = {}
 
@@ -149,25 +178,39 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
 
     if todays_calorie > user_max_calorie:
         calorie_quote = "하루 권장량보다 많이 드셨어요!"
+
         # 만약 목표가 체중 감량이라면
-        calorie_quote += " 고열량 식품, 과식을 주의해주세요."
+        if user_exercise_purpose == "diet":
+            calorie_quote += " 고열량 식품, 과식을 주의해주세요."
+
         warnings_dict["칼로리"] = calorie_quote
 
     # 탄수화물
-    if nurtient_proportion[0] < 45:
-        carbohydrate_quote = "탄수화물 비중이 45% 이하에요. 부족한 탄수화물은 일상생활에 지장을 줄 수 있어요."
+    if nurtient_proportion[0] < 40:
+        carbohydrate_quote = "탄수화물 비중이 40% 이하에요. 부족한 탄수화물은 일상생활에 지장을 줄 수 있어요."
         warnings_dict["탄수화물"] = carbohydrate_quote
-    elif nurtient_proportion[0] > 65:
-        carbohydrate_quote = "탄수화물 비중이 65% 이상입니다! 탄수화물 과다 섭취는 비만의 원인이에요."
+    elif nurtient_proportion[0] > 55:
+        carbohydrate_quote = "탄수화물 비중이 55% 이상입니다!"
+
         # 만약 목표가 체중 감량이라면
+        if user_exercise_purpose == "diet":
+            carbohydrate_quote += " 탄수화물 과다 섭취는 비만의 원인이에요."
+        
+        #만약 목표가 벌크업이라면
+        if user_exercise_purpose == "bulkup":
+            carbohydrate_quote += " 적정 칼로리 내에서 밥이나 빵을 줄여보세요."
+
         warnings_dict["탄수화물"] = carbohydrate_quote
 
     # 단백질
     if nurtient_proportion[1] < 7:
         protein_quote = "단백질 비중이 7% 이하에요. 부족한 단백질은 신체 활동에 좋지 않아요."
+
         # 만약 목표가 벌크업이라면
-        # "충분한 단백질이 멋진 근육을 만들어요."
+        if user_exercise_purpose == "bulkup":
+            protein_quote += " 충분한 단백질이 멋진 근육을 만들어요."
         warnings_dict["단백질"] = protein_quote
+
     elif nurtient_proportion[1] > 20:
         protein_quote = "단백질 비중이 20% 이상입니다! 과도한 단백질 섭취는 칼슘을 배출하여 뼈와 신장을 약화시켜요."
         warnings_dict["단백질"] = protein_quote
@@ -175,8 +218,12 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
     # 지방
     if nurtient_proportion[2] > 30:
         fat_quote = "지방 비중이 30% 이상입니다! 하루 권장량 이상 섭취하면 비만과 고혈압을 유발할 수 있어요."
+
+        # 만약 목표가 체중 감량이라면
+        if user_exercise_purpose == "diet":
+            fat_quote += " 지방을 줄이고 단백질 비중을 늘려 꾸준히 운동해보세요!"
+
         warnings_dict["지방"] = fat_quote
-        # 지방을 줄이고 단백질 비중을 늘려 꾸준히 운동해보세요!
 
     # 나트륨
     if natrium_today > 2300:
@@ -202,18 +249,19 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
     if dietary_fiber_today < 23:
         dietary_fiber_quote = "식이섬유 섭취량이 23g 이하입니다."
 
-        # 단백질 비중이 20% 이상일 경우 : "육류를 줄이고 채소 식단을 구성해보아요."
+        # 단백질 비중이 20% 이상일 경우
         if nurtient_proportion[1] > 20:
             dietary_fiber_quote += " 육류를 줄이고 채소 식단을 구성해보아요."
 
-        # 당 비중이 20% 이상일 경우 : "주스나 잼보다 생과일을 섭취해보아요."
+        # 당 비중이 20% 이상일 경우
         if nurtient_proportion[3] > 20:
             dietary_fiber_quote += " 주스나 잼보다 생과일을 섭취해보아요."
 
         warnings_dict["식이섬유"] = dietary_fiber_quote
     
-    print(nurtient_proportion)
-    print(warnings_dict)
+    print(f"적정 칼로리 : {user_max_calorie}")
+    print(f"영양소 비율 : {nurtient_proportion}")
+    print(f"주의 경고 : {warnings_dict}")
 
     # 돌려줄 값 :
     # 전체 비율 리스트, 위험 감지된 경고문, max 칼로리 값
