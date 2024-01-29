@@ -161,9 +161,18 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
     else:
         user_max_calorie = user_base_calorie * 1.725
 
-    print(f"유저 : {user_max_calorie}")
+    print(f"유저 기본 칼로리 : {user_max_calorie}")
 
     user_exercise_purpose = user_info.user_exercise_purpose
+
+    print("유저 운동 목표 : ", user_exercise_purpose)
+
+    if user_exercise_purpose == "bulkup":
+        user_max_calorie = round(user_max_calorie * 1.2, 2)
+    if user_exercise_purpose == "diet":
+        user_max_calorie = round(user_max_calorie * 0.8, 2)
+
+    print(f"유저 목표 칼로리 : {user_max_calorie}")
 
     warnings_dict = {}
 
