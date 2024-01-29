@@ -17,7 +17,7 @@ class ExerciseForm(forms.ModelForm):
         )
 
         labels = {
-            'exercise_date': '운동날짜',
+            'exercise_date': '운동시각',
             'exercise_type': '유산소 or 웨이트',
             'exercise_name': '운동명',
             'exercise_amount': '운동 지속 시간',

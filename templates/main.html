@@ -4,34 +4,60 @@
 <link rel="stylesheet" href="{% static 'css/main_page.css' %}">
 <!-- 스타일 창은 다른 데 삽입되어 있으면 적용이 안 된다. -->
 <style>
-    .main_section {
-        display: flex;
-        justify-content: space-around;
-        text-align: center;
-        opacity: 0; /* 초기에는 숨겨진 상태 */
-        transition: opacity 0.3s ease-in-out;
-    }
-
-    .main_section.inView {
+    .mainView.inView {
         opacity: 1; /* 화면에 나타날 때 투명도를 조절하여 나타나는 효과 생성 */
     }
 </style>
-<h2>운동 & 식단 관리 트레이너, 운식입니다.</h2>
-<section>
-    <div class="main_section clearfix">
+<h2 class="mainView" id="welcome_text">운식이를 소개합니다!</h2>
+<section class="mainView">
+    <div class="slide_wrap">
+        <div class="slide_box">
+            <div class="slide_list clearfix">
+                <div class="slide_content slide01">
+                    <!-- <img src="{% static 'images/mainpic1.jpg' %}" class="slide_content slide01" alt=""> -->
+                <p>1</p>
+                </div>
+                <div class="slide_content slide02">
+                    <!-- <img src="{% static 'images/mainpic2.jpg' %}" class="slide_content slide02" alt=""> -->
+                <p>2</p>
+                </div>
+                <div class="slide_content slide03">
+                <p>3</p>
+                </div>
+                <div class="slide_content slide04">
+                <p>4</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide_btn_box">
+            <button type="button" class="slide_btn_prev">◁</button>
+            <button type="button" class="slide_btn_next">▷</button>
+        </div>
+    <ul class="slide_pagination"></ul>
+    </div>
+</section>
+<section id="main_contents_section" class="mainView">
+    <div class="main_section mainView clearfix">
         <img class="mainpic" src="{% static 'images/mainpic1.jpg' %}" alt="">
-        <div>
+        <div class="onPicContents">
             <h1>운동의 시작은 식단 관리부터!</h1>
             <span>AI 카메라로 매일매일 분석 받는 나의 식단</span>
-            <button>체험해보기</button>
+            <a href="{% url 'meal_analyze' %}">체험해보기</a>
         </div>
     </div>
-    <div class="main_section clearfix">
+    <div class="main_section mainView clearfix">
         <img class="mainpic" src="{% static 'images/mainpic2.jpg' %}" alt="">
-        <div>
+        <div class="onPicContents">
             <h1>목표 달성의 열쇠는 꾸준함!</h1>
             <span>하루하루 기록하는 나의 운동 일지</span>
-            <button>운동기록하기</button>
+            {% if user.is_authenticated %}
+            <!-- <button onclick="location.href=">운동기록하기</button> -->
+            <a href="{% url 'record_exercise' %}">운동기록하기</a>
+            {% else %}
+            <!-- <button onclick="location.href=">회원가입하기</button> -->
+            <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a>
+            <a href="{% url 'sign_up' %}">회원가입</a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -50,8 +76,43 @@
         });
     }, options);
 
-    const boxList = document.querySelectorAll(".main_section");
+    const boxList = document.querySelectorAll(".mainView");
 
     boxList.forEach((el) => observer.observe(el));
+
+    // 마우스 올리면 나타나고 내리면 사라지는 애니메이션
+    function displayInfo(infoElement) {
+        let picInfo = infoElement.querySelector('.onPicContents');
+        let picture = infoElement.querySelector('.mainpic');
+        if (picInfo) {
+            picInfo.style.top = '0';
+            picture.style.transform = 'scale(1.2)';
+        }
+    }
+
+    function hideInfo(infoElement) {
+        let picInfo = infoElement.querySelector('.onPicContents');
+        let picture = infoElement.querySelector('.mainpic');
+        if (picInfo) {
+            picInfo.style.top = '100%';
+            picture.style.transform = 'scale(1.0)';
+        }
+    }
+
+    let picInfos = document.querySelectorAll('.main_section');
+
+    picInfos.forEach(function(infoElement) {
+        infoElement.addEventListener('mouseover', function () {
+            console.log('노출 동작')
+            displayInfo(infoElement);
+        });
+
+        infoElement.addEventListener('mouseout', function () {
+            console.log('숨김 동작')
+            hideInfo(infoElement);
+        });
+    });
 </script>
+<!-- 슬라이드쇼 스크립트 -->
+<script src="{% static 'js/slideshow.js' %}" ></script>
 {% endblock content %}

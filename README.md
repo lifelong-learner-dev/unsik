@@ -2,16 +2,30 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
-### 2024/01/29 컬럼 생성
+### 2024/01/29 DB 새로운 컬럼 생성 및 CSS 수정
 
-users_app_user 테이블에 새로운 컬럼이 추가되었습니다. 운동목표를 저장하기 위한 컬럼입니다. default 값은 NULL 입니다.
+오늘의 변경 사항
+
+  > 1. users_app_user 테이블의 새로운 컬럼 추가.
+  > 2. 상단메뉴, 메인페이지 CSS 변경
+  > 3. 슬라이드 쇼 기능 구현
+
+ - users_app_user 테이블에 새로운 컬럼이 추가되었습니다. 운동목표를 저장하기 위한 컬럼입니다. default 값은 NULL 입니다.
 
 ```sql
 ALTER TABLE `unsik_db`.`users_app_user` 
 ADD COLUMN `user_exercise_purpose` VARCHAR(45) NULL DEFAULT NULL AFTER `user_target_weight`;
 ```
 
-forms.py에서 가입 시 이 테이블에 값을 넣으려고 합니다.
+users_app/forms.py에서 가입 시 이 테이블에 값을 넣으려고 합니다. 따라서 forms.py에도 변경된 항목이 있습니다.
+
+마이그레이션 필요 시 수행해주세요.
+
+ - 메인페이지의 전반적인 CSS가 변경 단계에 있습니다. 공통 색상은 아직 정해지지 않았지만 대부분 초록 / 파란색 계열로 갈피가 잡힌 듯 합니다.
+
+ - ## merge 작업 시 CSS를 주의해주세요.
+
+---
 
 ### 2024/01/26 식사 분석 알고리즘 및 CSS 배치 수정
 
@@ -450,3 +464,13 @@ ALTER TABLE exercise MODIFY COLUMN postNum BIGINT AUTO_INCREMENT PRIMARY KEY;
       > meal_hitory 페이지 그래프 기간 한달로변경 & 텍스트는 한달중 데이터가 있는 날짜 카운트
       
       > 따로 올린 기준을 바탕으로 메뉴 3개정도 select 해 추천해줄 예정 
+
+### 브랜치명 (lim) - 임덕현 (2024-01-29)
+      > 메인페이지의 회원가입1, 회원가입2중 현재 사용하는 회원가입2 -> 회원가입 변경, 회원가입1 주석처리
+      
+      > 로그인 안한 사용자에게 마이페이지 숨김 처리
+
+      > meal_history페이지 식단 추천 추가 (7일간 먹은 칼로리 기준으로 일단 구현 조건 추가 예정)
+
+      > meal_hitory, meal_detail페이지 css수정
+      

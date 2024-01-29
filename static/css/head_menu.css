@@ -17,13 +17,13 @@
 }
 
 .head_menu > li:hover {
-    background-color: #eeeeee;
+    /* background-color: #eeeeee; */
     transition-duration: 0.4s;
 }
 
 .head_menu > li a:hover {
     font-weight: bolder;
-    color: #209d14;
+    color: #1eb211;
     transition-duration: 0.4s;
 }
 
@@ -38,7 +38,7 @@
     display: block;
 }
 
-.submenu {
+.submenu, .submenu1 {
     overflow: hidden;
     position: absolute;
     top: 100%;
@@ -49,27 +49,40 @@
     transition-duration: 1s;
 }
 
-.submenu > li {
+.submenu > li,
+.submenu1 > li {
     line-height: 50px;
-    background-color: #eeeeee;
+    background: white;
+    /* background-color: #eeeeee; */
 }
 
-.submenu > li:hover {
-    background-color: #e1e1e1;
+.submenu > li:hover,
+.submenu1 > li:hover {
+    /* background-color: #e1e1e1; */
     transition-duration: 0.5s;
 }
 
+/* 메뉴 3개 짜리 */
 .head_menu > li:hover .submenu {
-    height: 150px;
+    box-shadow: 3px 3px 5px 5px rgba(176, 176, 176, 0.5);
+    height: 150px; /* 하나 당 50px */
     transition-duration: 0.5s;
 }
 
-.head_menu > li:not(:hover) .submenu {
+/* 메뉴 1개 짜리 */
+.head_menu > li:hover .submenu1 {
+    box-shadow: 3px 3px 5px 5px rgba(176, 176, 176, 0.5);
+    height: 50px;
+    transition-duration: 0.5s;
+}
+
+.head_menu > li:not(:hover) .submenu,
+.head_menu > li:not(:hover) .submenu1 {
     height: 0px;
     transition-duration: 0.5s;
 }
 
-.submenu1 {
+/* .submenu1 {
     overflow: hidden;
     position: absolute;
     top: 100%;
@@ -80,7 +93,7 @@
 
 .submenu1 > li {
     line-height: 50px;
-    background-color: #eeeeee;
+    background: white;
 }
 
 .submenu1 > li:hover {
@@ -89,6 +102,7 @@
 }
 
 .head_menu > li:hover .submenu1 {
+    box-shadow: 3px 3px 5px 5px rgba(176, 176, 176, 0.5);
     height: 50px;
     transition-duration: 0.5s;
 }
@@ -96,7 +110,7 @@
 .head_menu > li:not(:hover) .submenu1 {
     height: 0px;
     transition-duration: 0.5s;
-}
+} */
 
 @media (max-width: 768px) {
     .head_menu > li {

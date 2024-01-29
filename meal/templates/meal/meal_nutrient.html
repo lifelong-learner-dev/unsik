@@ -3,7 +3,7 @@
     <canvas id="nutrient_chart"></canvas>
 </div>
 <div id="progressbar">
-    <p>오늘 섭취량 : {{ todays_total_cal }} / 2200</p>
+    <p>오늘 섭취량 : {{ todays_total_cal }} / {{ user_max_calorie }}</p>
     <progress id="progress" value="0" min="0" max="{{ user_max_calorie }}">삽입</progress>
 </div>
 <div id="nutrient_info_box">
@@ -73,6 +73,9 @@
             {% endfor %}
         </table>
     </details>
+</div>
+<div class="float_link">
+    <a href="{% url 'meal_history' %}">식단 히스토리 바로가기</a>
 </div>
 <div>
     <h2>{{ user }}님의 {{ meal_type }}식단 분석</h2>
@@ -210,10 +213,10 @@
         });
 
         $(function(){
-            dslosChart.init();
+            BarChart.init();
         });
 
-        const dslosChart = {
+        const BarChart = {
             losChart : null, 
             chartData : {
                 labels: ['영양소 비율'],
@@ -223,7 +226,7 @@
                         data: [{{ nurtient_proportion.0 }}],
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         borderColor: 'rgba(255,99,132,1)',
-                        borderWidth:1 ,
+                        // borderWidth: 1,
                         barThickness:15,
                         borderSkipped:false ,
                         borderRadius: [
@@ -246,15 +249,22 @@
                         barThickness:15,
                     },
                     {
-                        label: '포화지방',
+                        label: '당',
                         data: [{{ nurtient_proportion.3 }}],
+                        backgroundColor: 'rgba(172, 47, 234, 0.5)',
+                        borderColor: 'rgba(172, 47, 234, 1)',
+                        barThickness:15,
+                    },
+                    {
+                        label: '포화지방',
+                        data: [{{ nurtient_proportion.4 }}],
                         backgroundColor: 'rgba(255, 206, 255, 0.5)',
                         borderColor: 'rgba(255, 206, 255, 1)',
                         barThickness:15,
                     },
                     {
                         label: '트랜스지방',
-                        data: [{{ nurtient_proportion.4 }}],
+                        data: [{{ nurtient_proportion.5 }}],
                         backgroundColor: 'rgba(54, 162, 2, 0.5)',
                         borderColor: 'rgba(54, 162, 2, 1)',
                         barThickness:15,
@@ -266,35 +276,37 @@
             },
 
             init: function(){
-                dslosChart.initChart(); 
+                BarChart.initChart(); 
             },
             initChart: function(){
             // if(this.losChart != undefined) this.losChart.destroy();
             
-            dslosChart.losChart = new Chart($('#nut_proportion_chart'), {
+            BarChart.losChart = new Chart($('#nut_proportion_chart'), {
                     type: 'bar', 
                 // data: dslosChart.chartData,
                 });
             
-            dslosChart.getLosChart();
+            BarChart.getLosChart();
 
             },
             getLosChart: function(){
 
-                dslosChart.losChart.data = dslosChart.chartData;
+                BarChart.losChart.data = BarChart.chartData;
                 
-                dslosChart.losChart.options.plugins.datalabels = {display: false };
-                dslosChart.losChart.options = {
+                BarChart.losChart.options.plugins.datalabels = {display: false };
+                BarChart.losChart.options = {
                 indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
                 scales : {
                     x : {stacked: true, display:false},
                     y : {stacked: true,},
                 },
                 plugins : { 
-                    legend :{display:false}, 
+                    legend :{display:true}, 
                 }
                 }
-                dslosChart.losChart.update();
+                BarChart.losChart.update();
             },
 
         

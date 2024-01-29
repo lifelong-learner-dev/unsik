@@ -1,26 +1,77 @@
-/* 칼로리 사전 */
+/* 칼로리 사전 전체 박스 */
 
 .calorie_dict_box {
     width: 1020px;
     margin: 0 auto;
 }
 
+.calorie_dict_box a {
+    text-decoration: none;
+    color: #000;
+}
+
+.calorie_dict_box a:hover {
+    color: #1eb211;
+    font-weight: 900;
+    text-decoration: underline #1eb211;
+}
+
+/* 검색바 */
+
+.searchBar {
+    width: 100%;
+}
+
+.searchBar input {
+    width: 20em;
+}
+
+.searchBar button {
+    width: 5em;
+    border: 2px solid rgb(30, 178, 17);
+    background-color: #fff;
+    border-radius: 0.6rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+
+.searchBar button:hover {
+    color: #fff;
+    outline: 0;
+    box-shadow: 0 0 20px 20px #1eb211 inset;
+}
+
+.searchBar a:hover {
+    transition: 300ms ease-in-out;
+    color: #fff;
+}
+
+/* 사전 박스 */
+
 .calorie_dict_box > h2 {
     padding-bottom: 8px;
-    border-bottom: 2px solid black;
+    margin-bottom: 20px;
+    border-bottom: 3px solid rgb(30, 178, 17);
+    border-radius: 0.6rem;
 }
 
 .dict_tbody > table {
-    margin: 18px auto;
+    width: 100%;
+    margin: 24px auto;
 }
 
 .dict_tbody > table > tbody {
-    border-color: black;
+    border-color: rgb(30, 178, 17);
+    border-radius: 15px;
     border-width: 3px;
 }
 
 .dict_tbody > table > tbody > tr:first-child {
-    border-bottom: 2px solid;
+    color: #fff;
+    font-size: large;
+    background-color: rgb(30, 178, 17);
+    border-bottom: 2px solid rgb(30, 178, 17);
 }
 
 .dict_tbody > table > tbody > tr:first-child > th {
@@ -36,4 +87,11 @@
 
 .dict_tbody > #food_detail{
     width: 400px;
+}
+
+/* Pagination CSS */
+
+.pageNums a {
+    margin-left: 5px;
+    margin-right: 5px;
 }

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/fitness_grade.css' %}">
+<script src="{% static 'js/male_adolescent_predict.js' %}"></script>
+<script src="{% static 'js/accordion.js' %}"></script>
+    
+<h2>남성 청소년 페이지</h2>
+
+<div class="container">
+    <section class="measure-section">
+        <h3>어떻게 운동을 측정하는지 확인하세요</h3>
+        <!-- 운동별 섹션 -->
+        <div class="accordion">
+            <button class="accordion-button">앉아윗몸앞으로 굽히기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/ydKH9ybDUZ4" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">왕복오래달리기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/vK3qWb-bVKo" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">반복점프</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/RzljNQI5wmA" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">제자리 멀리뛰기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/lb3PMPb-ugY" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">체공시간</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/QSYuh5GP8pA" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+    <section class="predict-section">
+        <form id="predict-form" method="post" class="predict-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="sit_and_reach">앉아윗몸앞으로 굽히기(cm)</label>
+                <input type="text" id="sit_and_reach" name="sit_and_reach" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="shuttle_run">왕복오래달리기(회)</label>
+                <input type="text" id="shuttle_run" name="shuttle_run" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="repeated_jumps">반복점프(회)</label>
+                <input type="text" id="repeated_jumps" name="repeated_jumps" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="standing_long_jump">제자리 멀리뛰기(cm)</label>
+                <input type="text" id="standing_long_jump" name="standing_long_jump" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="hang_time">체공시간(초)</label>
+                <input type="text" id="hang_time" name="hang_time" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">확인</button>
+                <input type="reset" class="btn-reset" value="리셋">
+            </div>
+        </form>
+        <p id="prediction_result" class="result"></p>
+    </section>
+</div>
+{% endblock content %}
