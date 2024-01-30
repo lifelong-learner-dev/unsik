@@ -3,6 +3,12 @@ from django.shortcuts import redirect, render
 from .modules.data_anal import female_senior_input_predict, female_adult_input_predict, female_adolescent_input_predict, female_child_input_predict, male_senior_input_predict, male_adult_input_predict, male_adolescent_input_predict, male_child_input_predict 
 from django.http import JsonResponse
 from django.contrib import messages
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from django.views.decorators.csrf import csrf_exempt
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
 
 def fitness_grade(request):
     if not request.user.is_authenticated:
@@ -182,4 +188,4 @@ def male_child_predict_ajax(request):
         return JsonResponse({'class_name': class_name})
     else:
         return JsonResponse({'error': 'Invalid request method'})
-
+    

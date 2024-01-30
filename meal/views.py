@@ -9,6 +9,8 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import datetime, timedelta
 
+import pytz
+
 from .services import get_personal_recommended_nutrient, get_recommend_mealtype
 
 from .models import CalorieDictionary, Meal, UsersAppUser

@@ -3,7 +3,7 @@ $(document).ready(function () {
         e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: '/fitness_grade/female_senior_predict_ajax/',
+            url: 'http://127.0.0.1:8000/fitness_grade/female_senior_predict_ajax/',
             data: $(this).serialize(),
 
             success: function (response) {
