@@ -11,5 +11,4 @@ ultralytics==8.0.229
 Pillow==10.2.0
 
 joblib==1.3.2
-
 scikit-learn==1.3.0

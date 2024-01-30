@@ -141,7 +141,7 @@ def meal_detail(request, date):
     meals = Meal.objects.filter(user_id=id, meal_date__range=(start_date, end_date))
 
     # meal_type 별로 분류
-    meal_info = {'아침': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
+    meal_information = {'아침': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
                  '점심': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
                  '저녁': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
                  '간식': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)}}
@@ -154,19 +154,21 @@ def meal_detail(request, date):
             menu = CalorieDictionary.objects.filter(food_code=info).first()
 
             if menu is not None:
-                meal_info[meal.meal_type]['foods'].append(menu.food_name)
-                meal_info[meal.meal_type]['calories'] += menu.calories
-                meal_info[meal.meal_type]['nutrients']['protein'] += menu.protein
+                meal_information[meal.meal_type]['foods'].append({
+                    'name': menu.food_name,
+                    'calories': menu.calories,
+                    'protein': menu.protein,
+                    'fat': menu.fat,
+                    'carbohydrate': menu.carbohydrate,
+                    'sugar': menu.suger,
+                    'dietary_fiber': menu.dietary_fiber,
+                    'natrium': menu.natrium
+                })
                 total_protein += menu.protein
-                meal_info[meal.meal_type]['nutrients']['fat'] += menu.fat
                 total_fat += menu.fat
-                meal_info[meal.meal_type]['nutrients']['carbohydrate'] += menu.carbohydrate
                 total_carbs += menu.carbohydrate
-                meal_info[meal.meal_type]['nutrients']['suger'] += menu.suger
                 total_sugar += menu.suger
-                meal_info[meal.meal_type]['nutrients']['dietary_fiber'] += menu.dietary_fiber
                 total_fiber += menu.dietary_fiber
-                meal_info[meal.meal_type]['nutrients']['natrium'] += menu.natrium
                 total_natrium += menu.natrium
     
     deficient_nutrients = {}
@@ -187,7 +189,7 @@ def meal_detail(request, date):
                 
     context = {
         'date': date,
-        'meal_info': meal_info,
+        'meal_info': meal_information,
         'deficient_nutrients' : deficient_nutrients
     }
 
