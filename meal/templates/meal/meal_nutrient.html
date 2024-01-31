@@ -82,7 +82,6 @@
     <div class="barchart-container">
         <canvas id="nut_proportion_chart"></canvas>
     </div>
-    <p>{{ nurtient_proportion }}</p>
     {% if warnings_dict %}
     {% for key, value in warnings_dict.items %}
     <div class="display_flex">
@@ -135,19 +134,19 @@
                            {{ total_nutrient.7 }}, 
                            {{ total_nutrient.5 }}, ],
                     backgroundColor: [
-                        'rgba(155, 255, 155, 0.2)',
+                        'rgba(133, 255, 109, 0.3)',
                     ],
                     borderColor: [
-                        'rgba(155, 255, 155, 1)',
+                        'rgba(60, 211, 30, 1)',
                     ],
                     pointBackgroundColor: [
-                        'rgb(255, 99, 132)'
+                        'rgb(85, 255, 51)'
                     ],
                     pointHoverBackgroundColor: [
                         '#fff',
                     ],
                     pointHoverBorderColor: [
-                        'rgb(255, 99, 132)',
+                        'rgb(85, 255, 51)',
                     ],
                     pointRadius: 4,
                     pointHoverRadius: 5
@@ -161,19 +160,19 @@
                            {{ todays_total_nut.7 }}, 
                            {{ todays_total_nut.5 }}, ],
                     backgroundColor: [ // 박스 배경 색상
-                        'rgba(58, 58, 218, 0.2)',
+                        'rgba(23, 128, 255, 0.3)',
                     ],
                     borderColor: [ // 경계 색상
-                        'rgba(58, 58, 218, 1)',
+                        'rgba(7, 82, 173, 1)',
                     ],
                     pointBackgroundColor: [ // 포인터 배경색
-                        'rgb(255, 99, 132)'
+                        'rgb(72, 154, 255)'
                     ],
                     pointHoverBackgroundColor: [ // 마우스 올리면 바뀌는 점
                         '#fff',
                     ],
                     pointHoverBorderColor: [ // 마우스 올리면 바뀌는 경계선
-                        'rgb(255, 99, 132)',
+                        'rgb(7, 82, 173)',
                     ],
                     pointRadius: 4,
                     pointHoverRadius: 5,
@@ -208,6 +207,15 @@
                         suggestedMin: 50,
                         suggestedMax: 150
                     }
+                },
+                scales: {
+                    r: {
+                        pointLabels: {
+                            font: {
+                                size: 17
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -224,8 +232,8 @@
                     {
                         label: '탄수화물',
                         data: [{{ nurtient_proportion.0 }}],
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        borderColor: 'rgba(255,99,132,1)',
+                        backgroundColor: 'rgba(255, 185, 46, 0.5)',
+                        borderColor: 'rgba(255, 185, 46, 1)',
                         // borderWidth: 1,
                         barThickness:15,
                         borderSkipped:false ,
@@ -237,36 +245,36 @@
                     {
                         label: '단백질',
                         data: [{{ nurtient_proportion.1 }}],
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(255, 110, 233, 0.5)',
+                        borderColor: 'rgba(255, 110, 233, 1)',
                         barThickness:15,
                     },
                     {
                         label: '지방',
                         data: [{{ nurtient_proportion.2 }}],
-                        backgroundColor: 'rgba(255, 206, 86, 0.5)',
-                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(225, 48, 48, 0.5)',
+                        borderColor: 'rgba(225, 48, 48, 1)',
                         barThickness:15,
                     },
                     {
                         label: '당',
                         data: [{{ nurtient_proportion.3 }}],
-                        backgroundColor: 'rgba(172, 47, 234, 0.5)',
-                        borderColor: 'rgba(172, 47, 234, 1)',
+                        backgroundColor: 'rgba(79, 237, 61, 0.5)',
+                        borderColor: 'rgba(79, 237, 61, 1)',
                         barThickness:15,
                     },
                     {
                         label: '포화지방',
                         data: [{{ nurtient_proportion.4 }}],
-                        backgroundColor: 'rgba(255, 206, 255, 0.5)',
-                        borderColor: 'rgba(255, 206, 255, 1)',
+                        backgroundColor: 'rgba(44, 84, 204, 0.5)',
+                        borderColor: 'rgba(44, 84, 204, 1)',
                         barThickness:15,
                     },
                     {
                         label: '트랜스지방',
                         data: [{{ nurtient_proportion.5 }}],
-                        backgroundColor: 'rgba(54, 162, 2, 0.5)',
-                        borderColor: 'rgba(54, 162, 2, 1)',
+                        backgroundColor: 'rgba(97, 24, 160, 0.5)',
+                        borderColor: 'rgba(97, 24, 160, 1)',
                         barThickness:15,
                         borderRadius: [
                             { topLeft: 0, topRight: 20, bottomLeft: 0, bottomRight: 20},
