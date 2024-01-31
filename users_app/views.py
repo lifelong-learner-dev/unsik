@@ -1,14 +1,15 @@
 from django.utils import timezone
 import json
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Daily, User, UsersAppUser
+from .models import Daily, User, UsersAppUser, Meal, Exercise
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from .forms import UserForm, MypageUserForm
 from django.db.models import Avg, Sum, Count
-
+from django.db.models import DateField
+from django.db.models.functions import Cast
 
 # Create your views here.
 # 로그인, 회원가입 전용 함수
@@ -72,17 +73,18 @@ def my_page(request, username):
     my_page_user = get_object_or_404(get_user_model(), username=username, is_active=True)
     id = my_page_user.id
 
-    everyday = Daily.objects.filter(user=id).values('date').annotate(current_weight=Avg('current_weight'), total_meal_calories=Sum('total_meal_calories'), total_exercise_calories=Sum('total_exercise_calories')).order_by('date')
+    everyday_weight = Daily.objects.filter(user=id).values('date').annotate(current_weight=Avg('current_weight')).order_by('date')
+    everyday_meal = Meal.objects.filter(user=id).values('meal_date').annotate(meal_calories=Sum('meal_calories')).order_by('meal_date')
+    everyday_exercise = Exercise.objects.filter(user=id).values('exercise_date').annotate(calories_burned=Sum('calories_burned')).order_by('exercise_date')
+    
     continuous_days = 0
     max_continuous = 0
     previous_date = None
 
-    today = timezone.localdate()
-    todays_total_meal_calories = Daily.objects.filter(user_id=id, date=today).aggregate(Sum('total_meal_calories'))
-    todays_meal_calories_sum = todays_total_meal_calories.get('total_meal_calories__sum') or 0
+    today = timezone.now().date()
     
-    for daily in everyday:
-        daily_date = daily['date']
+    for daily_weight in everyday_weight:
+        daily_date = daily_weight['date']
         if previous_date and (daily_date - previous_date).days == 1:
             continuous_days += 1
         else:
@@ -92,28 +94,56 @@ def my_page(request, username):
     
     max_continuous = max(max_continuous, continuous_days)
 
-    dates = [daily['date'].strftime('%Y-%m-%d') for daily in everyday]
-    weights = [daily['current_weight'] for daily in everyday]
-    meal_calories = [daily['total_meal_calories'] for daily in everyday]
-    exercise_calories = [daily['total_exercise_calories'] for daily in everyday]
+    weight_dates = [daily_weight['date'].strftime('%Y-%m-%d') for daily_weight in everyday_weight]
+    weights = [daily_weight['current_weight'] for daily_weight in everyday_weight]
+
+    # 날짜를 키로 사용하여 데이터를 결합
+    combined_data = {}
+    for daily_meal in everyday_meal:
+        date_str = daily_meal['meal_date'].strftime('%Y-%m-%d')
+        combined_data.setdefault(date_str, {'meal_calories': 0, 'exercise_calories': 0})
+        combined_data[date_str]['meal_calories'] = daily_meal['meal_calories']
+
+    for daily_exercise in everyday_exercise:
+        date_str = daily_exercise['exercise_date'].strftime('%Y-%m-%d')
+        combined_data.setdefault(date_str, {'meal_calories': 0, 'exercise_calories': 0})
+        combined_data[date_str]['exercise_calories'] = daily_exercise['calories_burned']
+
+    # 정렬된 날짜 리스트 생성
+    sorted_dates = sorted(combined_data.keys())
+
+    # 그래프 데이터 준비
+    graph_dates = []
+    graph_meal_calories = []
+    graph_exercise_calories = []
+    for date_str in sorted_dates:
+        graph_dates.append(date_str)
+        graph_meal_calories.append(combined_data[date_str]['meal_calories'])
+        graph_exercise_calories.append(combined_data[date_str]['exercise_calories'])
+
     
     # 특정 기간 내 식단 및 운동 기록을 조회합니다.
     start_date = timezone.now().date() - timezone.timedelta(days=180)  # 30일 전부터
-    end_date = timezone.now().date()  # 현재 날짜까지
+    end_date = timezone.now().date() + timezone.timedelta(days=1) # 현재 날짜까지
     # 식단 기록
-    meal_records = Daily.objects.filter(
-    date__range=(start_date, end_date),
-    total_meal_calories__isnull=False
-    ).values('date').annotate(
-        meal_count=Count('total_meal_calories', distinct=True)
+    # 식단 기록
+    meal_records = Meal.objects.filter(
+        meal_date__range=(start_date, end_date),
+        meal_calories__isnull=False
+    ).annotate(
+        meal_date_date=Cast('meal_date', DateField())
+    ).values('meal_date_date').annotate(
+        meal_count=Count('meal_calories', distinct=True)
     )
 
     # 운동 기록
-    exercise_records = Daily.objects.filter(
-    date__range=(start_date, end_date),
-    total_exercise_calories__isnull=False
-    ).values('date').annotate(
-        exercise_count=Count('total_exercise_calories', distinct=True)
+    exercise_records = Exercise.objects.filter(
+        exercise_date__range=(start_date, end_date),
+        calories_burned__isnull=False
+    ).annotate(
+        exercise_date_date=Cast('exercise_date', DateField())
+    ).values('exercise_date_date').annotate(
+        exercise_count=Count('calories_burned', distinct=True)
     )
 
     # 이벤트 데이터를 생성합니다.
@@ -121,22 +151,30 @@ def my_page(request, username):
     for record in meal_records:
         events.append({
             'title': f'식단: {record["meal_count"]}회',
-            'start': record['date'].isoformat(),
+            'start': record['meal_date_date'].isoformat(),
             'color': '#004085'  # 진한 파랑 색상
         })
+
     for record in exercise_records:
         events.append({
             'title': f'운동: {record["exercise_count"]}회',
-            'start': record['date'].isoformat(),
+            'start': record['exercise_date_date'].isoformat(),
             'color': '#228B22'  # 포레스트 그린 색상
         })
     
+    today_str = today.strftime('%Y-%m-%d')
+
+    # 오늘 날짜의 총 식사 칼로리를 가져옵니다. 데이터가 없으면 0을 반환합니다.
+    todays_meal_calories_sum = combined_data.get(today_str, {}).get('meal_calories', 0)
+    todays_meal_calories_sum = "{:.2f}".format(todays_meal_calories_sum)
+
     context = {
         'title': '그래프',
-        'dates': json.dumps(dates),
+        'weight_dates': json.dumps(weight_dates),
         'weights': json.dumps(weights),
-        'meal_calories': json.dumps(meal_calories),
-        'exercise_calories': json.dumps(exercise_calories),
+        'graph_dates' : json.dumps(graph_dates),
+        'graph_meal_calories' : json.dumps(graph_meal_calories),
+        'graph_exercise_calories' : json.dumps(graph_exercise_calories),
         'todays_meal_calories_sum': todays_meal_calories_sum,
         'max_continuous': max_continuous,
         "my_page_user":my_page_user,

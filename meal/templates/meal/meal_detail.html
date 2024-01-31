@@ -24,14 +24,14 @@
         <tbody>
             {% for food in data.foods %}
             <tr>
-                <td>{{ food }}</td>
-                <td>{{ data.calories|floatformat:2 }}</td>
-                <td>{{ data.nutrients.protein|floatformat:2 }}</td>
-                <td>{{ data.nutrients.fat|floatformat:2 }}</td>
-                <td>{{ data.nutrients.carbohydrate|floatformat:2 }}</td>
-                <td>{{ data.nutrients.suger|floatformat:2 }}</td>
-                <td>{{ data.nutrients.dietary_fiber|floatformat:2 }}</td>
-                <td>{{ data.nutrients.natrium|floatformat:2 }}</td>
+                <td>{{ food.name }}</td>
+                <td>{{ food.calories|floatformat:2 }}</td>
+                <td>{{ food.protein|floatformat:2 }}</td>
+                <td>{{ food.fat|floatformat:2 }}</td>
+                <td>{{ food.carbohydrate|floatformat:2 }}</td>
+                <td>{{ food.sugar|floatformat:2 }}</td>
+                <td>{{ food.dietary_fiber|floatformat:2 }}</td>
+                <td>{{ food.natrium|floatformat:2 }}</td>
             </tr>
             {% endfor %}
         </tbody>
