@@ -9,24 +9,22 @@
     <form method="GET" action="{% url 'calorie_dict' %}">
         <div class="searchBar">
             <input type="text" name="search" value="{{ search_query }}" placeholder="식품명 제조사">
-            <select name="majorClass" id="majorClass">
+            <select name="majorClass" id="majorClass" class="selectBox">
                 <option value="" {% if not major_class_filter %}selected{% endif %}>==대분류==</option>
                 <!-- for문 써서 출력 -->
                 {% for major_class in major_classes %}
                 <option value="{{ major_class }}" {% if major_class == major_class_filter %}selected{% endif %}>{{ major_class }}</option>
                 {% endfor %}
             </select>
-            <select name="detailClass" id="detailClass">
+            <select name="detailClass" id="detailClass" class="selectBox">
                 <option value="" {% if not detail_class_filter %}selected{% endif %}>==소분류==</option>
                 <!-- for문 써서 출력 -->
                 {% for detail_class in detail_classes %}
                 <option value="{{ detail_class }}" {% if detail_class == detail_class_filter %}selected{% endif %}>{{ detail_class }}</option>
                 {% endfor %}
             </select>
-            <button type="submit">검색</button>
-            <button type="reset">
-                <a href="{% url 'calorie_dict' %}">초기화</a>
-            </button>
+            <button type="submit" class="greenBtn">검색</button>
+            <a href="{% url 'calorie_dict' %}" class="greenBtn">초기화</a>
         </div>
     </form>
 

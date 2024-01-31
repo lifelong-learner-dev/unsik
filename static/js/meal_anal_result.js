@@ -51,7 +51,7 @@ $(document).ready(function(){
 
         // input을 없앨 수 있는 버튼
         const remove_btn = $('<button>', {
-            class: 'remove_input',
+            class: 'remove_input greenBtn',
             text: '입력창 삭제'
         });
 

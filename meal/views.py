@@ -350,7 +350,7 @@ def meal_post(request):
         if request.user.is_authenticated:
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
-            # 옵션 1 현재 시간 얻기
+            # 옵션 1 파이썬으로 현재 시간 얻기
             # current_time = datetime.now()
 
             # 옵션 2 django.utils timezone을 이용해 시간 얻기
@@ -360,7 +360,7 @@ def meal_post(request):
             current_time = timezone.datetime.now()
 
             # 테스트를 위한 임의 조작 시간
-            # current_time = datetime(2024, 1, 26, 19, 22, 34)
+            # current_time = datetime(2024, 1, 31, 13, 22, 34)
 
             print(f"현재 시간 : {current_time}")
 
@@ -379,15 +379,15 @@ def meal_post(request):
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            Meal.objects.create(
-                user = user_instance,
-                # meal_date = current_time,
-                meal_photo = meal_data_list[-1],
-                meal_info = json.dumps(filtered_list),
-                meal_type = meal_type,
-                meal_calories = meal_calories,
-                nutrient_info = json.dumps(nutrient_info)
-            )
+            # Meal.objects.create(
+            #     user = user_instance,
+            #     meal_date = current_time,
+            #     meal_photo = meal_data_list[-1],
+            #     meal_info = json.dumps(filtered_list),
+            #     meal_type = meal_type,
+            #     meal_calories = meal_calories,
+            #     nutrient_info = json.dumps(nutrient_info)
+            # )
 
             ############ DB 저장 완료 후 로직 #############
 

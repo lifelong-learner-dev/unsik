@@ -10,6 +10,7 @@ __pycache__/
 __pycache__/
 local_settings.py
 db.sqlite3
+db_settings.py
 
 # Visual Studio Code
 .vscode/
