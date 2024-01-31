@@ -269,8 +269,8 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
         warnings_dict["식이섬유"] = dietary_fiber_quote
     
     print(f"적정 칼로리 : {user_max_calorie}")
-    print(f"영양소 비율 : {nurtient_proportion}")
-    print(f"주의 경고 : {warnings_dict}")
+    # print(f"영양소 비율 : {nurtient_proportion}")
+    # print(f"주의 경고 : {warnings_dict}")
 
     # 돌려줄 값 :
     # 전체 비율 리스트, 위험 감지된 경고문, max 칼로리 값

@@ -38,23 +38,23 @@
                 <th>지역/제조사</th>
                 <th>대분류</th>
                 <th>소분류</th>
-                <th>1회 제공량(g)</th>
-                <th>칼로리(kcal)</th>
+                <th>1회 제공량</th>
+                <th>칼로리</th>
                 <th>탄수화물</th>
                 <th>지방</th>
                 <th>단백질</th>
             </tr>
             {% for data in current_page_data %}
             <tr>
-                <td><a href="{% url 'food_detail' data.food_code %}">{{ data.food_name }}</a></td>
+                <td><strong><a href="{% url 'food_detail' data.food_code %}">{{ data.food_name }}</a></strong></td>
                 <td>{{ data.maker }}</td>
                 <td>{{ data.major_class }}</td>
                 <td>{{ data.detail_class }}</td>
-                <td>{{ data.one_serve_amount_g_field }}</td>
-                <td>{{ data.calories }}</td>
-                <td>{{ data.carbohydrate }}</td>
-                <td>{{ data.fat }}</td>
-                <td>{{ data.protein }}</td>
+                <td>{{ data.one_serve_amount_g_field }}g</td>
+                <td>{{ data.calories }} kcal</td>
+                <td>{{ data.carbohydrate }}g</td>
+                <td>{{ data.fat }}g</td>
+                <td>{{ data.protein }}g</td>
             </tr>
             {% endfor %}
         </table>

@@ -28,8 +28,8 @@ class CalorieDictionary(models.Model):
 class Meal(models.Model):
     postnum = models.BigAutoField(db_column='postNum', primary_key=True)  # Field name made lowercase.
     user = models.ForeignKey('UsersAppUser', models.DO_NOTHING)
-    # meal_date = models.DateTimeField(auto_now_add=True)
-    meal_date = models.DateTimeField()
+    meal_date = models.DateTimeField(auto_now_add=True)
+    # meal_date = models.DateTimeField()
     meal_photo = models.CharField(max_length=255, blank=True, null=True)
     meal_info = models.TextField(blank=True, null=True)
     meal_type = models.CharField(max_length=20, blank=True, null=True)
