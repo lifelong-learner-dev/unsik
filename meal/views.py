@@ -62,8 +62,9 @@ def meal_history(request):
             recommended.append([data.menu_dtl])
 
     # print('recommended' ,recommended)
-
+            
     today = datetime.today()
+    month_data = today.month
     first_day_of_month = today.replace(day=1)
     next_month = today.replace(day=28) + timedelta(days=4)
     last_day_of_month = next_month - timedelta(days=next_month.day)
@@ -81,14 +82,14 @@ def meal_history(request):
     calories = [calories_by_date[date] for date in all_dates]
 
     # 데이터가 있는 날짜
-    days_with_data = sum(1 for date, cal in calories_by_date.items() if cal > 0)
+    days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
 
     for i in range(len(recommended)):
         recommended[i] = recommended[i][0].split(', ')
 
-    # context에 추가
     context = {
         'title': '그래프',
+        'month': month_data ,
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
@@ -96,10 +97,49 @@ def meal_history(request):
         'recommend': recommended
     }
 
+    # print('context 확인 : ',context)
+
     return render(request, 'meal/meal_history.html', context)
 
+def get_monthly_history(request, year, month):
+
+    user_id = request.user.id
+    start_date = datetime(year, month, 1)
+    end_date = start_date + timedelta(days=31)  
+    end_date = end_date.replace(day=1) - timedelta(days=1)
+
+    meals = Meal.objects.filter(user_id=user_id, meal_date__range=[start_date, end_date]).order_by('meal_date')
+
+    calories_by_date = defaultdict(int)
+
+    for meal in meals:
+        date_only = meal.meal_date.date()
+        if start_date.date() <= date_only <= end_date.date():
+            calories_by_date[date_only] += meal.meal_calories
+    
+    # print('calories_by_date : ' , calories_by_date)
+
+    # 달 계산
+    all_dates = [start_date.date() + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
+    dates = [date.strftime('%Y-%m-%d') for date in all_dates]
+    calories = [calories_by_date[date] for date in all_dates]
+
+    # 데이터가 있는 날짜
+    days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
+
+    data = {
+        'month': month ,
+        'dates': json.dumps(dates),
+        'calories': json.dumps(calories),
+        'days_with_data': days_with_data,
+    }
+
+    return JsonResponse(data)
+
 def meal_detail(request, date):
+    print('date : ', date)
     id = request.user.id
+    print('id = ',id)
 
     # 유저별 권장 영양섭취 계산
     user_info = UsersAppUser.objects.filter(id=id).first()
@@ -188,7 +228,7 @@ def meal_detail(request, date):
 
                 
     context = {
-        'date': date,
+        'date' : date,
         'meal_info': meal_information,
         'deficient_nutrients' : deficient_nutrients
     }

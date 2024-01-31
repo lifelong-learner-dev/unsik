@@ -1,5 +1,16 @@
 $(document).ready(function () {
 
+    var currentYear = new Date().getFullYear();
+    var currentMonth = new Date().getMonth() + 1;
+
+    $('#prev-month').click(function () {
+        changeMonth(-1);
+    });
+
+    $('#next-month').click(function () {
+        changeMonth(1);
+    });
+
     var ctx = document.getElementById('caloriesChart');
 
     var chart = new Chart(ctx, {
@@ -35,5 +46,44 @@ $(document).ready(function () {
             }
         }
     });
+
+    function changeMonth(offset) {
+        currentMonth += offset;
+
+        // 년도 변경 
+        if (currentMonth > 12) {
+            currentMonth = 1;
+            currentYear++;
+        } else if (currentMonth < 1) {
+            currentMonth = 12;
+            currentYear--;
+        }
+
+        // AJAX 요청
+        $.ajax({
+            url: `/meal/meal_history/${currentYear}/${currentMonth}/`,
+            dataType: 'json',
+            success: function (response) {
+                updateChart(response);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+    }
+
+    function updateChart(data) {
+        var parsedDates = JSON.parse(data.dates);
+        var parsedCalories = JSON.parse(data.calories);
+
+        chart.data.labels = parsedDates;
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data = parsedCalories;
+        });
+        chart.update();
+
+        $("#month_display").text(data.month);
+        $("#days-with-data-display").text(data.days_with_data);
+    }
 
 })
