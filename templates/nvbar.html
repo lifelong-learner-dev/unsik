@@ -2,44 +2,46 @@
     {% if user.is_authenticated %}
     <ul class="head_menu">
         <li>
-            <a href="{% url 'meal_analyze' %}">식단 올리기</a>
-            <ul class="submenu1">
+            <p>식단</p>
+            <ul class="submenu3">
+                <li><a href="{% url 'meal_analyze' %}">식단 올리기</a></li>
                 <li><a href="{% url 'calorie_dict' %}">칼로리 사전</a></li>
+                <li><a href="#">식단 추천</a></li>
             </ul>
         </li>
-        <li><a href="{% url 'record_exercise' %}">운동 기록하기</a></li>
         <li>
-            <a href="{% url 'fitness_grade' %}">나의 운동 등급(AI)</a>
-            <ul class="submenu">
-                <li><a href="#">오늘의 운동 인증</a></li>
+            <p>운동</p>
+            <ul class="submenu3">
+                <li><a href="{% url 'record_exercise' %}">운동 기록하기</a></li>
+                <li><a href="{% url 'fitness_grade' %}">나의 운동 등급(AI)</a></li>
                 <li><a href="#">질문있어요</a></li>
-                <li><a href="#">식단 조합 추천</a></li>
             </ul>
         </li>
         <li>
-            <a href="{% url 'my_page' user.username %}">마이페이지</a>
-            <ul class="submenu">
+            <p>마이페이지</p>
+            <ul class="submenu3">
+                <li><a href="{% url 'my_page' user.username %}">나의 정보</a></li>
                 <li><a href="{% url 'meal_history' %}">나의 식단 히스토리</a></li>
                 <li><a href="">나의 운동 기록</a></li>
-                <li><a href="">나의 정보 수정</a></li>
             </ul>
         </li>
     </ul>
     {% else %}
     <ul class="head_menu">
         <li>
-            <a href="{% url 'meal_analyze' %}">식단 올리기</a>
-            <ul class="submenu1">
+            <p>식단</p>
+            <ul class="submenu3">
+                <li><a href="{% url 'meal_analyze' %}">식단 올리기</a></li>
                 <li><a href="{% url 'calorie_dict' %}">칼로리 사전</a></li>
+                <li><a href="#">식단 추천</a></li>
             </ul>
         </li>
-        <li><a href="{% url 'record_exercise' %}">운동 기록하기</a></li>
         <li>
-            <a href="#">커뮤니티</a>
-            <ul class="submenu">
-                <li><a href="#">오늘의 운동 인증</a></li>
+            <p>운동</p>
+            <ul class="submenu3">
+                <li><a href="{% url 'record_exercise' %}">운동 기록하기</a></li>
+                <li><a href="{% url 'fitness_grade' %}">나의 운동 등급(AI)</a></li>
                 <li><a href="#">질문있어요</a></li>
-                <li><a href="#">식단 조합 추천</a></li>
             </ul>
         </li>
         <!-- <li>
@@ -49,7 +51,7 @@
                 <li><a href="">나의 운동 기록</a></li>
                 <li><a href="">나의 정보 수정</a></li>
             </ul>
-        </li>
+        </li> -->
     </ul>
     {% endif %}
 </nav>
