@@ -4,7 +4,7 @@ $(document).ready(function () {
     var chart = new Chart(ctx, {
         type: 'line', // 라인 차트 유형
         data: {
-            labels: dates, // x축 레이블로 날짜 사용
+            labels: weight_dates, // x축 레이블로 날짜 사용
             datasets: [{
                 label: '몸무게', // 데이터셋의 레이블
                 backgroundColor: 'rgba(255, 99, 132, 0.2)', // 그래프 내부 색

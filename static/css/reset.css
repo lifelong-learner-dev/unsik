@@ -16,4 +16,6 @@ a {
     margin: 0 auto;
 }
 
-.modal-backdrop { --bs-backdrop-zindex: 9!important; }
+.modal-backdrop {
+    --bs-backdrop-zindex: 9 !important;
+}
