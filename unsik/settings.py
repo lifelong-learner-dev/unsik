@@ -13,10 +13,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import db_settings
 import os
+<<<<<<< HEAD
 # from decouple import config
 
 # .env 파일에서 OPENAI_API_KEY 가져오기
 # openai_api_key = config('OPENAI_API_KEY')
+=======
+
+>>>>>>> d5cf5ad54c2d47275b8c3f12455cd1e01d1d2962
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

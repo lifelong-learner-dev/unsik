@@ -25,6 +25,7 @@ import json
 from django.db.models import Sum
 import ast
 from random import sample
+import pytz
 
 # Create your views here.
 
@@ -353,11 +354,17 @@ def meal_post(request):
         if request.user.is_authenticated:
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
-            # 현재 시간 얻기
-            current_time = datetime.now()
+            # 옵션 1 파이썬으로 현재 시간 얻기
+            # current_time = datetime.now()
+
+            # 옵션 2 django.utils timezone을 이용해 시간 얻기
+            # current_time = timezone.now().replace(tzinfo=pytz.timezone('Asia/Seoul'))
+
+            # 옵션 3 timezone.datetime.now() 가져오기
+            current_time = timezone.datetime.now()
 
             # 테스트를 위한 임의 조작 시간
-            # current_time = datetime(2024, 1, 26, 19, 22, 34)
+            # current_time = datetime(2024, 1, 31, 13, 22, 34)
 
             print(f"현재 시간 : {current_time}")
 
@@ -376,32 +383,37 @@ def meal_post(request):
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            Meal.objects.create(
-                user = user_instance,
-                meal_date = current_time,
-                meal_photo = meal_data_list[-1],
-                meal_info = json.dumps(filtered_list),
-                meal_type = meal_type,
-                meal_calories = meal_calories,
-                nutrient_info = json.dumps(nutrient_info)
-            )
+            # Meal.objects.create(
+            #     user = user_instance,
+            #     meal_date = current_time,
+            #     meal_photo = meal_data_list[-1],
+            #     meal_info = json.dumps(filtered_list),
+            #     meal_type = meal_type,
+            #     meal_calories = meal_calories,
+            #     nutrient_info = json.dumps(nutrient_info)
+            # )
 
             ############ DB 저장 완료 후 로직 #############
 
             # (1) 날짜 기준으로 오늘 칼로리만 합산해오기
-            today = datetime.now()
+
+            # 파이썬 내장 datetime 사용
+            # today = datetime.now()
+
+            # django 내장 timezone 사용
+            today = timezone.datetime.now()
 
             day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
             day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
 
-            # print(day_start)
-            # print(day_end)
+            print(day_start)
+            print(day_end)
 
             all_meal_today = Meal.objects.filter(user=request.user.id,
                                                  meal_date__range=(day_start, day_end))\
                                                  .aggregate(all_calories=Sum("meal_calories"))
             
-            # print(all_meal_today)
+            print(f"오늘의 전체 식사 : {all_meal_today}")
 
             todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
 
@@ -418,7 +430,7 @@ def meal_post(request):
             calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else meal_calories
 
             print(f"전체 영양소 : {total_nutrient_sum}")
-            print(calorie_today)
+            # print(calorie_today)
 
             # (2) filtered_list로 칼로리 딕셔너리에서 정보 빼오기
             each_foods = []
@@ -467,14 +479,18 @@ def test(request):
     # 아직 테스트케이스 만들고 설정하는 방법을 잘 모르겠다
 
     id = request.user.id
-    print(id)
+    print(f"유저 id : {id}")
 
     asia_seoul = pytz.timezone('Asia/Seoul')
-    today = datetime.now().replace(tzinfo=asia_seoul)
-    timezone_today = timezone.now().replace(tzinfo=asia_seoul)
+    # timezone_today = timezone.now().replace(tzinfo=asia_seoul)
+
+    # timezone에서 timedelta 9를 하면 한국 시간이 되겠다.
+    timezone_today = timezone.datetime.now()
+    today = timezone_today + timedelta(hours=9)
+    today = today.replace(tzinfo=asia_seoul)
+
     print(f"현재 시간 : {today}")
     print(f"타임존 시간 : {timezone_today}")
-    print(timezone_today)
 
     day_start = timezone.datetime.combine(timezone_today, timezone.datetime.min.time())
     day_end = timezone.datetime.combine(timezone_today, timezone.datetime.max.time())

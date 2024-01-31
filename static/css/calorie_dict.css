@@ -5,15 +5,15 @@
     margin: 0 auto;
 }
 
-.calorie_dict_box a {
+.dict_tbody a {
     text-decoration: none;
     color: #000;
 }
 
-.calorie_dict_box a:hover {
-    color: #1eb211;
+.dict_tbody a:hover {
+    color: #19aa3d;
     font-weight: 900;
-    text-decoration: underline #1eb211;
+    text-decoration: underline #19aa3d;
 }
 
 /* 검색바 */
@@ -24,22 +24,31 @@
 
 .searchBar input {
     width: 20em;
+    padding: 5px;
+    border: 2px solid #56c05a;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.selectBox {
+    padding: 5px;
+    border: 2px solid #56c05a;
+    border-radius: 10px;
+    margin-right: 10px;
 }
 
 .searchBar button {
     width: 5em;
-    border: 2px solid rgb(30, 178, 17);
-    background-color: #fff;
-    border-radius: 0.6rem;
-    font-weight: 500;
     cursor: pointer;
-    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    font-weight: bold;
+    color: #56c05a;
 }
 
-.searchBar button:hover {
-    color: #fff;
-    outline: 0;
-    box-shadow: 0 0 20px 20px #1eb211 inset;
+.searchBar a {
+    padding: 7px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #56c05a;
 }
 
 .searchBar a:hover {
@@ -52,7 +61,7 @@
 .calorie_dict_box > h2 {
     padding-bottom: 8px;
     margin-bottom: 20px;
-    border-bottom: 3px solid rgb(30, 178, 17);
+    border-bottom: 3px solid #56c05a;
     border-radius: 0.6rem;
 }
 
@@ -62,7 +71,7 @@
 }
 
 .dict_tbody > table > tbody {
-    border-color: rgb(30, 178, 17);
+    border-color: #56c05a;
     border-radius: 15px;
     border-width: 3px;
 }
@@ -70,8 +79,8 @@
 .dict_tbody > table > tbody > tr:first-child {
     color: #fff;
     font-size: large;
-    background-color: rgb(30, 178, 17);
-    border-bottom: 2px solid rgb(30, 178, 17);
+    background-color: #56c05a;
+    border-bottom: 2px solid #56c05a;
 }
 
 .dict_tbody > table > tbody > tr:first-child > th {
@@ -91,7 +100,28 @@
 
 /* Pagination CSS */
 
-.pageNums a {
+.cal_pagination {
+    display: inline-block;
+}
+
+.cal_pagination a {
     margin-left: 5px;
     margin-right: 5px;
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.cal_pagination a:hover {
+    background-color: #56c05a;
+    color: #fff;
+}
+
+.pageNums > span {
+    background-color: #56c05a;
+    padding: 8px 16px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
 }
