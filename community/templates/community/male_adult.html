@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link href="{% static 'css/fitness_grade.css' %}" rel="stylesheet">
+<script src="{% static 'js/male_adult_predict.js' %}"></script>
+<script src="{% static 'js/accordion.js' %}"></script>
+
+<h2>남성 성인 페이지</h2>
+
+<div class="container">
+    <section class="measure-section">
+        <h2>어떻게 운동을 측정하는지 확인하세요</h2>
+        <!-- 운동별 섹션 -->
+        <div class="accordion">
+
+            <button class="accordion-button">교차윗몸일으키기(회)</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/j5sktGOVq1c" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">앉아윗몸앞으로 굽히기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/ydKH9ybDUZ4" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">제자리 멀리뛰기</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/lb3PMPb-ugY" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">스텝검사</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/xFtWEPFp5wM" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <button class="accordion-button">악력검사</button>
+            <div class="panel">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/0NyiYjRJL_c" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+    <section class="predict-section">
+        <form id="predict-form" method="post" class="predict-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="crossover_situp">교차윗몸일으키기(회)</label>
+                <input type="text" id="crossover_situp" name="crossover_situp" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="sit_and_reach">앉아윗몸앞으로 굽히기(cm)</label>
+                <input type="text" id="sit_and_reach" name="sit_and_reach" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="standing_long_jump">제자리 멀리뛰기(cm)</label>
+                <input type="text" id="standing_long_jump" name="standing_long_jump" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="step_test_output">스텝검사출력(VO₂max)</label>
+                <input type="text" id="step_test_output" name="step_test_output" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="grip_strength_left">악력_좌(kg)</label>
+                <input type="text" id="grip_strength_left" name="grip_strength_left" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="grip_strength_right">악력_우(kg)</label>
+                <input type="text" id="grip_strength_right" name="grip_strength_right" placeholder="숫자만 입력하세요" class="form-control">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">확인</button>
+                <input type="reset" class="btn-reset" value="리셋">
+            </div>
+        </form>
+        <p id="prediction_result" class="result"></p>
+    </section>
+</div>
+{% endblock content %}

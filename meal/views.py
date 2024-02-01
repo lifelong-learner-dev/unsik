@@ -8,18 +8,23 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime, timedelta
+
+import pytz
+
+from .services import get_personal_recommended_nutrient, get_recommend_mealtype
+
 from .models import CalorieDictionary, Meal, UsersAppUser
 from .modules.meal_anal import predict_meal
-from django.db.models import Q
+from django.db.models import Q, Sum
 from uuid import uuid4
 from .foodDict import *
 from .models import Meal
 from .models import CalorieDictionary
 from .models import Menu
 import json
-# from django.db.models import Sum
+from django.db.models import Sum
 import ast
-import pytz
+from random import sample
 
 # Create your views here.
 
@@ -36,14 +41,30 @@ def meal_history(request):
 
     meals = Meal.objects.filter(user_id=id).order_by('meal_date')
 
-    menu = Menu.objects.all().first()
+    chk_meal_type = get_recommend_mealtype(id)
+
+    # print('chk_meal_type : ' , chk_meal_type)
+
+    menu = Menu.objects.filter(menu_classification=chk_meal_type)
+
+    # random_menus = sample(list(menu), min(len(menu), 3))
+
+    recommended = []
 
     if menu is None : 
-        recommend = None
+        # recommend = None
+        pass
     else:
-        recommend = menu.menu_dtl
+        random_menus = sample(list(menu), min(len(menu), 3))
 
+        for data in random_menus:
+            # print('data : ',type(data.menu_dtl))
+            recommended.append([data.menu_dtl])
+
+    # print('recommended' ,recommended)
+            
     today = datetime.today()
+    month_data = today.month
     first_day_of_month = today.replace(day=1)
     next_month = today.replace(day=28) + timedelta(days=4)
     last_day_of_month = next_month - timedelta(days=next_month.day)
@@ -61,21 +82,64 @@ def meal_history(request):
     calories = [calories_by_date[date] for date in all_dates]
 
     # 데이터가 있는 날짜
-    days_with_data = sum(1 for date, cal in calories_by_date.items() if cal > 0)
+    days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
 
-    # context에 추가
+    for i in range(len(recommended)):
+        recommended[i] = recommended[i][0].split(', ')
+
     context = {
         'title': '그래프',
+        'month': month_data ,
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
-        'recommend': recommend
+        'meal_type': chk_meal_type,
+        'recommend': recommended
     }
+
+    # print('context 확인 : ',context)
 
     return render(request, 'meal/meal_history.html', context)
 
+def get_monthly_history(request, year, month):
+
+    user_id = request.user.id
+    start_date = datetime(year, month, 1)
+    end_date = start_date + timedelta(days=31)  
+    end_date = end_date.replace(day=1) - timedelta(days=1)
+
+    meals = Meal.objects.filter(user_id=user_id, meal_date__range=[start_date, end_date]).order_by('meal_date')
+
+    calories_by_date = defaultdict(int)
+
+    for meal in meals:
+        date_only = meal.meal_date.date()
+        if start_date.date() <= date_only <= end_date.date():
+            calories_by_date[date_only] += meal.meal_calories
+    
+    # print('calories_by_date : ' , calories_by_date)
+
+    # 달 계산
+    all_dates = [start_date.date() + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
+    dates = [date.strftime('%Y-%m-%d') for date in all_dates]
+    calories = [calories_by_date[date] for date in all_dates]
+
+    # 데이터가 있는 날짜
+    days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
+
+    data = {
+        'month': month ,
+        'dates': json.dumps(dates),
+        'calories': json.dumps(calories),
+        'days_with_data': days_with_data,
+    }
+
+    return JsonResponse(data)
+
 def meal_detail(request, date):
+    print('date : ', date)
     id = request.user.id
+    print('id = ',id)
 
     # 유저별 권장 영양섭취 계산
     user_info = UsersAppUser.objects.filter(id=id).first()
@@ -90,43 +154,17 @@ def meal_detail(request, date):
     # 나이 계산
     user_age = current_date.year - user_birth_date.year - ((current_date.month, current_date.day) < (user_birth_date.month, user_birth_date.day)) -1
 
-    # print('나이 : ' ,user_age)
-
-    if user_gender == 0:
-        user_bmr = 88.362 + (13.397 * user_weight) + (4.799 * user_height) - (5.677 * user_age)
-    elif user_gender == 1:
-        user_bmr = 447.593  + (9.247 * user_weight) + (3.098 * user_height) - (4.330 * user_age)
-    else:
-        user_bmr = 0.0
-    
     # 활동 수준에 따른 BMR 값 변화
     user_activity = user_info.user_activity
 
-    if user_activity == "5":
-        user_tdee = user_bmr * 1.2
-    elif user_activity == "4":
-        user_tdee = user_bmr * 1.375
-    elif user_activity == "3":
-        user_tdee = user_bmr * 1.55
-    elif user_activity == "2":
-        user_tdee = user_bmr * 1.725
-    elif user_activity == "1":
-        user_tdee = user_bmr * 1.9
-    else:
-        user_tdee = 0.0
-
-    # 단백질 총 칼로리의 10-35%
-    protein_min, protein_max = user_tdee * 0.10/4 , user_tdee * 0.35 / 4
-    # 지방 : 총 칼로리의 20-35 % 
-    fat_min, fat_max = user_tdee * 0.20 / 9, user_tdee * 0.35 / 9
-    # 탄수화물 : 총 칼로리의 45~65%
-    carbs_min, carbs_max = user_tdee * 0.45 / 4, user_tdee * 0.65 / 4
-    # 당류 에너지 섭취의 10% 미만
-    sugar_max = user_tdee * 0.10 / 4
-    # 식이섬류 하루에 25~30g 권장
-    fiber_recommended = 25 if user_gender == 1 else 30  # 여성의 경우 25g, 남성의 경우 30g
-    # 나트륨 : 1500mg 권장
-    natrium_recommended = 1500  # mg   
+    nutrient_res = get_personal_recommended_nutrient(user_height, user_weight, user_gender, user_age, user_activity)
+   
+    protein_min = nutrient_res["protein_min"]
+    fat_min = nutrient_res["fat_min"]
+    carbs_min = nutrient_res["carbs_min"]
+    sugar_max = nutrient_res["sugar_max"]
+    fiber_recommended = nutrient_res["fiber_recommended"]
+    natrium_recommended = nutrient_res["natrium_recommended"]
 
     total_protein = 0.0
     total_fat = 0.0
@@ -143,7 +181,7 @@ def meal_detail(request, date):
     meals = Meal.objects.filter(user_id=id, meal_date__range=(start_date, end_date))
 
     # meal_type 별로 분류
-    meal_info = {'아침': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
+    meal_information = {'아침': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
                  '점심': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
                  '저녁': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)},
                  '간식': {'foods': [], 'calories': 0, 'nutrients': defaultdict(float)}}
@@ -156,19 +194,21 @@ def meal_detail(request, date):
             menu = CalorieDictionary.objects.filter(food_code=info).first()
 
             if menu is not None:
-                meal_info[meal.meal_type]['foods'].append(menu.food_name)
-                meal_info[meal.meal_type]['calories'] += menu.calories
-                meal_info[meal.meal_type]['nutrients']['protein'] += menu.protein
+                meal_information[meal.meal_type]['foods'].append({
+                    'name': menu.food_name,
+                    'calories': menu.calories,
+                    'protein': menu.protein,
+                    'fat': menu.fat,
+                    'carbohydrate': menu.carbohydrate,
+                    'sugar': menu.suger,
+                    'dietary_fiber': menu.dietary_fiber,
+                    'natrium': menu.natrium
+                })
                 total_protein += menu.protein
-                meal_info[meal.meal_type]['nutrients']['fat'] += menu.fat
                 total_fat += menu.fat
-                meal_info[meal.meal_type]['nutrients']['carbohydrate'] += menu.carbohydrate
                 total_carbs += menu.carbohydrate
-                meal_info[meal.meal_type]['nutrients']['suger'] += menu.suger
                 total_sugar += menu.suger
-                meal_info[meal.meal_type]['nutrients']['dietary_fiber'] += menu.dietary_fiber
                 total_fiber += menu.dietary_fiber
-                meal_info[meal.meal_type]['nutrients']['natrium'] += menu.natrium
                 total_natrium += menu.natrium
     
     deficient_nutrients = {}
@@ -188,8 +228,8 @@ def meal_detail(request, date):
 
                 
     context = {
-        'date': date,
-        'meal_info': meal_info,
+        'date' : date,
+        'meal_info': meal_information,
         'deficient_nutrients' : deficient_nutrients
     }
 
@@ -354,10 +394,10 @@ def meal_post(request):
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 현재 시간 얻기
-            # current_time = datetime.now()
+            current_time = datetime.now()
 
             # 테스트를 위한 임의 조작 시간
-            current_time = datetime(2024, 1, 26, 19, 22, 34)
+            # current_time = datetime(2024, 1, 26, 19, 22, 34)
 
             print(f"현재 시간 : {current_time}")
 
@@ -376,15 +416,15 @@ def meal_post(request):
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            # Meal.objects.create(
-            #     user = user_instance,
-            #     meal_date = current_time,
-            #     meal_photo = meal_data_list[-1],
-            #     meal_info = json.dumps(filtered_list),
-            #     meal_type = meal_type,
-            #     meal_calories = meal_calories,
-            #     nutrient_info = json.dumps(nutrient_info)
-            # )
+            Meal.objects.create(
+                user = user_instance,
+                meal_date = current_time,
+                meal_photo = meal_data_list[-1],
+                meal_info = json.dumps(filtered_list),
+                meal_type = meal_type,
+                meal_calories = meal_calories,
+                nutrient_info = json.dumps(nutrient_info)
+            )
 
             ############ DB 저장 완료 후 로직 #############
 
@@ -469,17 +509,21 @@ def test(request):
     id = request.user.id
     print(id)
 
-    today = datetime.now()
+    asia_seoul = pytz.timezone('Asia/Seoul')
+    today = datetime.now().replace(tzinfo=asia_seoul)
+    timezone_today = timezone.now().replace(tzinfo=asia_seoul)
     print(f"현재 시간 : {today}")
+    print(f"타임존 시간 : {timezone_today}")
+    print(timezone_today)
 
-    day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
-    day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
+    day_start = timezone.datetime.combine(timezone_today, timezone.datetime.min.time())
+    day_end = timezone.datetime.combine(timezone_today, timezone.datetime.max.time())
     print(f"시작 날짜 : {day_start}")
     print(f"종료 날짜 : {day_end}")
 
     todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
 
-    print(todays_nutrients)
+    print(todays_nutrients.first().meal_date)
 
     total_nutrient_sum = [0] * 6
 

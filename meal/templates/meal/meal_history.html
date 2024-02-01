@@ -6,15 +6,29 @@
     var calories = {{ calories | safe}};
 </script>
 <section>
-    <h3><b>{{user.username}}님은 이번달에 {{days_with_data}}일을 식단관리 하셨습니다.</b></h3>
-    <div>
+    <h3 id="user-summary">
+        <b>{{ user.username }}님은 <span id="month-display">{{ month }}</span>월 중 <span id="days-with-data-display">
+                {{ days_with_data }}</span>일을 식단관리 하셨습니다.</b>
+    </h3>
+    <button id="prev-month">이전 달</button>
+    <button id="next-month">다음 달</button>
+    <div class="container">
         <canvas id="caloriesChart"></canvas>
     </div>
-    <br><br>
+    <br><br><br>
     {% if recommend %}
-    <div>
-        <p>{{user.username}} 님을 위한 식단추천</p>
-        <li>{{recommend}}</li>
+    <h2><b>오늘의 식단 추천 : {{meal_type}}</b></h2>
+    <div class="container">
+        {% for menu in recommend %}
+        <div class="diet-section">
+            <h2>식단 {{forloop.counter}} </h2>
+            <ol>
+                {% for item in menu %}
+                <li>{{item}}</li>
+                {% endfor %}
+            </ol>
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
 </section>

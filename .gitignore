@@ -9,6 +9,7 @@ __pycache__/
 *.pyc
 __pycache__/
 local_settings.py
+db_settings.py
 db.sqlite3
 
 # Visual Studio Code
@@ -39,3 +40,5 @@ meal_photos/
 
 # .pyc 파일
 *.pyc
+
+.env
