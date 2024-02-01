@@ -240,7 +240,7 @@
     position: relative;
     width: 50%;
     height: 50vh;
-    background-color: rgb(225, 48, 48);
+    /* background-color: rgb(225, 48, 48); */
 }
 
 .barchart-container {
