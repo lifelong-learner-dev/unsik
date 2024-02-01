@@ -1,6 +1,7 @@
 footer {
     width: 1020px;
     margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #Team_info_box {
@@ -9,8 +10,22 @@ footer {
 }
 
 #top_button {
+    font-weight: 700;
     float: right;
     text-align: center;
+    border: 2px solid #1eb211;
+    color: #1eb211;
+    background: none;
+    border-radius: 15px;
+    padding: 5px;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+}
+
+#top_button:hover {
+    color: #fff;
+    background: #1eb211;
+    border: 2px solid #1eb211;
 }
 
 @media (max-width: 768px) {
