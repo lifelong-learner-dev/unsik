@@ -7,10 +7,10 @@ from django.db import IntegrityError
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from .forms import UserForm, MypageUserForm
-from django.db.models import Avg, Sum, Count
+from django.db.models import Avg,Sum, Count
 from django.db.models import DateField
 from django.db.models.functions import Cast
-
+from datetime import datetime, timedelta
 # Create your views here.
 # 로그인, 회원가입 전용 함수
 def sign_in(request):
@@ -102,15 +102,20 @@ def my_page(request, username):
     for daily_meal in everyday_meal:
         date_str = daily_meal['meal_date'].strftime('%Y-%m-%d')
         combined_data.setdefault(date_str, {'meal_calories': 0, 'exercise_calories': 0})
-        combined_data[date_str]['meal_calories'] = daily_meal['meal_calories']
+        combined_data[date_str]['meal_calories'] += daily_meal['meal_calories']
 
     for daily_exercise in everyday_exercise:
-        date_str = daily_exercise['exercise_date'].strftime('%Y-%m-%d')
-        combined_data.setdefault(date_str, {'meal_calories': 0, 'exercise_calories': 0})
-        combined_data[date_str]['exercise_calories'] = daily_exercise['calories_burned']
+        if daily_exercise['calories_burned'] is not None:
+            date_str = daily_exercise['exercise_date'].strftime('%Y-%m-%d')
+            combined_data.setdefault(date_str, {'meal_calories': 0, 'exercise_calories': 0})
+            combined_data[date_str]['exercise_calories'] += daily_exercise['calories_burned']
 
+
+    print(combined_data)
     # 정렬된 날짜 리스트 생성
     sorted_dates = sorted(combined_data.keys())
+    print(sorted_dates)
+
 
     # 그래프 데이터 준비
     graph_dates = []
@@ -124,27 +129,32 @@ def my_page(request, username):
     
     # 특정 기간 내 식단 및 운동 기록을 조회합니다.
     start_date = timezone.now().date() - timezone.timedelta(days=180)  # 30일 전부터
-    end_date = timezone.now().date() + timezone.timedelta(days=1) # 현재 날짜까지
+    end_date = timezone.now().date() + timezone.timedelta(days=1)
+
+    print(start_date)
+    print(end_date)
     # 식단 기록
     # 식단 기록
-    meal_records = Meal.objects.filter(
+    meal_records = Meal.objects.filter(user=id,
         meal_date__range=(start_date, end_date),
         meal_calories__isnull=False
     ).annotate(
         meal_date_date=Cast('meal_date', DateField())
     ).values('meal_date_date').annotate(
-        meal_count=Count('meal_calories', distinct=True)
+        meal_count=Count('meal_calories')
     )
 
     # 운동 기록
-    exercise_records = Exercise.objects.filter(
+    exercise_records = Exercise.objects.filter(user=id,
         exercise_date__range=(start_date, end_date),
         calories_burned__isnull=False
     ).annotate(
         exercise_date_date=Cast('exercise_date', DateField())
     ).values('exercise_date_date').annotate(
-        exercise_count=Count('calories_burned', distinct=True)
+        exercise_count=Count('calories_burned')
     )
+    print(meal_records)
+    print(exercise_records)
 
     # 이벤트 데이터를 생성합니다.
     events = []
@@ -152,21 +162,27 @@ def my_page(request, username):
         events.append({
             'title': f'식단: {record["meal_count"]}회',
             'start': record['meal_date_date'].isoformat(),
-            'color': '#004085'  # 진한 파랑 색상
+            'color': '#004085',  # 진한 파랑 색상
+            'url': 'http://127.0.0.1:8000/meal/meal_history'
         })
+        print(record)
 
     for record in exercise_records:
         events.append({
             'title': f'운동: {record["exercise_count"]}회',
             'start': record['exercise_date_date'].isoformat(),
-            'color': '#228B22'  # 포레스트 그린 색상
+            'color': '#228B22',  # 포레스트 그린 색상
+            'url' : 'http://127.0.0.1:8000/exercise/exercise/index/'
         })
+        print(record)
     
     today_str = today.strftime('%Y-%m-%d')
+    print(today_str)
 
     # 오늘 날짜의 총 식사 칼로리를 가져옵니다. 데이터가 없으면 0을 반환합니다.
     todays_meal_calories_sum = combined_data.get(today_str, {}).get('meal_calories', 0)
     todays_meal_calories_sum = "{:.2f}".format(todays_meal_calories_sum)
+    print(todays_meal_calories_sum)
 
     context = {
         'title': '그래프',

@@ -36,14 +36,14 @@
     </div>
     <!-- 예측한 식단 불러와 띄워주기 -->
     <div id="modify_result">
-        <p>이 식단으로 예측했습니다. 이 정보가 맞나요?</p>
+        <h5>이 식단으로 예측했습니다. 이 정보가 맞나요?</h5>
         <form method="post" id="meal_result_form" action="">
             {% csrf_token %}
             {% if detect_results %}
                 {% for key, values in detect_results.items %}
                 <div class="input_container">
                     <input class="food-input" type="text" id="input_{{ key }}" name="{{ key }}" value="{{ key }}">
-                    <button type="button" class="remove_input">입력창 삭제</button>
+                    <button type="button" class="remove_input greenBtn" title="음식 입력창을 삭제합니다.">입력창 삭제</button>
                     <ul class="search-results" style="display: none;"></ul>
                 </div>
                 {% endfor %}
@@ -52,10 +52,10 @@
             {% endif %}
         </form>
         {% if user.is_authenticated %}
-        <button id="add_input_box">음식 추가</button>
-        <button type="submit" id="submit_form">완료</button>
+        <button id="add_input_box" class="greenBtn" title="목록에 없는 음식을 추가합니다.">음식 추가</button>
+        <button type="submit" id="submit_form" class="greenBtn" title="분석 페이지로 넘어갑니다.">완료</button>
         {% else %}
-        <p>운식에 가입하여 정확한 식단 분석을 받아보세요!</p>
+        <h5>운식에 가입하여 정확한 식단 분석을 받아보세요!</h5>
         {% endif %}
     </div>
     <div id="nutrient_information" style="display: none;">
@@ -129,7 +129,7 @@
                     var foodId = $(this).attr('name');
                     foodNames.push(foodId);
                 });
-                console.log(foodNames)
+                // console.log(foodNames)
 
                 $.ajax({
                     type: 'POST',
