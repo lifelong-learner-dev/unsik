@@ -6,15 +6,22 @@ import ast
 import pytz
 
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 def get_recommend_mealtype(id):
 
     # 일주일치 먹은 식사정보를 기반으로 어떤 식단을 추천해줄지 결정
-    current_time = datetime.now(pytz.utc)
+    # settings.py USE_TZ = True
+    # current_time = datetime.now(pytz.utc)
+
+    # settings.py USE_TZ = False
+    current_time = timezone.datetime.now()
 
     seven_days_ago = current_time - timedelta(days=7)
 
     meals = Meal.objects.filter(user_id=id, meal_date__gte=seven_days_ago).order_by('meal_date')
+
+    # print('services meals : ', meals)
 
     total_protein = 0.0
     total_fat = 0.0

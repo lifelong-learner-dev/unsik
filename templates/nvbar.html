@@ -6,7 +6,7 @@
             <ul class="submenu3">
                 <li><a href="{% url 'meal_analyze' %}">식단 올리기</a></li>
                 <li><a href="{% url 'calorie_dict' %}">칼로리 사전</a></li>
-                <li><a href="#">식단 추천</a></li>
+                <li><a href="{% url 'meal_recommend' %}">식단 추천</a></li>
             </ul>
         </li>
         <li>
@@ -22,7 +22,7 @@
             <ul class="submenu3">
                 <li><a href="{% url 'my_page' user.username %}">나의 정보</a></li>
                 <li><a href="{% url 'meal_history' %}">나의 식단 히스토리</a></li>
-                <li><a href="">나의 운동 기록</a></li>
+                <li><a href="{% url 'exercise_index' %}">나의 운동 기록</a></li>
             </ul>
         </li>
     </ul>
@@ -33,7 +33,6 @@
             <ul class="submenu3">
                 <li><a href="{% url 'meal_analyze' %}">식단 올리기</a></li>
                 <li><a href="{% url 'calorie_dict' %}">칼로리 사전</a></li>
-                <li><a href="#">식단 추천</a></li>
             </ul>
         </li>
         <li>
