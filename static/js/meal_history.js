@@ -83,7 +83,7 @@ $(document).ready(function () {
         chart.update();
 
         $("#month_display").text(data.month);
-        $("#days-with-data-display").text(data.days_with_data);
+        $("#days_with_data_display").text(data.days_with_data);
     }
 
 })

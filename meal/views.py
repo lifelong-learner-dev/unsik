@@ -128,6 +128,8 @@ def get_monthly_history(request, year, month):
     # 데이터가 있는 날짜
     days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
 
+    print('month : ',month)
+
     data = {
         'month': month ,
         'dates': json.dumps(dates),
