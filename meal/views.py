@@ -37,30 +37,50 @@ def meal_analyze(request):
 
     return render(request, 'meal/meal_analyze.html')
 
-def meal_history(request):
+def meal_recommend(request):
     id = request.user.id
-
-    meals = Meal.objects.filter(user_id=id).order_by('meal_date')
-
-    chk_meal_type = get_recommend_mealtype(id)
-
-    # print('chk_meal_type : ' , chk_meal_type)
-
-    menu = Menu.objects.filter(menu_classification=chk_meal_type)
-
-    # random_menus = sample(list(menu), min(len(menu), 3))
 
     recommended = []
 
+    chk_meal_type = get_recommend_mealtype(id)
+
+    menu = Menu.objects.filter(menu_classification=chk_meal_type)
+
+    random_menus = sample(list(menu), min(len(menu), 3))
+
     if menu is None : 
-        # recommend = None
         pass
     else:
         random_menus = sample(list(menu), min(len(menu), 3))
 
         for data in random_menus:
-            # print('data : ',type(data.menu_dtl))
+            print('data : ',type(data.menu_dtl))
             recommended.append([data.menu_dtl])
+
+    context = {
+        'meal_type': chk_meal_type,
+        'recommend': recommended
+    }
+
+    return render(request, 'meal/meal_recommend.html', context)
+
+
+def meal_history(request):
+    id = request.user.id
+
+    meals = Meal.objects.filter(user_id=id).order_by('meal_date')
+
+    recommended = []
+
+    # if menu is None : 
+        # recommend = None
+        # pass
+    # else:
+        # random_menus = sample(list(menu), min(len(menu), 3))
+
+        # for data in random_menus:
+            # print('data : ',type(data.menu_dtl))
+            # recommended.append([data.menu_dtl])
 
     # print('recommended' ,recommended)
             
@@ -94,7 +114,7 @@ def meal_history(request):
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
-        'meal_type': chk_meal_type,
+        # 'meal_type': chk_meal_type,
         'recommend': recommended
     }
 
@@ -140,9 +160,9 @@ def get_monthly_history(request, year, month):
     return JsonResponse(data)
 
 def meal_detail(request, date):
-    print('date : ', date)
+    # print('date : ', date)
     id = request.user.id
-    print('id = ',id)
+    # print('id = ',id)
 
     # 유저별 권장 영양섭취 계산
     user_info = UsersAppUser.objects.filter(id=id).first()
