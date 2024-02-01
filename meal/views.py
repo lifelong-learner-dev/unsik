@@ -355,13 +355,13 @@ def meal_post(request):
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 옵션 1 파이썬으로 현재 시간 얻기
-            # current_time = datetime.now()
+            current_time = datetime.now()
 
             # 옵션 2 django.utils timezone을 이용해 시간 얻기
             # current_time = timezone.now().replace(tzinfo=pytz.timezone('Asia/Seoul'))
 
             # 옵션 3 timezone.datetime.now() 가져오기
-            current_time = timezone.datetime.now()
+            # current_time = timezone.datetime.now()
 
             # 테스트를 위한 임의 조작 시간
             # current_time = datetime(2024, 1, 31, 13, 22, 34)
