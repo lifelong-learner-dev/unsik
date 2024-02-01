@@ -1,6 +1,34 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js""></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('calorieChart').getContext('2d');
+        var calorieChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates| safe }}, // 날짜 데이터
+        datasets: [{
+            label: '소비 칼로리',
+            data: {{ calories| safe }}, // 칼로리 데이터
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1
+                }]
+            },
+        options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+        });
+    });
+</script>
+    
+
 <!-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script> -->
 <!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -51,7 +79,7 @@
     }
 </script> -->
 
-<link rel="stylesheet" href="{% static 'css/exercise.css' %}">
+<link rel=" stylesheet" href="{% static 'css/exercise.css' %}">
 <div class="container">
     <h2>{{ user.username }}님의 운동기록</h2>
     <!-- <div class="flex-container">
@@ -90,10 +118,11 @@
                     <td>{{ exercise.exercise_amount }}</td>
                     <td>{{ exercise.calories_burned }}</td>
                     <td>
-                        <a href="#">수정</a>
+                        <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
                     </td>
                     <td>
-                        <a href="#" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                        <a href="{% url 'exercise_delete' exercise.postnum %}"
+                            onclick="return confirm('삭제하시겠습니까?');">삭제</a>
                     </td>
                 </tr>
                 {% endif %}
@@ -112,6 +141,8 @@
                     <th>무게</th>
                     <th>횟수</th>
                     <th>세트 수</th>
+                    <th>수정</th>
+                    <th>삭제</th>
                 </tr>
                 {% for exercise in exercises %}
                 {% if exercise.exercise_type == "웨이트" %}
@@ -123,6 +154,13 @@
                     <td>{{ exercise.weight }}</td>
                     <td>{{ exercise.reps }}</td>
                     <td>{{ exercise.sets }}</td>
+                    <td>
+                        <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'exercise_delete' exercise.postnum %}"
+                            onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                    </td>
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -132,6 +170,10 @@
     {% else %}
     <p>운동 기록이 없습니다.</p>
     {% endif %}
+
+    <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+        <canvas id="calorieChart"></canvas>
+    </div>
 </div>
 {% endblock content %}
 
