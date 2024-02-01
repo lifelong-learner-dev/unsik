@@ -7,7 +7,13 @@
                 <li><a href="{% url 'calorie_dict' %}">칼로리 사전</a></li>
             </ul>
         </li>
-        <li><a href="{% url 'record_exercise' %}">운동 기록하기</a></li>
+        <li>
+            <a href="{% url 'record_exercise' %}">운동 기록하기</a>
+            <ul class="submenu">
+                <li><a href="{% url 'exercise_index' %}">나의 운동기록</a></li>
+                <li><a href="#">운동 칼로리 사전</a></li>
+            </ul>
+        </li>
         <li>
             <a href="#">커뮤니티</a>
             <ul class="submenu">

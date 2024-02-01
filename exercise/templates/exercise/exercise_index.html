@@ -1,67 +1,149 @@
 {% extends 'base.html' %}
-<!-- venv\Scripts\activate 가상환경 활성화 -->
-<!-- deactivate 비활성화 -->
+{% load static %}
 {% block content %}
-<!-- 기존 head 내용 -->
-<link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.css' rel='stylesheet' />
-
-<div class="container">
-    <h2>운동 기록 목록</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>운동 날짜</th>
-                <th>운동 유형</th>
-                <th>운동명</th>
-                <th>운동 지속 시간(분)</th>
-                <th>칼로리 소모</th>
-                <th>무게</th>
-                <th>횟수</th>
-                <th>세트 수</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for exercise in exercises %}
-            <tr>
-                <td>{{ exercise.exercise_date }}</td>
-                <td>{{ exercise.exercise_type }}</td>
-                <td>{{ exercise.exercise_name }}</td>
-                <td>{{ exercise.exercise_amount }}</td>
-                <td>{{ exercise.calories_burned }}</td>
-                <td>{{ exercise.weight }}</td>
-                <td>{{ exercise.reps }}</td>
-                <td>{{ exercise.sets }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div id="calendar"></div>
-    <div id="results"></div>
-</div>
-{% endblock content %}
-
-{% block scripts %}
-<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.js'></script>
-<script>
+<!-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script> -->
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
             dateClick: function (info) {
-                var date = info.dateStr; // 'YYYY-MM-DD' 형식
-                fetch(`/exercises/${date.split('-')[0]}/${date.split('-')[1]}/${date.split('-')[2]}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        updateResults(data);
-                    });
+                var clickedDate = info.dateStr; // 클릭된 날짜 'YYYY-MM-DD'
+                fetchExerciseData(clickedDate);
             }
         });
         calendar.render();
     });
 
-    function updateResults(data) {
-        var resultsDiv = document.getElementById('results');
-        // 예시: data를 사용하여 결과창에 테이블을 생성
-        // 여기에 데이터를 기반으로 HTML 컨텐츠를 생성하는 코드를 작성합니다.
+    function fetchExerciseData(date) {
+        alert('aa')
+        // 날짜 형식 'YYYY-MM-DD'를 사용하여 서버에 요청
+        // fetch(`/exercises/${date}/`)
+        fetch(`http://127.0.0.1:8000/exercise/exercises/${date}`)
+            .then(response => response.json())
+            .then(data => {
+                updateResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                updateResults([]); // 오류 발생 시 결과창을 비움
+            });
     }
-</script>
-{% endblock scripts %}
+
+    function updateResults(data) {
+        console.log(data)
+        var resultsDiv = document.getElementById('results');
+        // 결과창에 데이터를 표시하는 코드를 작성
+        var html = data.map(exercise => `
+        <div>
+            <p>운동 날짜: ${exercise.exercise_date}</p>
+            <p>운동 유형: ${exercise.exercise_type}</p>
+            <p>운동명: ${exercise.exercise_name}</p>
+            <p>운동 지속 시간(분): ${exercise.exercise_amount}</p>
+            <p>칼로리 소모: ${exercise.calories_burned}</p>
+            <p>무게: ${exercise.weight}</p>
+            <p>횟수: ${exercise.reps}</p>
+            <p>세트 수: ${exercise.sets}</p>
+        </div>
+    `).join('');
+        html = '<p>운동 날짜</p>'
+        resultsDiv.innerHTML = html;
+    }
+</script> -->
+
+<link rel="stylesheet" href="{% static 'css/exercise.css' %}">
+<div class="container">
+    <h2>{{ user.username }}님의 운동기록</h2>
+    <!-- <div class="flex-container">
+        <div class="calendar-container">
+            <div id='calendar'></div>
+        </div>
+        <div class="results-container">
+            <div id="results"></div>
+        </div>
+    </div> -->
+    <br>
+    <form method="post" action="{% url 'exercise_index' %}">
+        {% csrf_token %}
+        <input type="date" name="search_date" value="{{ today }}">
+        <input type="submit" value="검색">
+    </form><br><br>
+
+    {% if exercises %}
+    <div class="exercise-results">
+        <div class="aerobic-exercises">
+            <h3>유산소</h3>
+            <table>
+                <tr>
+                    <th>운동 수행 시각</th>
+                    <th>운동명</th>
+                    <th>운동 지속 시간</th>
+                    <th>칼로리 소모</th>
+                    <th>수정</th>
+                    <th>삭제</th>
+                </tr>
+                {% for exercise in exercises %}
+                {% if exercise.exercise_type == "유산소" %}
+                <tr>
+                    <td>{{ exercise.exercise_date }}</td>
+                    <td>{{ exercise.exercise_name }}</td>
+                    <td>{{ exercise.exercise_amount }}</td>
+                    <td>{{ exercise.calories_burned }}</td>
+                    <td>
+                        <a href="#">수정</a>
+                    </td>
+                    <td>
+                        <a href="#" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="weight-exercises">
+            <h3>웨이트</h3>
+            <table>
+                <tr>
+                    <th>운동 수행 시각</th>
+                    <th>운동명</th>
+                    <th>운동 지속 시간</th>
+                    <th>칼로리 소모</th>
+                    <th>무게</th>
+                    <th>횟수</th>
+                    <th>세트 수</th>
+                </tr>
+                {% for exercise in exercises %}
+                {% if exercise.exercise_type == "웨이트" %}
+                <tr>
+                    <td>{{ exercise.exercise_date }}</td>
+                    <td>{{ exercise.exercise_name }}</td>
+                    <td>{{ exercise.exercise_amount }}</td>
+                    <td>{{ exercise.calories_burned }}</td>
+                    <td>{{ exercise.weight }}</td>
+                    <td>{{ exercise.reps }}</td>
+                    <td>{{ exercise.sets }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <p>운동 기록이 없습니다.</p>
+    {% endif %}
+</div>
+{% endblock content %}
+
+<!-- 
+남은 할일 
+1. 모델 넣기
+2. 수정/삭제 기능 추가 
+3. 로그인 안했을 시 오류 해결
+-->
+
+<!-- 
+    USE_TZ = False라서 발생하는 문제 해결법
+    views.py에서 timezone.localdate()을 사용중이라면 
+    datetime.date.today()로 바꾸기
+ -->
