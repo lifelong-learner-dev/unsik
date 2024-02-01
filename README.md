@@ -458,6 +458,9 @@ ALTER TABLE exercise ADD FOREIGN KEY (`user_id`) REFERENCES `users_app_user` (`i
 ALTER TABLE exercise DROP PRIMARY KEY;
 ALTER TABLE exercise MODIFY COLUMN postNum BIGINT AUTO_INCREMENT PRIMARY KEY;
 ```
+### venv 설치 패키지 - 방성준 (2024-02-01)
+    > pip install pandas==2.0.0
+      pip install scikit-learn==1.3.0
 
 ### 브랜치명 (lim) - 임덕현 (2024-01-22 16:50)
     > 나의 식단 히스토리 페이지 추가(meal_history)
