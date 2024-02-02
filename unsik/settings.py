@@ -23,7 +23,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 최상위 폴더 'meal_photos'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'meal_photos')
+MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'meal_photos')
 
 # 사용자가 업로드한 음식 사진이 임시로 저장될 폴더
 MEDIA_URL = '/meal_photos/'
