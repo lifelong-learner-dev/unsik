@@ -36,7 +36,8 @@
     </div>
     <!-- 예측한 식단 불러와 띄워주기 -->
     <div id="modify_result">
-        <h5>이 식단으로 예측했습니다. 이 정보가 맞나요?</h5>
+        <h2 id="result_message">식단 예측 결과입니다</h2>
+        <p>결과가 다른가요? 음식 추가 버튼을 눌러<br>음식을 검색해보세요.</p>
         <form method="post" id="meal_result_form" action="">
             {% csrf_token %}
             {% if detect_results %}
