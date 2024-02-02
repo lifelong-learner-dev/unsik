@@ -6,7 +6,7 @@ $(document).ready(function () {
     const pagination = document.querySelector('.slide_pagination');
     const slideLen = slideContents.length;
     const slideWidth = 1200; // 슬라이드 너비 조절하려면 여기서
-    const slideSpeed = 300; // 슬라이드 넘어가는 속도
+    const slideSpeed = 600; // 슬라이드 넘어가는 속도
     const startNum = 0; // 시작 인덱스
     
     slideList.style.width = slideWidth * (slideLen + 2) + "px";
@@ -101,7 +101,7 @@ $(document).ready(function () {
     let autoSlide;
 
     function startAutoSlide() {
-        autoSlide = setInterval(nextBtns, 3000); // 여기 있는 숫자가 5초 간격으로 움직임
+        autoSlide = setInterval(nextBtns, 7000); // 여기 있는 숫자가 5초 간격으로 움직임
     }
 
     startAutoSlide();

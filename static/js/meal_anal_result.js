@@ -71,38 +71,6 @@ $(document).ready(function(){
 
     });
 
-    $(document).on('input', '.food-input', function(){
-        var searchWord = $(this).val();
-        // console.log(searchWord)
-        var resultContainer = $(this).siblings('.search-results');
-
-        $.ajax({
-            url: 'http://127.0.0.1:8000/meal/food_search',
-            data: {"searchWord": searchWord},
-            dataType: 'json',
-            success: function(data){
-                // console.log(data)
-                resultContainer.empty();
-
-                $.each(data.results, function(index, result) {
-                    // console.log(result.food_code)
-                    var resultItem = $('<li>' + result.name + " | " + result.maker + '</li>');
-
-                    resultItem.click(function() {
-                        var currentInput = $(this).closest('.input_container').find('.food-input');
-                        currentInput.attr('name', result.food_code);
-                        currentInput.val(result.name);
-                    });
-
-                    resultContainer.append(resultItem);
-                });
-            },
-            error: function(error){
-                console.error("알 수 없는 에러 발생", error)
-            }
-        })
-    });
-
     // focus된 input창만 display: block 활성화
     $(document).on('focus', '.food-input', function(){
         $(this).siblings('.search-results').css('display', 'block');

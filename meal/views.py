@@ -37,34 +37,55 @@ def meal_analyze(request):
 
     return render(request, 'meal/meal_analyze.html')
 
-def meal_history(request):
+def meal_recommend(request):
     id = request.user.id
-
-    meals = Meal.objects.filter(user_id=id).order_by('meal_date')
-
-    chk_meal_type = get_recommend_mealtype(id)
-
-    # print('chk_meal_type : ' , chk_meal_type)
-
-    menu = Menu.objects.filter(menu_classification=chk_meal_type)
-
-    # random_menus = sample(list(menu), min(len(menu), 3))
 
     recommended = []
 
+    chk_meal_type = get_recommend_mealtype(id)
+
+    menu = Menu.objects.filter(menu_classification=chk_meal_type)
+
+    random_menus = sample(list(menu), min(len(menu), 3))
+
     if menu is None : 
-        # recommend = None
         pass
     else:
         random_menus = sample(list(menu), min(len(menu), 3))
 
         for data in random_menus:
-            # print('data : ',type(data.menu_dtl))
+            print('data : ',type(data.menu_dtl))
             recommended.append([data.menu_dtl])
 
-    # print('recommended' ,recommended)
+    context = {
+        'meal_type': chk_meal_type,
+        'recommend': recommended
+    }
 
+    return render(request, 'meal/meal_recommend.html', context)
+
+
+def meal_history(request):
+    id = request.user.id
+
+    meals = Meal.objects.filter(user_id=id).order_by('meal_date')
+
+    recommended = []
+
+    # if menu is None : 
+        # recommend = None
+        # pass
+    # else:
+        # random_menus = sample(list(menu), min(len(menu), 3))
+
+        # for data in random_menus:
+            # print('data : ',type(data.menu_dtl))
+            # recommended.append([data.menu_dtl])
+
+    # print('recommended' ,recommended)
+            
     today = datetime.today()
+    month_data = today.month
     first_day_of_month = today.replace(day=1)
     next_month = today.replace(day=28) + timedelta(days=4)
     last_day_of_month = next_month - timedelta(days=next_month.day)
@@ -82,25 +103,66 @@ def meal_history(request):
     calories = [calories_by_date[date] for date in all_dates]
 
     # 데이터가 있는 날짜
-    days_with_data = sum(1 for date, cal in calories_by_date.items() if cal > 0)
+    days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
 
     for i in range(len(recommended)):
         recommended[i] = recommended[i][0].split(', ')
 
-    # context에 추가
     context = {
         'title': '그래프',
+        'month': month_data ,
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
-        'meal_type': chk_meal_type,
+        # 'meal_type': chk_meal_type,
         'recommend': recommended
     }
 
+    # print('context 확인 : ',context)
+
     return render(request, 'meal/meal_history.html', context)
 
+def get_monthly_history(request, year, month):
+
+    user_id = request.user.id
+    start_date = datetime(year, month, 1)
+    end_date = start_date + timedelta(days=31)  
+    end_date = end_date.replace(day=1) - timedelta(days=1)
+
+    meals = Meal.objects.filter(user_id=user_id, meal_date__range=[start_date, end_date]).order_by('meal_date')
+
+    calories_by_date = defaultdict(int)
+
+    for meal in meals:
+        date_only = meal.meal_date.date()
+        if start_date.date() <= date_only <= end_date.date():
+            calories_by_date[date_only] += meal.meal_calories
+    
+    # print('calories_by_date : ' , calories_by_date)
+
+    # 달 계산
+    all_dates = [start_date.date() + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
+    dates = [date.strftime('%Y-%m-%d') for date in all_dates]
+    calories = [calories_by_date[date] for date in all_dates]
+
+    # 데이터가 있는 날짜
+    days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
+
+    print('month : ',month)
+
+    data = {
+        'month': month ,
+        'dates': json.dumps(dates),
+        'calories': json.dumps(calories),
+        'days_with_data': days_with_data,
+    }
+
+    return JsonResponse(data)
+
 def meal_detail(request, date):
+    # print('date : ', date)
     id = request.user.id
+    # print('id = ',id)
 
     # 유저별 권장 영양섭취 계산
     user_info = UsersAppUser.objects.filter(id=id).first()
@@ -189,7 +251,7 @@ def meal_detail(request, date):
 
                 
     context = {
-        'date': date,
+        'date' : date,
         'meal_info': meal_information,
         'deficient_nutrients' : deficient_nutrients
     }
@@ -332,8 +394,8 @@ def food_search(request):
 def meal_post(request):
     if request.method == "POST":
         meal_data_list = json.loads(request.POST.get('meal_data'))
-        print(meal_data_list[0]) # 리스트를 제대로 받아온다
-        print(meal_data_list[-1])
+        # print(meal_data_list[0]) # 리스트를 제대로 받아온다
+        # print(meal_data_list[-1])
 
         filtered_list = []
 
@@ -344,12 +406,12 @@ def meal_post(request):
                 filtered_list.append(food_code)
         
         # 리스트 제대로 변환되어 출력된다.
-        print(filtered_list)
+        # print(filtered_list)
 
         # 칼로리 합산하는 함수
         meal_calories, nutrient_info = total_calories(filtered_list)
-        print(meal_calories)
-        print(nutrient_info)
+        # print(meal_calories)
+        # print(nutrient_info)
 
         if request.user.is_authenticated:
             user_instance = UsersAppUser.objects.get(id=request.user.id)
@@ -378,20 +440,20 @@ def meal_post(request):
             else:
                 meal_type = "간식"
 
-            print(meal_type)
+            # print(meal_type)
             
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            # Meal.objects.create(
-            #     user = user_instance,
-            #     meal_date = current_time,
-            #     meal_photo = meal_data_list[-1],
-            #     meal_info = json.dumps(filtered_list),
-            #     meal_type = meal_type,
-            #     meal_calories = meal_calories,
-            #     nutrient_info = json.dumps(nutrient_info)
-            # )
+            Meal.objects.create(
+                user = user_instance,
+                meal_date = current_time,
+                meal_photo = meal_data_list[-1],
+                meal_info = json.dumps(filtered_list),
+                meal_type = meal_type,
+                meal_calories = meal_calories,
+                nutrient_info = json.dumps(nutrient_info)
+            )
 
             ############ DB 저장 완료 후 로직 #############
 
@@ -406,14 +468,14 @@ def meal_post(request):
             day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
             day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
 
-            print(day_start)
-            print(day_end)
+            # print(day_start)
+            # print(day_end)
 
             all_meal_today = Meal.objects.filter(user=request.user.id,
                                                  meal_date__range=(day_start, day_end))\
                                                  .aggregate(all_calories=Sum("meal_calories"))
             
-            print(f"오늘의 전체 식사 : {all_meal_today}")
+            # print(f"오늘의 전체 식사 : {all_meal_today}")
 
             todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
 
@@ -429,7 +491,7 @@ def meal_post(request):
 
             calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else meal_calories
 
-            print(f"전체 영양소 : {total_nutrient_sum}")
+            # print(f"전체 영양소 : {total_nutrient_sum}")
             # print(calorie_today)
 
             # (2) filtered_list로 칼로리 딕셔너리에서 정보 빼오기
@@ -454,7 +516,7 @@ def meal_post(request):
             trimed_nutrient = [round(n, 2) for n in nutrient_gram]
             total_nutrient = [round(n, 2) for n in total_nutrient_sum]
 
-            print(f"오늘의 영양소 : {trimed_nutrient}")
+            # print(f"오늘의 영양소 : {trimed_nutrient}")
 
             context = {
                 'this_meal_cal': meal_calories,
