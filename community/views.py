@@ -3,12 +3,17 @@ from django.shortcuts import redirect, render
 from .modules.data_anal import female_senior_input_predict, female_adult_input_predict, female_adolescent_input_predict, female_child_input_predict, male_senior_input_predict, male_adult_input_predict, male_adolescent_input_predict, male_child_input_predict 
 from django.http import JsonResponse
 from django.contrib import messages
-# from langchain_openai import ChatOpenAI
-# from langchain_core.prompts import ChatPromptTemplate
 from django.views.decorators.csrf import csrf_exempt
-# from langchain_core.output_parsers import StrOutputParser
-# from langchain_core.prompts import ChatPromptTemplate
-# from langchain_openai import ChatOpenAI
+from openai import OpenAI
+from decouple import config
+import json
+import time
+# .env 파일에서 OPENAI_API_KEY 가져오기
+openai_api_key = config('OPENAI_API_KEY')
+
+# OpenAI API 초기화
+openai = OpenAI(api_key=openai_api_key)
+
 
 def fitness_grade(request):
     if not request.user.is_authenticated:
@@ -194,19 +199,6 @@ def llm_index(request):
     return render(request, 'community/llm.html' )
 
 
-from django.views.decorators.csrf import csrf_exempt
-from openai import OpenAI
-from django.utils import timezone
-from decouple import config
-import json
-import time
-
-# .env 파일에서 OPENAI_API_KEY 가져오기
-openai_api_key = config('OPENAI_API_KEY')
-
-# OpenAI API 초기화
-openai = OpenAI(api_key=openai_api_key)
-
 @csrf_exempt
 def healthcareassistant(request):
     if request.method == 'POST':
@@ -259,7 +251,8 @@ def healthcareassistant(request):
             print("An error occurred:", str(e))  # 오류 메시지 출력
             return JsonResponse({"error": str(e)}, status=500)
     
-
+# def payment(request):
+#     return render(request, 'community/payment.html')
     
 
 

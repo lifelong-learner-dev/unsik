@@ -31,6 +31,27 @@
         </div>
 </div>
 <script>
+        const isLocalhost = Boolean(
+            window.location.hostname === "localhost" ||
+                
+                window.location.hostname === "[::1]" ||
+                
+                window.location.hostname.match(
+                /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+                )
+            );
+
+        let apiUrl = ""; // 이 변수에 API 엔드포인트 URL을 설정합니다.
+
+        if (isLocalhost) {
+            // 로컬 호스트인 경우
+            apiUrl = "http://127.0.0.1:8000/fitness_grade/healthcareassistant/";
+            } else {
+            // 웹 서버인 경우
+            apiUrl = "http://18.180.43.72:8000/fitness_grade/healthcareassistant/"; // 웹 서버의 실제 API 엔드포인트 URL로 대체해야 합니다.
+            }
+
+
         const chatBox = document.querySelector('.chat-box');
         let userMessages = [];
         let assistantMessages = [];
@@ -64,7 +85,7 @@
             console.log(subject);
 
 
-            const response = await fetch('http://127.0.0.1:8000/fitness_grade/healthcareassistant/', {
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -12,5 +12,6 @@ urlpatterns = [
     path("male_child_predict_ajax/", views.male_child_predict_ajax, name='male_child_predict_ajax'),
     path("female_child_predict_ajax/", views.female_child_predict_ajax, name='female_child_predict_ajax'),
     path("llm/", views.llm_index, name='llm_index'),
-    path("healthcareassistant/", views.healthcareassistant, name='healthcareassistant')
+    path("healthcareassistant/", views.healthcareassistant, name='healthcareassistant'),
+    # path("payment/", views.payment, name='payment')
 ]

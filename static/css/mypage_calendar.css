@@ -1,6 +1,6 @@
 /* 년과 월 텍스트 크기 조절 */
 .fc-toolbar-title {
-    font-size: 25px !important;
+    font-size: 20px !important;
     /* 크기를 12px로 조정 */
 }
 
@@ -31,4 +31,8 @@
 
 .fc-daygrid-day-number {
     font-size: 15px !important;
+}
+
+.fc-event {
+    font-size: 12px;
 }
