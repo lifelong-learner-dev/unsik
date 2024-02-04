@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 <section>
     {% if recommend %}
-    <h2><b>오늘의 식단 추천 : {{meal_type}}</b></h2>
+    <div>
+        <h2><b>오늘의 식단 추천 : {{meal_type}} </b></h2>
+        <!-- <h4><span id="tooltiptext"><b>일주일간 기록된 메뉴의 목록과 성분을 분석하여 적절한 식사메뉴를 추천해드립니다
+                        <br>{{user.username}} 님의 식사 패턴 분석 결과 나트륨 섭취량이 높아 저염식을 추천 드립니다
+                        <br>위치 제공에 동의해주시면 현재 위치 기준 식당을 추천해드립니다</b></span></h4> -->
+    </div>
+    <hr>
     <div class="container">
         {% for menu in recommend %}
         <div class="diet-section">
-            <h2>식단 {{forloop.counter}} </h2>
+            <h2><b>식단 {{forloop.counter}} </b></h2>
             <ol>
                 {% for item in menu %}
                 <li>{{item}}</li>
@@ -15,6 +22,10 @@
             </ol>
         </div>
         {% endfor %}
+    </div>
+    <div>
+        <h3>추천 식당</h3>
+        <div id="map" style="height:500px;width:50%;margin-left: 25%;"></div>
     </div>
     {% endif %}
 </section>

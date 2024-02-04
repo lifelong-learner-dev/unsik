@@ -26,6 +26,7 @@ from django.db.models import Sum
 import ast
 from random import sample
 import pytz
+from django.conf import settings
 
 # Create your views here.
 
@@ -36,6 +37,7 @@ def meal_index(request):
 def meal_analyze(request):
 
     return render(request, 'meal/meal_analyze.html')
+
 
 def meal_recommend(request):
     id = request.user.id
@@ -54,12 +56,16 @@ def meal_recommend(request):
         random_menus = sample(list(menu), min(len(menu), 3))
 
         for data in random_menus:
-            print('data : ',type(data.menu_dtl))
+            # print('data : ',type(data.menu_dtl))
             recommended.append([data.menu_dtl])
 
+    for i in range(len(recommended)):
+        recommended[i] = recommended[i][0].split(', ')
+    
     context = {
         'meal_type': chk_meal_type,
-        'recommend': recommended
+        'recommend': recommended,
+        'google_api_key': settings.GOOGLE_API_KEY
     }
 
     return render(request, 'meal/meal_recommend.html', context)
@@ -70,20 +76,6 @@ def meal_history(request):
 
     meals = Meal.objects.filter(user_id=id).order_by('meal_date')
 
-    recommended = []
-
-    # if menu is None : 
-        # recommend = None
-        # pass
-    # else:
-        # random_menus = sample(list(menu), min(len(menu), 3))
-
-        # for data in random_menus:
-            # print('data : ',type(data.menu_dtl))
-            # recommended.append([data.menu_dtl])
-
-    # print('recommended' ,recommended)
-            
     today = datetime.today()
     month_data = today.month
     first_day_of_month = today.replace(day=1)
@@ -105,20 +97,13 @@ def meal_history(request):
     # 데이터가 있는 날짜
     days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
 
-    for i in range(len(recommended)):
-        recommended[i] = recommended[i][0].split(', ')
-
     context = {
         'title': '그래프',
         'month': month_data ,
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
-        # 'meal_type': chk_meal_type,
-        'recommend': recommended
     }
-
-    # print('context 확인 : ',context)
 
     return render(request, 'meal/meal_history.html', context)
 
