@@ -8,9 +8,6 @@
         opacity: 1; /* 화면에 나타날 때 투명도를 조절하여 나타나는 효과 생성 */
     }
 </style>
-<h2 class="mainView" id="welcome_text" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <strong>AI 운동 식단 트레이너 '운식'입니다!</strong>
-</h2>
 <section class="mainView">
     <div class="slide_wrap">
         <div class="slide_box">
@@ -41,29 +38,53 @@
     </div>
 </section>
 <section id="main_contents_section" class="mainView">
-    <div class="main_section mainView clearfix">
-        <img class="mainpic" src="{% static 'images/mainpic1.jpg' %}" alt="">
-        <div class="onPicContents">
-            <h1>운동의 시작은 식단 관리부터!</h1>
-            <span>AI 카메라로 매일매일 분석 받는 나의 식단</span>
-            <a href="{% url 'meal_analyze' %}">체험해보기</a>
+    <article>
+        <h3>AI 카메라</h3>
+        <div class="main_section mainView clearfix">
+            <img class="mainpic" src="{% static 'images/mainpic3.jpg' %}" alt="">
+            <div class="onPicContents">
+                <h1>운동의 시작은 식단 관리부터!</h1>
+                <span>AI 카메라로 매일매일 분석 받는 나의 식단</span>
+                <a href="{% url 'meal_analyze' %}">체험해보기</a>
+            </div>
         </div>
-    </div>
-    <div class="main_section mainView clearfix">
-        <img class="mainpic" src="{% static 'images/mainpic2.jpg' %}" alt="">
-        <div class="onPicContents">
-            <h1>목표 달성의 열쇠는 꾸준함!</h1>
-            <span>하루하루 기록하는 나의 운동 일지</span>
-            {% if user.is_authenticated %}
-            <!-- <button onclick="location.href=">운동기록하기</button> -->
-            <a href="{% url 'record_exercise' %}">운동기록하기</a>
-            {% else %}
-            <!-- <button onclick="location.href=">회원가입하기</button> -->
-            <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a>
-            <a href="{% url 'sign_up' %}">회원가입</a>
-            {% endif %}
+    </article>
+    <article>
+        <h3>운동 기록</h3>
+        <div class="main_section mainView clearfix">
+            <img class="mainpic" src="{% static 'images/mainpic2.jpg' %}" alt="">
+            <div class="onPicContents">
+                <h1>목표 달성의 열쇠는 꾸준함!</h1>
+                <span>하루하루 기록하는 나의 운동 일지</span>
+                {% if user.is_authenticated %}
+                <!-- <button onclick="location.href=">운동기록하기</button> -->
+                <a href="{% url 'record_exercise' %}">운동기록하기</a>
+                {% else %}
+                <!-- <button onclick="location.href=">회원가입하기</button> -->
+                <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a>
+                <a href="{% url 'sign_up' %}">회원가입</a>
+                {% endif %}
+            </div>
         </div>
-    </div>
+    </article>
+    <article>
+        <h3>다른 기능</h3>
+        <div class="main_section mainView clearfix">
+            <img class="mainpic" src="{% static 'images/mainpic2.jpg' %}" alt="">
+            <div class="onPicContents">
+                <h1>목표 달성의 열쇠는 꾸준함!</h1>
+                <span>하루하루 기록하는 나의 운동 일지</span>
+                {% if user.is_authenticated %}
+                <!-- <button onclick="location.href=">운동기록하기</button> -->
+                <a href="{% url 'record_exercise' %}">운동기록하기</a>
+                {% else %}
+                <!-- <button onclick="location.href=">회원가입하기</button> -->
+                <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a>
+                <a href="{% url 'sign_up' %}">회원가입</a>
+                {% endif %}
+            </div>
+        </div>
+    </article>
 </section>
 <script>
     const options = {

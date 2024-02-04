@@ -19,7 +19,7 @@ $(document).ready(function () {
             ajaxUrl = "http://127.0.0.1:8000/fitness_grade/female_adolescent_predict_ajax/";
         } else {
             // 웹 서버인 경우
-            ajaxUrl = "http://18.180.43.72:8000/fitness_grade/female_adolescent_predict_ajax/"; // 웹 서버의 실제 API 엔드포인트 URL로 대체해야 합니다.
+            ajaxUrl = "http://18.180.43.72/fitness_grade/female_adolescent_predict_ajax/"; // 웹 서버의 실제 API 엔드포인트 URL로 대체해야 합니다.
         }
 
         $.ajax({
