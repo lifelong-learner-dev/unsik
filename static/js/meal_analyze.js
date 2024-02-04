@@ -11,7 +11,7 @@ $(document).ready(function () {
             var img = document.createElement('img');
             img.src = e.target.result;
             img.style.maxWidth = '696px';
-            img.style.maxHeight = '496px';
+            img.style.maxHeight = '492px';
 
             var preview = document.getElementById('preview');
             preview.innerHTML = '';
@@ -26,43 +26,4 @@ $(document).ready(function () {
         // document.getElementById('current-section').style.display = 'none'; // 현재 섹션을 숨깁니다.
         document.getElementById('analysis-section').style.display = 'block'; // 분석 섹션을 표시합니다.
     });
-
-    // 맞음 버튼 클릭 로직
-    // document.getElementById('confirm-button').addEventListener('click', function() {
-    // });
-
-    // // 틀림 버튼 클릭 로직
-    // document.getElementById('deny-button').addEventListener('click', function() {
-    // });
-
-    updateComment()
-
-    // document.addEventListener('DOMContentLoaded', updateComment);
-})
-
-// 시간별 코멘트
-function updateComment() {
-    var now = new Date();
-    var hours = now.getHours();
-    var commentText = '';
-
-    if (hours >= 6 && hours <= 9) {
-        // 아침 시간대 (6시-9시)
-        commentText = '아침 식사가 중요합니다! 오늘 하루도 활기차게 시작하세요.';
-    } else if (hours >= 11 && hours <= 14) {
-        // 점심 시간대 (11시-14시)
-        commentText = '점심 시간입니다! 균형 잡힌 식사로 에너지를 충전하세요.';
-    } else if (hours >= 18 && hours < 19) {
-        // 저녁 시간대 (18시-20시)
-        commentText = '저녁 시간입니다! 하루를 마무리하는 든든한 식사를 즐기세요.';
-    } else if (hours >= 19) {
-        // 저녁 시간 오버
-        commentText = '야식은 되도록 피해주세요! 늦은 식사는 좋지 않아요.';
-    } else {
-        // 그 외
-        commentText = '식사 시간이 아닙니다. 건강한 간식을 섭취해 보세요!';
-
-    }
-
-    document.getElementById('time_comment').textContent = commentText;
-}
+});

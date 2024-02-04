@@ -14,7 +14,7 @@
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridMonth',
-          height: '300px', // 달력의 높이 설정
+          height: '520px', // 달력의 높이 설정
           aspectRatio: 1.0, // 가로 대비 세로 비율 조절 (1.0은 기본값)
           locale: 'ko', // 한국어 설정 추가
           events: {{ events|safe }}
@@ -33,40 +33,46 @@
 
 
 {% csrf_token %}
-<section>
-    <div id="mypage_top">
-        <div id="mypage_user_name">
-            사용자 이름: {{ my_page_user.username }}
+<section style="display: flex; justify-content: space-between;">
+    <!-- 왼쪽 섹션: 몸무게 그래프 및 칼로리 그래프 -->
+    <div id="left">
+        <div id="mypage_top">
+            <div id="mypage_user_name">
+                사용자 이름: {{ my_page_user.username }}
+            </div>
+            <div id="mypage_user_activity">
+                활동 수준: {{ my_page_user.user_activity }}
+            </div>
         </div>
-        <div id="mypage_user_target_weight">
-            목표 체중: {{ my_page_user.user_target_weight }}kg
-        </div>
-        <div id="mypage_user_activity">
-            활동 수준: {{ my_page_user.user_activity }}
-        </div>
-    </div>
-
-    <div id="mypage_calendar">
-        <div id="calendar"></div>
-    </div>
-
-    <div id="mypage_current_height_weight">
-        <div id="mypage_current_height">
-            현재 키: {{ my_page_user.user_height }}cm
-        </div>
-        <div id="mypage_current_weight">
-            현재 몸무게: {{ my_page_user.user_weight }}kg
+        <div id="mypage_calendar">
+            <div id="calendar"></div>
         </div>
     </div>
-    <a href="{% url 'my_page_update' my_page_user.username %}" id="user_info_change" class="btn btn-primary">키, 몸무게 정보 변경</a>
-    <div id="mypage_weight_graph">
-         <canvas id="weightsChart"></canvas>
-    </div>
-    <div id="mypage_calories_graph">
-        <canvas id="caloriesChart"></canvas>
-    </div>
-    <div id="mypage_current_calories">
-        <b>오늘 하루 총 섭취 칼로리 :</b> {{todays_meal_calories_sum}}
+    
+    <!-- 오른쪽 섹션: 사용자 정보 및 달력 -->
+    <div id="right">
+        <div id="mypage_weight_graph">
+            <canvas id="weightsChart"></canvas>
+        </div>
+        <div id="mypage_calories_graph">
+            <canvas id="caloriesChart"></canvas>
+        </div>
+        <div id="mypage_current_calories">
+            <b>오늘 하루 총 섭취 칼로리 :</b> {{ todays_meal_calories_sum }}
+        </div>
+        <div id="mypage_current_height_weight">
+            <div id="mypage_current_height">
+                현재 키: {{ my_page_user.user_height }}cm
+            </div>
+            <div id="mypage_current_weight">
+                현재 몸무게: {{ my_page_user.user_weight }}kg
+            </div>
+            <div id="mypage_user_target_weight">
+                <b>목표 체중: {{ my_page_user.user_target_weight }}kg</b>
+            </div>
+        </div>
+        <a href="{% url 'my_page_update' my_page_user.username %}" id="user_info_change" class="btn btn-primary">키, 몸무게 정보 변경</a>        
+    
     </div>
 </section>
 {% endblock content %}

@@ -19,10 +19,11 @@
     text-align: center;
     overflow: hidden;
     position: relative;
+    border-radius: 20px;
 }
 
 .mainpic {
-    width: 600px;
+    width: 390px;
     height: auto;
     transition: all 0.3s ease-in-out ;
 }
@@ -83,6 +84,7 @@
     width: 100%;
     margin: auto;
     overflow-x: hidden;
+    border-radius: 20px;
 }
 
 .slide_content {
@@ -110,9 +112,9 @@
 .slide_btn_box > button {
     position: absolute;
     top: 50%;
-    margin-top: -75px;
-    width: 100px;
-    height: 100px;
+    margin-top: -40px;
+    width: 50px;
+    height: 50px;
     font-size: 2em;
     color: #555;
     background: none;
