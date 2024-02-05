@@ -2,6 +2,11 @@
     width: 1200px;
     display: inline-flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#main_contents_section article {
+    margin-top: 30px;
 }
 
 #welcome_text {
@@ -20,12 +25,14 @@
     overflow: hidden;
     position: relative;
     border-radius: 20px;
+    box-shadow: 0 0 2px rgba(0,0,0,.08),
+                4px 4px 10px rgba(0,0,0,0.4);
 }
 
 .mainpic {
-    width: 390px;
+    width: 580px;
     height: auto;
-    transition: all 0.3s ease-in-out ;
+    transition: all 0.3s ease-in-out;
 }
 
 /* .mainpic:not(:hover) {
@@ -75,9 +82,7 @@
     position: relative;
     width: 1200px;
     margin: auto;
-    margin-bottom: 20px;
     padding-bottom: 30px;
-    margin-bottom: 30px;
 }
 
 .slide_box {

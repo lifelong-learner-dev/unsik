@@ -13,5 +13,5 @@ urlpatterns = [
     path("calorie_dict", views.calorie_dict, name='calorie_dict'),
     path("calorie_dict/<str:food_code>/", views.food_detail, name='food_detail'),
     path("food_search", views.food_search, name="food_search"),
-    path("test", views.test, name='test'),
+    # path("test", views.test, name='test'),
 ]
