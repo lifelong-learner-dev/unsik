@@ -1,11 +1,13 @@
 from datetime import date
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from .modules.data_anal import female_senior_input_predict, female_adult_input_predict, female_adolescent_input_predict, female_child_input_predict, male_senior_input_predict, male_adult_input_predict, male_adolescent_input_predict, male_child_input_predict 
 from django.http import JsonResponse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from openai import OpenAI
 from decouple import config
+from django.contrib.auth import get_user_model
+from .models import Point
 import json
 import time
 # .env 파일에서 OPENAI_API_KEY 가져오기
@@ -250,26 +252,54 @@ def healthcareassistant(request):
             # 예외가 발생하면 오류 응답 반환
             print("An error occurred:", str(e))  # 오류 메시지 출력
             return JsonResponse({"error": str(e)}, status=500)
+
+def payment(request, username):
+
+    if not request.user.is_authenticated:
+        return redirect('main')  # 메인페이지로 리디렉션
+
+    user = request.user
+    my_page_user = get_object_or_404(get_user_model(), username=username, is_active=True)
+    id = my_page_user.id
+
+ 
+    try:
+        point_entry = Point.objects.get(user=id)
+ 
+        return render(request, 'community/llm.html')
+    except Point.DoesNotExist:
+
+        return render(request, 'community/payment.html')
     
-# def payment(request):
-#     return render(request, 'community/payment.html')
-    
+@csrf_exempt
+def create_point_entry(request):
+    if request.method == 'POST':
+        try:
+            # JSON 요청에서 데이터 추출
+            data = json.loads(request.POST.get('payment_user_data'))  # request.body를 JSON으로 파싱
+            user_id = data.get('user')
+            point_value = data.get('point')
+            gaining_method = data.get('gaining_method')
+            gained_date = data.get('gained_date')
 
+            # 새 Point 항목 생성
+            Point.objects.create(
+                user_id=user_id,
+                point=point_value,
+                gaining_method=gaining_method,
+                gained_date=gained_date
+            )
 
-        
+            # 필요한 경우 성공 응답 반환
+            return JsonResponse({'message': 'Point 항목이 성공적으로 생성되었습니다.'})
 
-       
+        except Exception as e:
+            # 예외 또는 오류 처리
+            print("오류 발생: ", str(e))  # 서버 측에서 로그 출력
+            return JsonResponse({'error': str(e)}, status=400)
 
-
-
-
-
-
-
-
-
-
-
+    # 다른 HTTP 메서드 또는 잘못된 요청 처리
+    return JsonResponse({'error': '잘못된 요청 메서드입니다.'}, status=405)
 
 
 

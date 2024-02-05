@@ -1,8 +1,21 @@
-.predict-section {
+.title-explain-section {
+    max-width: 1240px;
+    margin: auto;
+    box-shadow: 0px 0px 10px #0000001a;
+    flex: 1;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+}
+
+.predict-section,
+.result-section {
     max-width: 700px;
     margin: auto;
     padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 10px #0000001a;
 }
 
 .predict-form {
@@ -96,7 +109,8 @@
 }
 
 .measure-section,
-.predict-section {
+.predict-section,
+.result-section {
     flex: 1;
     padding: 20px;
     background-color: #f8f9fa;
@@ -163,4 +177,9 @@
     background-image: none;
     font-size: 25px;
     top: 50%;
+}
+
+#loader {
+    font-size: 25px;
+    text-align: center;
 }
