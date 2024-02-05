@@ -53,8 +53,8 @@ $(document).ready(function () {
                 var activePoints = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
 
                 // 창 띄우는 위치 조정
-                var new_page_width = 800;
-                var new_page_height = 600;
+                var new_page_width = 1000;
+                var new_page_height = 800;
                 var new_page_top = (screen.height - new_page_height) / 2;
                 var new_page_left = (screen.width - new_page_width) / 2;
 

@@ -1,53 +1,68 @@
 {% load static %}
 <link rel="stylesheet" href="{% static '/css/meal_detail.css' %}">
+<!-- Consider linking to your JavaScript files if you need interactive functionality -->
 <!-- <script src="{% static 'js/meal_detail.js' %}"></script> -->
+<div class="table_container">
+    <h1>{{ user.username }}님의 {{ date }} 식단 상세 정보</h1>
 
-<h1>{{ user.username }}님의 {{ date }} 식단 상세 정보</h1>
+    {% for meal_type, data in meal_info.items %}
+    {% if data.foods %}
+    <div class="meal-table">
+        <table id="meal_dtl_table_{{ meal_type|slugify }}">
+            <caption>{{ meal_type }}</caption>
+            <thead>
+                <tr>
+                    <th>음식</th>
+                    <th>칼로리</th>
+                    <th>단백질(g)</th>
+                    <th>지방(g)</th>
+                    <th>탄수화물(g)</th>
+                    <th>당류(g)</th>
+                    <th>식이섬유(g)</th>
+                    <th>나트륨(mg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for food in data.foods %}
+                <tr>
+                    <td>{{ food.name }}</td>
+                    <td>{{ food.calories|floatformat:2 }}</td>
+                    <td>{{ food.protein|floatformat:2 }}</td>
+                    <td>{{ food.fat|floatformat:2 }}</td>
+                    <td>{{ food.carbohydrate|floatformat:2 }}</td>
+                    <td>{{ food.sugar|floatformat:2 }}</td>
+                    <td>{{ food.dietary_fiber|floatformat:2 }}</td>
+                    <td>{{ food.natrium|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% endfor %}
 
-{% for meal_type, data in meal_info.items %}
-{% if data.foods %}
-<div class="meal-table">
-    <h2>{{ meal_type }}</h2>
-    <table id="meal_dtl_table">
-        <thead>
-            <tr>
-                <th>음식</th>
-                <th>칼로리</th>
-                <th>단백질(g)</th>
-                <th>지방(g)</th>
-                <th>탄수화물(g)</th>
-                <th>당류(g)</th>
-                <th>식이섬유(g)</th>
-                <th>나트륨(mg)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for food in data.foods %}
-            <tr>
-                <td>{{ food.name }}</td>
-                <td>{{ food.calories|floatformat:2 }}</td>
-                <td>{{ food.protein|floatformat:2 }}</td>
-                <td>{{ food.fat|floatformat:2 }}</td>
-                <td>{{ food.carbohydrate|floatformat:2 }}</td>
-                <td>{{ food.sugar|floatformat:2 }}</td>
-                <td>{{ food.dietary_fiber|floatformat:2 }}</td>
-                <td>{{ food.natrium|floatformat:2 }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endif %}
-{% endfor %}
-<!-- 부족한 영양소 정보 표시 -->
-<div class="deficient-nutrients">
+    <!-- Integrate deficient nutrients information into a table -->
     {% if deficient_nutrients %}
-    <h2>{{user.username}}님 {{date}}일의 영양소 종합</h2>
-    <ul>
-        {% for nutrient, values in deficient_nutrients.items %}
-        <li>{{ nutrient|title }}: 권장 {{ values.recommended|floatformat:2 }}g, 실제 섭취량 {{ values.actual|floatformat:2}}g
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="meal-table deficient-nutrients">
+        <h2>{{user.username}}님 {{date}}일의 영양소 종합</h2>
+        <table id="nutrients_dtl_table">
+            <thead>
+                <tr>
+                    <th>영양소</th>
+                    <th>권장량(g)</th>
+                    <th>실제 섭취량(g)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nutrient, values in deficient_nutrients.items %}
+                <tr>
+                    <td>{{ nutrient|title }}</td>
+                    <td>{{ values.recommended|floatformat:2 }}</td>
+                    <td>{{ values.actual|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% endif %}
 </div>

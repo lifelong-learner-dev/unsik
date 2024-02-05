@@ -264,6 +264,8 @@ def meal_detail(request, date):
         'deficient_nutrients' : deficient_nutrients
     }
 
+    # print('context : ',context['deficient_nutrients'])
+
     return render(request, 'meal/meal_detail.html', context)
 
 # 이미지 파일명에 고유번호를 부여해주는 함수
