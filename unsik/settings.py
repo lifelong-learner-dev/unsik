@@ -153,6 +153,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'users_app.User'
 
 LOGIN_REDIRECT_URL = '/'
-
-# 구글 지도 호출용
-GOOGLE_API_KEY = "AIzaSyBxpUG-T7hzL8PUrFtWxAqYW9bctD3xaW4"

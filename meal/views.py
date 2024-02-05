@@ -61,12 +61,28 @@ def meal_recommend(request):
 
     for i in range(len(recommended)):
         recommended[i] = recommended[i][0].split(', ')
-    
+
+    search_items = [menu[0] for menu in recommended]
+
+    # print('세개 search_items ',search_items)
+    msg = ''
+
+    if chk_meal_type == '저염식':
+        msg = '식습관 분석에 따르면 나트륨 섭취가 권장량을 초과하는 경향이 있습니다. 건강을 위해 나트륨을 줄인 저염식을 추천해 드립니다.'
+    elif chk_meal_type =='당뇨식':
+        msg = '분석 결과, 당분 섭취가 일반적인 권장량을 넘는 것으로 나타났습니다. 건강 관리를 위해 혈당 조절에 도움이 되는 당뇨식을 권장합니다'
+    else:
+        msg = '귀하의 식습관은 대체로 균형 잡힌 것으로 보입니다. 현재의 건강한 식단을 유지하시면서 다양한 영양소가 포함된 일반식을 계속 드실 것을 추천합니다.'
+
     context = {
         'meal_type': chk_meal_type,
         'recommend': recommended,
-        'google_api_key': settings.GOOGLE_API_KEY
+        # 'searchText' : search_items
+        'searchText' : json.dumps(search_items),
+        'msg' : msg
     }
+
+    # print('context : ',context)
 
     return render(request, 'meal/meal_recommend.html', context)
 

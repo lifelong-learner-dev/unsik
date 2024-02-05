@@ -13,3 +13,8 @@
     border: 3px solid #000000;
     padding: 25px;
 }
+
+.clicked-item {
+    background-color: #f4f81f;
+    border: 1px solid #000;
+}

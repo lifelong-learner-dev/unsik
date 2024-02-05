@@ -37,11 +37,18 @@ $(document).ready(function () {
             onClick: function (e) {
                 var activePoints = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
 
+                // 창 띄우는 위치 조정
+                var new_page_width = 800;
+                var new_page_height = 600;
+                var new_page_top = (screen.height - new_page_height) / 2;
+                var new_page_left = (screen.width - new_page_width) / 2;
+
+
                 if (activePoints.length) {
                     var firstPoint = activePoints[0];
                     var label = chart.data.labels[firstPoint.index];
                     // 새 창에서 상세 정보 페이지
-                    window.open('/meal/meal_detail/' + label, '_blank', 'width=600,height=400,top=100,left=100');
+                    window.open('/meal/meal_detail/' + label, '_blank', 'width=' + new_page_width + ',height=' + new_page_height + ',top=' + new_page_top + ',left=' + new_page_left);
                 }
             }
         }
