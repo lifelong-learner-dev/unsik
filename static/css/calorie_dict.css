@@ -125,3 +125,11 @@
     font-weight: bold;
     border-radius: 5px;
 }
+
+#cal_dict tr { height: 60px;}
+
+#cal_dict tr:nth-of-type(3),
+#cal_dict tr:nth-of-type(5),
+#cal_dict tr:nth-of-type(7) { background-color: #ddf2de; }
+
+#cal_dict th, #cal_dict td { font-size: larger; }

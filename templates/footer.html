@@ -2,17 +2,20 @@
 <link rel="stylesheet" href="{% static 'css/footer.css' %}">
 <footer>
     <div id="Team_info_box">
-        <p>Team : 운식아 도아조</p>
-        <p>Crew : 김근형, 방성준, 임덕현, 차성현</p>
+        <p>(팀) 운식아 도아조 | 김근형, 방성준, 임덕현, 차성현</p>
+        <p>ⓒ Unsik | 사업자등록번호 : 190-81-24025</p>
         <a href="https://github.com/lifelong-learner-dev/unsik" style="text-decoration: none;">
-            <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Github_logo" style="width: 32px;">
+            <img src="{% static 'images/github-mark-white.png' %}" alt="Github_logo" style="width: 32px;">
             <span>Team Github 방문하기</span>
         </a><br>
-        <marquee direction="left" scrolldelay="180" width="180">운식이와 함께 '운'동 '식'단 같이 해봐요!</marquee>
+        <!-- <marquee direction="left" scrolldelay="180" width="180">운식이와 함께 '운'동 '식'단 같이 해봐요!</marquee> -->
     </div>
-    <a href="#" id="top_button">
-        <span>
-            맨 위로 가기
-        </span>
-    </a>
+    <div id="footer_img">
+        <img src="{% static 'images/unsik_logo1.png' %}" alt="unsik_footer_logo" style="height: 140px;">
+    </div>
+    <div>
+        <a href="#" id="top_button">
+            <span>△ 맨 위로 가기</span>
+        </a>
+    </div>
 </footer>

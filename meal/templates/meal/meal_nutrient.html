@@ -77,24 +77,27 @@
 <div class="float_link">
     <a href="{% url 'meal_history' %}">식단 히스토리 바로가기</a>
 </div>
-<div style="display: inline-grid; justify-items: center;">
+<div style="width: 100%;">
     <h2>{{ user }}님의 {{ meal_type }}식단 분석</h2>
     <div class="barchart-container">
         <canvas id="nut_proportion_chart"></canvas>
     </div>
     {% if warnings_dict %}
-    {% for key, value in warnings_dict.items %}
-    <div class="display_flex">
-        <img class="warning_sign" src="{% static 'images/warning-sign-icon-transparent-background.png' %}" alt="warning-sign">
-        <p>{{ key }} : {{ value }}</p>
+    <div style="display: grid; justify-items: start; justify-content: space-evenly;">
+        {% for key, value in warnings_dict.items %}
+        <div class="display_flex warning_quote">
+            <img src="{% static 'images/warning-sign-icon-transparent-background.png' %}" alt="warning-sign" style="width: 32px;">
+            <strong style="color: crimson;">{{ key }}</strong>
+            <p>&nbsp;: {{ value }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="display_flex warning_quote">
+            <img src="{% static 'images/smily.png' %}" alt="스마일 표시" style="width: 32px;">
+            <p>완벽해요! 계속 이렇게 유지 해주세요.</p>
+        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-    {% else %}
-    <div class="display_flex">
-        <img src="{% static 'images/smily.png' %}" alt="스마일 표시" style="width: 32px;">
-        <p>완벽해요! 계속 이렇게 유지 해주세요.</p>
-    </div>
-    {% endif %}
 </div>
 <script>
     $(document).ready(function() {
@@ -232,10 +235,10 @@
                     {
                         label: '탄수화물',
                         data: [{{ nurtient_proportion.0 }}],
-                        backgroundColor: 'rgba(255, 185, 46, 0.5)',
+                        backgroundColor: 'rgba(255, 185, 46, 0.8)',
                         borderColor: 'rgba(255, 185, 46, 1)',
                         // borderWidth: 1,
-                        barThickness:15,
+                        barThickness:23,
                         borderSkipped:false ,
                         borderRadius: [
                             { topLeft: 20, topRight: 0, bottomLeft: 20, bottomRight: 0},
@@ -245,37 +248,37 @@
                     {
                         label: '단백질',
                         data: [{{ nurtient_proportion.1 }}],
-                        backgroundColor: 'rgba(255, 110, 233, 0.5)',
+                        backgroundColor: 'rgba(255, 110, 233, 0.8)',
                         borderColor: 'rgba(255, 110, 233, 1)',
-                        barThickness:15,
+                        barThickness:23,
                     },
                     {
                         label: '지방',
                         data: [{{ nurtient_proportion.2 }}],
-                        backgroundColor: 'rgba(225, 48, 48, 0.5)',
+                        backgroundColor: 'rgba(225, 48, 48, 0.8)',
                         borderColor: 'rgba(225, 48, 48, 1)',
-                        barThickness:15,
+                        barThickness:23,
                     },
                     {
                         label: '당',
                         data: [{{ nurtient_proportion.3 }}],
-                        backgroundColor: 'rgba(79, 237, 61, 0.5)',
+                        backgroundColor: 'rgba(79, 237, 61, 0.8)',
                         borderColor: 'rgba(79, 237, 61, 1)',
-                        barThickness:15,
+                        barThickness:23,
                     },
                     {
                         label: '포화지방',
                         data: [{{ nurtient_proportion.4 }}],
-                        backgroundColor: 'rgba(44, 84, 204, 0.5)',
+                        backgroundColor: 'rgba(44, 84, 204, 0.8)',
                         borderColor: 'rgba(44, 84, 204, 1)',
-                        barThickness:15,
+                        barThickness:23,
                     },
                     {
                         label: '트랜스지방',
                         data: [{{ nurtient_proportion.5 }}],
-                        backgroundColor: 'rgba(97, 24, 160, 0.5)',
+                        backgroundColor: 'rgba(97, 24, 160, 0.8)',
                         borderColor: 'rgba(97, 24, 160, 1)',
-                        barThickness:15,
+                        barThickness:23,
                         borderRadius: [
                             { topLeft: 0, topRight: 20, bottomLeft: 0, bottomRight: 20},
                         ]

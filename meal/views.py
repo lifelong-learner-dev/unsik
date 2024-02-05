@@ -299,7 +299,7 @@ def calorie_dict(request):
     # form name=search인 항목에서 검색어를 가져온다.
     # 첫 로드 시에는 비어있다.
     search_query = request.GET.get('search', '')
-    print(search_query)
+    # print(search_query)
 
     # 대분류, 소분류 항목을 가져와 option 태그에서 for문을 돌려 노출시킨다.
     major_classes = CalorieDictionary.objects.filter(Q(food_name__icontains=search_query)
@@ -309,9 +309,9 @@ def calorie_dict(request):
 
     # form name=majorClass, detailClass 인 항목을 가져온다.
     major_class_filter = request.GET.get('majorClass', '')
-    print(major_class_filter)
+    # print(major_class_filter)
     detail_class_filter = request.GET.get('detailClass', '')
-    print(detail_class_filter)
+    # print(detail_class_filter)
     
     # 각 항목에 맞는 데이터를 필터해온다. 
     if major_class_filter:
@@ -323,13 +323,13 @@ def calorie_dict(request):
     # try except 구문은 크게 필요 없어보이는데, 없으면 오류가 난다.
     try:
         keywords = search_query.split()
-        print(keywords)
+        # print(keywords)
         if len(keywords)>=2:
             q_obj = Q()
 
             q_obj |= Q(food_name__icontains=keywords[0]) & Q(maker__icontains=keywords[1])
 
-            print(q_obj)
+            # print(q_obj)
         
             cal_data = cal_data.filter(q_obj)
 
