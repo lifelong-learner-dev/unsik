@@ -2,6 +2,21 @@ $(document).ready(function () {
 
     var currentYear = new Date().getFullYear();
     var currentMonth = new Date().getMonth() + 1;
+    // 이번달에서 변하지않는값
+    const nowMonth = new Date().getMonth() + 1;
+
+    // console.log('currentMonth : ', currentMonth);
+    // console.log('dates : ', dates[0].split('-')[1]);
+
+    // 이번달 그래프인지 체크
+    var dateCkt = dates[0].split('-')[1].startsWith('0') ? dates[0].split('-')[1].substring(1) : dates[0].split('-')[1];
+    // console.log('dateCkt : ', dateCkt);
+
+    if (nowMonth == dateCkt) {
+        $('#next-month').hide();
+    } else {
+        $('#next-month').show();
+    }
 
     $('#prev-month').click(function () {
         changeMonth(-1);
@@ -38,8 +53,8 @@ $(document).ready(function () {
                 var activePoints = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
 
                 // 창 띄우는 위치 조정
-                var new_page_width = 800;
-                var new_page_height = 600;
+                var new_page_width = 1000;
+                var new_page_height = 800;
                 var new_page_top = (screen.height - new_page_height) / 2;
                 var new_page_left = (screen.width - new_page_width) / 2;
 
@@ -71,6 +86,13 @@ $(document).ready(function () {
             url: `/meal/meal_history/${currentYear}/${currentMonth}/`,
             dataType: 'json',
             success: function (response) {
+                // console.log('response : ', response.month);
+                // console.log('nowMonth : ', nowMonth);
+                if (nowMonth == response.month) {
+                    $('#next-month').hide();
+                } else {
+                    $('#next-month').show();
+                }
                 updateChart(response);
             },
             error: function (err) {
