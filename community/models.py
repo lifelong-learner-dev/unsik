@@ -35,3 +35,50 @@ class Point(models.Model):
     class Meta:
         managed = False
         db_table = 'point'
+
+
+
+class Daily(models.Model):
+    postnum = models.BigAutoField(db_column='postNum', primary_key=True)  # Field name made lowercase.
+    user = models.ForeignKey('UsersAppUser', models.DO_NOTHING)
+    total_meal_calories = models.FloatField(blank=True, null=True)
+    total_exercise_calories = models.FloatField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    current_weight = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'daily'
+
+
+class Meal(models.Model):
+    postnum = models.BigAutoField(db_column='postNum', primary_key=True)  # Field name made lowercase.
+    user = models.ForeignKey('UsersAppUser', models.DO_NOTHING)
+    # meal_date = models.DateTimeField(auto_now_add=True)
+    meal_date = models.DateTimeField()
+    meal_photo = models.CharField(max_length=255, blank=True, null=True)
+    meal_info = models.TextField(blank=True, null=True)
+    meal_type = models.CharField(max_length=20, blank=True, null=True)
+    meal_calories = models.FloatField(blank=True, null=True)
+    nutrient_info = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'meal'
+
+
+class Exercise(models.Model):
+    postnum = models.BigIntegerField(db_column='postNum', primary_key=True)  # Field name made lowercase.
+    user = models.ForeignKey('UsersAppUser', models.DO_NOTHING, blank=True, null=True)
+    exercise_date = models.DateTimeField(blank=True, null=True)
+    calories_burned = models.FloatField(blank=True, null=True)
+    exercise_type = models.CharField(max_length=3, blank=True, null=True)       
+    exercise_name = models.CharField(max_length=30, blank=True, null=True)      
+    exercise_amount = models.IntegerField(blank=True, null=True)
+    weight = models.IntegerField(blank=True, null=True)
+    reps = models.IntegerField(blank=True, null=True)
+    sets = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'exercise'

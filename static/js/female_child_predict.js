@@ -94,6 +94,8 @@ $(document).ready(function () {
         sit_and_reach = ((sit_and_reach / 43) * 100)
         if (sit_and_reach > 100) {
             sit_and_reach = 100;
+        } else if (sit_and_reach == 0) {
+            sit_and_reach = 25;
         }
         sit_ups = ((sit_ups / 92) * 100)
         if (sit_ups > 100) {
