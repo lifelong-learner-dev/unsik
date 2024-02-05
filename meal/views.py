@@ -27,7 +27,8 @@ import ast
 from random import sample
 import pytz
 from django.conf import settings
-
+from dotenv import load_dotenv
+import os
 # Create your views here.
 
 
@@ -40,6 +41,12 @@ def meal_analyze(request):
 
 
 def meal_recommend(request):
+    dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+    # print('dotenv_path : ',dotenv_path)
+    load_dotenv(dotenv_path)
+    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+    # print(GOOGLE_API_KEY)
+
     id = request.user.id
 
     recommended = []
@@ -62,7 +69,8 @@ def meal_recommend(request):
     for i in range(len(recommended)):
         recommended[i] = recommended[i][0].split(', ')
 
-    search_items = [menu[0] for menu in recommended]
+    # 수정해서 이제 안씀
+    # search_items = [menu[0] for menu in recommended]
 
     # print('세개 search_items ',search_items)
     msg = ''
@@ -78,8 +86,9 @@ def meal_recommend(request):
         'meal_type': chk_meal_type,
         'recommend': recommended,
         # 'searchText' : search_items
-        'searchText' : json.dumps(search_items),
-        'msg' : msg
+        # 'searchText' : json.dumps(search_items),
+        'msg' : msg,
+        'GOOGLE_API_KEY' : GOOGLE_API_KEY
     }
 
     # print('context : ',context)
