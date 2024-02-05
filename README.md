@@ -2,11 +2,68 @@
 
 ## 주제 : 운동, 식단 관리 사이트 개발 
 
+### 2024/02/05 임덕현 - 브랜치명 : ldh 
+    > 1. 식단 추천 기능 google map 추가 & 멘트 추가
+      > .env에 GOOGLE_MAP_API_KEY 추가 필요
+      > 식단 목록에서 원하는 메뉴 클릭시 현재 지도에서 해당 메뉴 검색
+    > 2. 식단 히스토리 페이지 현재달일 경우 다음달 버튼 숨김 & 크기 조절
+    > 3. requirements.txt 내용 추가 (python-dotenv - API 키 서버에서 읽어와서 html로 보내는 부분에 사용)
+
+### 2024/02/05 김근형 - 브랜치명 : ghk 수정 내용
+    > payment : AI 챗봇을 사용하기 위한 결제 페이지 추가
+      > 아래 명령어 작동해주시면 됩니다.
+        > use unsik_db;
+          -- 기존 테이블에 AUTO_INCREMENT 설정 추가
+          ALTER TABLE `point`
+          MODIFY `point_idx` BIGINT AUTO_INCREMENT; 
+          
+      > 결제 완료되면 AI 챗봇 사용 가능
+      > payment.html, payment.css 추가,
+      > community/views.py에 기능 추가
+
+
+### 2024/02/02 차성현 - 브랜치명 : csh 내용
+
+    > 1. 메인페이지 슬라이드쇼 이미지가 추가되었습니다.
+    > 2. 모든 페이지의 CSS가 소소하게 수정되었습니다.
+    > 3. 식사 분석 페이지에서 아무 문제가 없을 경우 스마일 아이콘이 출력됩니다.
+    > 4. sign_up.html 페이지 내에 ajax가 추가되었습니다. 본래 페이지 내에 스크립트를 바로 끼워넣는 것은 좋지 못하나 Django 문법을 사용하기 위해 넣었습니다.
+
+### 2024/02/02 김근형 - 브랜치명 : ghk 수정 내용
+    > 1. unsik 폴더에 
+         .gitignore, db_settings.py, manage.py, README.md, requirements.txt 가 있는 곳에
+        > .env 파일을 만들어주세요
+          > .env 파일 안에 해당 문구를 추가하시고 
+            제가 보내드리는 openai api key를 붙여넣으시면 됩니다.
+            > OPENAI_API_KEY="여기안에 제가 보내드리는 api key를 넣으세요"
+
+    > 2. pip install python-decouple==3.8
+        >.env 파일 가져오기 위해 필요
+
+    > 3. pip install openai==1.10.0
+        > 운식 챗봇 사용하기 위해 필요
+
+    > 4. 결제 기능 현재로서는 주석처리됨 
+        > 사유 : 기능은 잘 작동하는데, 그 기능이 작동한 이후의 로직 미완성 (2월2일 오전 기준)
+
+    > 5. 마이페이지 디자인 수정 (완료)
+        > 세로에서 가로로 한번에 모든 내용을 볼 수 있도록 디자인 수정
+
+    > 6. 나의 운동 등급 페이지 디자인 수정 (진행 중)
+        > 추가 수정 필요 
+          (등급 확인 버튼을 누르면, 입력 폼이 없어지고
+           사용자 입력 값에 따라  
+           각 운동마다 국민체력진흥공단 자료에서 몇 퍼센트에 속하는지 보여주기)
+
+    > 7. 나의 운동 등급 페이지 관련된 모든 파일과 챗봇 관련된 모든 파일에 웹서버 url 추가 
+
+
+
 ### 2024/01/31 주요 페이지 CSS 변경, 서비스 플로우 재점검
 
-  > 1. header 드롭다운 메뉴의 CSS가 변경되었습니다.
-  > 2. footer CSS가 변경되었습니다.
-  > 3. 식사 분석, 칼로리 사전 CSS가 변경되었습니다.
+    > 1. header 드롭다운 메뉴의 CSS가 변경되었습니다.
+    > 2. footer CSS가 변경되었습니다.
+    > 3. 식사 분석, 칼로리 사전 CSS가 변경되었습니다.
 
 ---
 
@@ -458,6 +515,9 @@ ALTER TABLE exercise ADD FOREIGN KEY (`user_id`) REFERENCES `users_app_user` (`i
 ALTER TABLE exercise DROP PRIMARY KEY;
 ALTER TABLE exercise MODIFY COLUMN postNum BIGINT AUTO_INCREMENT PRIMARY KEY;
 ```
+### venv 설치 패키지 - 방성준 (2024-02-01)
+    > pip install pandas==2.0.0
+      pip install scikit-learn==1.3.0
 
 ### 브랜치명 (lim) - 임덕현 (2024-01-22 16:50)
     > 나의 식단 히스토리 페이지 추가(meal_history)

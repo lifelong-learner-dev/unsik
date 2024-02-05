@@ -158,8 +158,6 @@ def get_monthly_history(request, year, month):
     # 데이터가 있는 날짜
     days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
 
-    print('month : ',month)
-
     data = {
         'month': month ,
         'dates': json.dumps(dates),
@@ -309,7 +307,7 @@ def calorie_dict(request):
     # form name=search인 항목에서 검색어를 가져온다.
     # 첫 로드 시에는 비어있다.
     search_query = request.GET.get('search', '')
-    print(search_query)
+    # print(search_query)
 
     # 대분류, 소분류 항목을 가져와 option 태그에서 for문을 돌려 노출시킨다.
     major_classes = CalorieDictionary.objects.filter(Q(food_name__icontains=search_query)
@@ -319,9 +317,9 @@ def calorie_dict(request):
 
     # form name=majorClass, detailClass 인 항목을 가져온다.
     major_class_filter = request.GET.get('majorClass', '')
-    print(major_class_filter)
+    # print(major_class_filter)
     detail_class_filter = request.GET.get('detailClass', '')
-    print(detail_class_filter)
+    # print(detail_class_filter)
     
     # 각 항목에 맞는 데이터를 필터해온다. 
     if major_class_filter:
@@ -333,13 +331,13 @@ def calorie_dict(request):
     # try except 구문은 크게 필요 없어보이는데, 없으면 오류가 난다.
     try:
         keywords = search_query.split()
-        print(keywords)
+        # print(keywords)
         if len(keywords)>=2:
             q_obj = Q()
 
             q_obj |= Q(food_name__icontains=keywords[0]) & Q(maker__icontains=keywords[1])
 
-            print(q_obj)
+            # print(q_obj)
         
             cal_data = cal_data.filter(q_obj)
 
@@ -404,8 +402,8 @@ def food_search(request):
 def meal_post(request):
     if request.method == "POST":
         meal_data_list = json.loads(request.POST.get('meal_data'))
-        print(meal_data_list[0]) # 리스트를 제대로 받아온다
-        print(meal_data_list[-1])
+        # print(meal_data_list[0]) # 리스트를 제대로 받아온다
+        # print(meal_data_list[-1])
 
         filtered_list = []
 
@@ -416,24 +414,24 @@ def meal_post(request):
                 filtered_list.append(food_code)
         
         # 리스트 제대로 변환되어 출력된다.
-        print(filtered_list)
+        # print(filtered_list)
 
         # 칼로리 합산하는 함수
         meal_calories, nutrient_info = total_calories(filtered_list)
-        print(meal_calories)
-        print(nutrient_info)
+        # print(meal_calories)
+        # print(nutrient_info)
 
         if request.user.is_authenticated:
             user_instance = UsersAppUser.objects.get(id=request.user.id)
 
             # 옵션 1 파이썬으로 현재 시간 얻기
-            # current_time = datetime.now()
+            current_time = datetime.now()
 
             # 옵션 2 django.utils timezone을 이용해 시간 얻기
             # current_time = timezone.now().replace(tzinfo=pytz.timezone('Asia/Seoul'))
 
             # 옵션 3 timezone.datetime.now() 가져오기
-            current_time = timezone.datetime.now()
+            # current_time = timezone.datetime.now()
 
             # 테스트를 위한 임의 조작 시간
             # current_time = datetime(2024, 1, 31, 13, 22, 34)
@@ -450,20 +448,20 @@ def meal_post(request):
             else:
                 meal_type = "간식"
 
-            print(meal_type)
+            # print(meal_type)
             
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            # Meal.objects.create(
-            #     user = user_instance,
-            #     meal_date = current_time,
-            #     meal_photo = meal_data_list[-1],
-            #     meal_info = json.dumps(filtered_list),
-            #     meal_type = meal_type,
-            #     meal_calories = meal_calories,
-            #     nutrient_info = json.dumps(nutrient_info)
-            # )
+            Meal.objects.create(
+                user = user_instance,
+                meal_date = current_time,
+                meal_photo = meal_data_list[-1],
+                meal_info = json.dumps(filtered_list),
+                meal_type = meal_type,
+                meal_calories = meal_calories,
+                nutrient_info = json.dumps(nutrient_info)
+            )
 
             ############ DB 저장 완료 후 로직 #############
 
@@ -478,14 +476,14 @@ def meal_post(request):
             day_start = timezone.datetime.combine(today, timezone.datetime.min.time())
             day_end = timezone.datetime.combine(today, timezone.datetime.max.time())
 
-            print(day_start)
-            print(day_end)
+            # print(day_start)
+            # print(day_end)
 
             all_meal_today = Meal.objects.filter(user=request.user.id,
                                                  meal_date__range=(day_start, day_end))\
                                                  .aggregate(all_calories=Sum("meal_calories"))
             
-            print(f"오늘의 전체 식사 : {all_meal_today}")
+            # print(f"오늘의 전체 식사 : {all_meal_today}")
 
             todays_nutrients = Meal.objects.filter(user_id=request.user.id, meal_date__range=[day_start, day_end])
 
@@ -501,7 +499,7 @@ def meal_post(request):
 
             calorie_today = all_meal_today["all_calories"] if all_meal_today["all_calories"] is not None else meal_calories
 
-            print(f"전체 영양소 : {total_nutrient_sum}")
+            # print(f"전체 영양소 : {total_nutrient_sum}")
             # print(calorie_today)
 
             # (2) filtered_list로 칼로리 딕셔너리에서 정보 빼오기
@@ -526,7 +524,7 @@ def meal_post(request):
             trimed_nutrient = [round(n, 2) for n in nutrient_gram]
             total_nutrient = [round(n, 2) for n in total_nutrient_sum]
 
-            print(f"오늘의 영양소 : {trimed_nutrient}")
+            # print(f"오늘의 영양소 : {trimed_nutrient}")
 
             context = {
                 'this_meal_cal': meal_calories,

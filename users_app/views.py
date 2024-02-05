@@ -111,10 +111,8 @@ def my_page(request, username):
             combined_data[date_str]['exercise_calories'] += daily_exercise['calories_burned']
 
 
-    print(combined_data)
     # 정렬된 날짜 리스트 생성
     sorted_dates = sorted(combined_data.keys())
-    print(sorted_dates)
 
 
     # 그래프 데이터 준비
@@ -131,9 +129,6 @@ def my_page(request, username):
     start_date = timezone.now().date() - timezone.timedelta(days=180)  # 30일 전부터
     end_date = timezone.now().date() + timezone.timedelta(days=1)
 
-    print(start_date)
-    print(end_date)
-    # 식단 기록
     # 식단 기록
     meal_records = Meal.objects.filter(user=id,
         meal_date__range=(start_date, end_date),
@@ -153,8 +148,6 @@ def my_page(request, username):
     ).values('exercise_date_date').annotate(
         exercise_count=Count('calories_burned')
     )
-    print(meal_records)
-    print(exercise_records)
 
     # 이벤트 데이터를 생성합니다.
     events = []
@@ -163,26 +156,22 @@ def my_page(request, username):
             'title': f'식단: {record["meal_count"]}회',
             'start': record['meal_date_date'].isoformat(),
             'color': '#004085',  # 진한 파랑 색상
-            'url': 'http://127.0.0.1:8000/meal/meal_history'
+            'url': '/meal/meal_history'
         })
-        print(record)
 
     for record in exercise_records:
         events.append({
             'title': f'운동: {record["exercise_count"]}회',
             'start': record['exercise_date_date'].isoformat(),
             'color': '#228B22',  # 포레스트 그린 색상
-            'url' : 'http://127.0.0.1:8000/exercise/exercise/index/'
+            'url' : '/exercise/exercise/index/'
         })
-        print(record)
     
     today_str = today.strftime('%Y-%m-%d')
-    print(today_str)
 
     # 오늘 날짜의 총 식사 칼로리를 가져옵니다. 데이터가 없으면 0을 반환합니다.
     todays_meal_calories_sum = combined_data.get(today_str, {}).get('meal_calories', 0)
     todays_meal_calories_sum = "{:.2f}".format(todays_meal_calories_sum)
-    print(todays_meal_calories_sum)
 
     context = {
         'title': '그래프',

@@ -29,16 +29,21 @@
     display: inline-flex;
 }
 
+#sign_up_table input {
+    padding: 5px;
+    border: 2px solid #40bb35;
+    border-radius: 10px;
+}
+
 #id_username {
     width: 56%!important;
     margin-right: 9px;
 }
 
 .id_check {
-    border: 2px solid green;
     width: 40%;
     font-size: 13px;
-    height: 28px;
+    line-height: 25px;
 }
 
 #id_user_height {

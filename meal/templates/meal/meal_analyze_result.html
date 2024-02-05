@@ -36,7 +36,8 @@
     </div>
     <!-- 예측한 식단 불러와 띄워주기 -->
     <div id="modify_result">
-        <h5>이 식단으로 예측했습니다. 이 정보가 맞나요?</h5>
+        <h2 id="result_message">식단 예측 결과입니다</h2>
+        <p>결과가 다른가요? 음식 추가 버튼을 눌러<br>음식을 검색해보세요.</p>
         <form method="post" id="meal_result_form" action="">
             {% csrf_token %}
             {% if detect_results %}
@@ -143,45 +144,44 @@
                         const remove_box = $('#modify_result');
                         remove_box.after(data);
                         remove_box.remove();
-
-                        // const nutrient_box = $('#analyze_box');
-                        // nutrient_box.after(data);
-                        // $('#nutrient_information').html(data);
-                        // if (data.success) {
-                        //     alert('저장 성공');
-                        //     const remove_box = document.getElementById('modify_result');
-                        //     remove_box.innerHTML = '';
-                        //     console.log(data.meal_calories)
-                        //     console.log(data.nutrient_info[0])
-
-                        //     // 박스 스타일 block으로 설정
-                        //     const nutrient_box = document.getElementById('nutrient_information');
-                        //     nutrient_box.style.display = 'block';
-
-                        //     const meal_cal = $('<p>', {
-                        //         class: 'calorie_info',
-                        //         text: data.meal_calories,
-                        //     });
-
-                        //     const meal_nutrient_info = $('<p>', {
-                        //         class: 'test',
-                        //         text: `Protein: ${data.nutrient_info[0]}, Carbs: ${data.nutrient_info[1]},
-                        //          Fat: ${data.nutrient_info[2]}, Fiber: ${data.nutrient_info[3]},
-                        //          Calories: ${data.nutrient_info[4]}, Sugar: ${data.nutrient_info[5]}`,
-                        //     });
-                        //     $(nutrient_box).append(meal_cal);
-                        //     $(nutrient_box).append(meal_nutrient_info);
-
-                        //     // 출력만 확인하고 나머지 코드는 아직 작성 중
-                        // } else {
-                        //     alert('저장 실패' + data.error);
-                        // }
                     },
                     error: function(error) {
                         alert('서버 오류' + error);
                     }
                 });
             };
+        });
+
+        $(document).on('input', '.food-input', function(){
+            var searchWord = $(this).val();
+            // console.log(searchWord)
+            var resultContainer = $(this).siblings('.search-results');
+
+            $.ajax({
+                url: '{% url "food_search" %}',
+                data: {"searchWord": searchWord},
+                dataType: 'json',
+                success: function(data){
+                    // console.log(data)
+                    resultContainer.empty();
+
+                    $.each(data.results, function(index, result) {
+                        // console.log(result.food_code)
+                        var resultItem = $('<li>' + result.name + " | " + result.maker + '</li>');
+
+                        resultItem.click(function() {
+                            var currentInput = $(this).closest('.input_container').find('.food-input');
+                            currentInput.attr('name', result.food_code);
+                            currentInput.val(result.name);
+                        });
+
+                        resultContainer.append(resultItem);
+                    });
+                },
+                error: function(error){
+                    console.error("알 수 없는 에러 발생", error)
+                }
+            })
         });
     });
 </script>

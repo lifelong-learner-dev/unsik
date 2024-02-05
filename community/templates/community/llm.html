@@ -1,6 +1,122 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<script src="{% static 'js/chat.js' %}"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="{% static '/css/llm.css' %}">
+<div id="intro" class="intro-container">
+        <h4>주제를 선택하고 AI 건강관리사에게 상담받으세요.</h4>
+        <br>
+        <label for="subject">어떤 주제를 여쭙고 싶은가요?</label>
+        <br>
+        <select id="subject" name="subject">
+            <option value="운동">운동</option>
+            <option value="건강">건강</option>
+            <option value="식단">식단</option>
+            <option value="질병">질병</option>
+        </select>
+        <br>
+        <button class="startButton" type="button" onclick="start()">AI 건강관리사에게 상담받기</button>
+</div>
+{% csrf_token %}
+<div id="chat" class="chat-container" style="display: none;">
+        <div class="chat-box">
+            <div class="chat-message">
+                <p class="assistant">건강관련 관심분야에 대해 물어봐 주세요!</p>
+            </div>
+        </div>
+        <div id="loader" class="loader" style="display: none;">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="메시지를 입력하세요">
+            <button id="btn" onclick="spinner()">전송</button>
+        </div>
+</div>
+<script>
+        const isLocalhost = Boolean(
+            window.location.hostname === "localhost" ||
+                
+                window.location.hostname === "[::1]" ||
+                
+                window.location.hostname.match(
+                /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+                )
+            );
+
+        let apiUrl = ""; // 이 변수에 API 엔드포인트 URL을 설정합니다.
+
+        if (isLocalhost) {
+            // 로컬 호스트인 경우
+            apiUrl = "http://127.0.0.1:8000/fitness_grade/healthcareassistant/";
+            } else {
+            // 웹 서버인 경우
+            apiUrl = "http://18.180.43.72/fitness_grade/healthcareassistant/"; // 웹 서버의 실제 API 엔드포인트 URL로 대체해야 합니다.
+            }
+
+
+        const chatBox = document.querySelector('.chat-box');
+        let userMessages = [];
+        let assistantMessages = [];
+        let threadId = '';
+        let subject = '';
+
+        function spinner() {
+            document.getElementById('loader').style.display = "block";
+        }
+
+        function start() {
+            subject = document.getElementById('subject').value;
+
+            document.getElementById("intro").style.display = "none";
+            document.getElementById("chat").style.display = "block";
+        }
+
+        const sendMessage = async () => {
+            const chatInput = document.querySelector('.chat-input input');
+            const chatMessage = document.createElement('div');
+            chatMessage.classList.add('chat-message');
+            chatMessage.innerHTML = `
+    <p>${chatInput.value}</p>
+  `;
+            chatBox.appendChild(chatMessage);
+            
+            //userMessage 메세지 추가
+            userMessage = chatInput.value;
+
+            chatInput.value = '';
+            console.log(subject);
+
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    subject: subject,
+                    userMessage: userMessage,
+                    threadId: threadId
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById('loader').style.display = "none";
+            
+            //assistantMessage 메세지 추가
+            assistantMessages.push(data.assistant);
+            threadId = data.threadId;
+
+            const healthcareassistantMessage = document.createElement('div');
+            healthcareassistantMessage.classList.add('chat-message');
+            healthcareassistantMessage.innerHTML = `
+    <p class='assistant'>${data.assistant}</p>
+  `;
+            chatBox.appendChild(healthcareassistantMessage);
+        };
+
+        document.querySelector('.chat-input button').addEventListener('click', sendMessage);
+</script>
+
 
 {% endblock content %}
