@@ -8,24 +8,28 @@
         opacity: 1; /* 화면에 나타날 때 투명도를 조절하여 나타나는 효과 생성 */
     }
 </style>
-<h2 class="mainView" id="welcome_text">운식이를 소개합니다!</h2>
+<h2 class="mainView" id="welcome_text" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <strong>AI 운동 식단 트레이너 '운식'입니다!</strong>
+</h2>
 <section class="mainView">
     <div class="slide_wrap">
         <div class="slide_box">
             <div class="slide_list clearfix">
                 <div class="slide_content slide01">
-                    <!-- <img src="{% static 'images/mainpic1.jpg' %}" class="slide_content slide01" alt=""> -->
-                <p>1</p>
+                    <!-- <p>1</p> -->
+                    <img src="{% static 'images/001.png' %}" alt="slide01">
                 </div>
                 <div class="slide_content slide02">
-                    <!-- <img src="{% static 'images/mainpic2.jpg' %}" class="slide_content slide02" alt=""> -->
-                <p>2</p>
+                    <!-- <p>2</p> -->
+                    <img src="{% static 'images/002.png' %}" alt="slide02">
                 </div>
                 <div class="slide_content slide03">
-                <p>3</p>
+                    <!-- <p>3</p> -->
+                    <img src="{% static 'images/003.png' %}" alt="slide03">
                 </div>
                 <div class="slide_content slide04">
-                <p>4</p>
+                    <!-- <p>4</p> -->
+                    <img src="{% static 'images/004.png' %}" alt="slide04">
                 </div>
             </div>
         </div>
@@ -65,7 +69,7 @@
     const options = {
         root: null,
         rootMargin: "0px",
-        threshold: 0.5 // 변경 가능한 값, 0.5는 반이라는 의미
+        threshold: 0.2 // 변경 가능한 값, 0.5는 반이라는 의미
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -103,12 +107,12 @@
 
     picInfos.forEach(function(infoElement) {
         infoElement.addEventListener('mouseover', function () {
-            console.log('노출 동작')
+            // console.log('노출 동작')
             displayInfo(infoElement);
         });
 
         infoElement.addEventListener('mouseout', function () {
-            console.log('숨김 동작')
+            // console.log('숨김 동작')
             hideInfo(infoElement);
         });
     });

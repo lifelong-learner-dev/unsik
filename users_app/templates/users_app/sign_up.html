@@ -12,7 +12,7 @@
     <table id="sign_up_table">
         <tr>
             <th>아이디</th>
-            <td>{{ form.username }}<button class="id_check" type="button" value="id_check">아이디 중복 확인</button></td>
+            <td>{{ form.username }}<button class="id_check greenBtn" type="button" value="id_check">아이디 중복 확인</button></td>
         </tr>
         <tr>
             <th>이메일</th>
@@ -62,7 +62,34 @@
             </td>
         </tr>
     </table>
-    <button id="joinbtn" type="submit" value="join">가입</button>
+    <button id="joinbtn" class="greenBtn" type="submit" value="join">가입</button>
 </form>
-<script src="{% static 'js/sign_up.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        // 아이디 중복 검사 기능
+        $('.id_check').click(function() {
+            var username = $('#id_username').val();
+            if (username) {
+                let csrftoken = $('[name=csrfmiddlewaretoken]').val();
+                $.ajax({
+                    type: 'post',
+                    url: '{% url "id_check" %}',
+                    data: {'username': username},
+                    headers: {'X-CSRFToken': csrftoken},
+                    success: function(data) {
+                        console.log(data)
+                        if (data.is_taken) {
+                            alert('이미 사용 중인 아이디입니다.');
+                            $('#id_username').val('');
+                        } else {
+                            alert('사용 가능한 아이디입니다.');
+                        }
+                    }
+                });
+            } else {
+                alert("아이디를 입력해주십시오");
+            };
+        });
+    });
+</script>
 {% endblock content %}

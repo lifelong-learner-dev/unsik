@@ -3,12 +3,17 @@ from django.shortcuts import redirect, render
 from .modules.data_anal import female_senior_input_predict, female_adult_input_predict, female_adolescent_input_predict, female_child_input_predict, male_senior_input_predict, male_adult_input_predict, male_adolescent_input_predict, male_child_input_predict 
 from django.http import JsonResponse
 from django.contrib import messages
-# from langchain_openai import ChatOpenAI
-# from langchain_core.prompts import ChatPromptTemplate
 from django.views.decorators.csrf import csrf_exempt
-# from langchain_core.output_parsers import StrOutputParser
-# from langchain_core.prompts import ChatPromptTemplate
-# from langchain_openai import ChatOpenAI
+from openai import OpenAI
+from decouple import config
+import json
+import time
+# .env 파일에서 OPENAI_API_KEY 가져오기
+openai_api_key = config('OPENAI_API_KEY')
+
+# OpenAI API 초기화
+openai = OpenAI(api_key=openai_api_key)
+
 
 def fitness_grade(request):
     if not request.user.is_authenticated:
@@ -189,3 +194,82 @@ def male_child_predict_ajax(request):
     else:
         return JsonResponse({'error': 'Invalid request method'})
     
+
+def llm_index(request):
+    return render(request, 'community/llm.html' )
+
+
+@csrf_exempt
+def healthcareassistant(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)  # JSON 본문 데이터 처리
+        subject = data.get('subject')
+        user_message = data.get('userMessage')
+        thread_id = data.get('threadId', '')
+        assistant_id = "asst_8e76VIfVh7fuLMMXM8fKUoG1"
+
+        try:
+            # 스레드가 없으면 새로운 스레드 생성
+            if not thread_id:
+                empty_thread = openai.beta.threads.create()
+                thread_id = empty_thread.id
+                thread = empty_thread  # 스레드 객체로 초기화
+                openai.beta.threads.messages.create(
+                    thread_id=thread_id,
+                    role="user",
+                    content=f"세계 최고의 건강관리사님, 저에게 {subject}에 대하여 알려주실 수 있나요? 먼저 어떤 정보를 드리면 되나요?"
+                )
+
+            # 사용자 메시지 추가
+            message = openai.beta.threads.messages.create(
+                    thread_id=thread_id,
+                    role="user",
+                    content=user_message
+                )
+
+            # OpenAI Assistant 실행
+            run = openai.beta.threads.runs.create(
+                thread_id=thread_id,
+                assistant_id=assistant_id
+            )
+
+            while run.status != "completed":
+                run = openai.beta.threads.runs.retrieve(
+                    thread_id=thread_id,
+                    run_id=run.id
+                )
+                time.sleep(0.5)
+                # time.sleep(0.5)  # Django에서는 sleep 함수 대신에 await new Promise((resolve) => setTimeout(resolve, 500)); 사용
+
+            messages = openai.beta.threads.messages.list(thread_id=thread_id)
+            assistant_last_msg = messages.data[0].content[0].text.value
+
+            response_data = {"assistant": assistant_last_msg, "threadId": thread_id}
+            return JsonResponse(response_data)  # JSON 형식으로 응답
+        except Exception as e:
+            # 예외가 발생하면 오류 응답 반환
+            print("An error occurred:", str(e))  # 오류 메시지 출력
+            return JsonResponse({"error": str(e)}, status=500)
+    
+# def payment(request):
+#     return render(request, 'community/payment.html')
+    
+
+
+        
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+

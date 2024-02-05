@@ -74,7 +74,9 @@
     position: relative;
     width: 1200px;
     margin: auto;
+    margin-bottom: 20px;
     padding-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .slide_box {

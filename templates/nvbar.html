@@ -14,7 +14,7 @@
             <ul class="submenu3">
                 <li><a href="{% url 'record_exercise' %}">운동 기록하기</a></li>
                 <li><a href="{% url 'fitness_grade' %}">나의 운동 등급(AI)</a></li>
-                <li><a href="#">질문있어요</a></li>
+                <li><a href="{% url 'llm_index' %}">질문있어요</a></li>
             </ul>
         </li>
         <li>
@@ -30,7 +30,7 @@
     <ul class="head_menu">
         <li>
             <p>식단</p>
-            <ul class="submenu3">
+            <ul class="submenu2">
                 <li><a href="{% url 'meal_analyze' %}">식단 올리기</a></li>
                 <li><a href="{% url 'calorie_dict' %}">칼로리 사전</a></li>
             </ul>

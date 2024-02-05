@@ -138,7 +138,7 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
     user_birth_date = user_info.user_birth
     user_age = current_time.year - user_birth_date.year - ((current_time.month, current_time.day) < (user_birth_date.month, user_birth_date.day)) -1
     
-    print(user_age)
+    # print(user_age)
 
     # 유저가 남자라면
     if user_info.user_gender == 0:
@@ -147,7 +147,7 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
         # 여자라면
         user_base_calorie = (10 * user_weight) + (6.25 * user_height) - (5 * user_age) - 161
 
-    print(f"유저 기초대사량 : {user_base_calorie}")
+    # print(f"유저 기초대사량 : {user_base_calorie}")
 
     # 활동계수 곱
     if user_info.user_activity == "1":
@@ -161,18 +161,18 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
     else:
         user_max_calorie = user_base_calorie * 1.725
 
-    print(f"유저 기본 칼로리 : {user_max_calorie}")
+    # print(f"유저 기본 칼로리 : {user_max_calorie}")
 
     user_exercise_purpose = user_info.user_exercise_purpose
 
-    print("유저 운동 목표 : ", user_exercise_purpose)
+    # print("유저 운동 목표 : ", user_exercise_purpose)
 
     if user_exercise_purpose == "bulkup":
         user_max_calorie = round(user_max_calorie * 1.2, 2)
     if user_exercise_purpose == "diet":
         user_max_calorie = round(user_max_calorie * 0.8, 2)
 
-    print(f"유저 목표 칼로리 : {user_max_calorie}")
+    # print(f"유저 목표 칼로리 : {user_max_calorie}")
 
     warnings_dict = {}
 
@@ -268,7 +268,7 @@ def nutrient_quotes(id, current_time, todays_calorie, todays_nutrients):
 
         warnings_dict["식이섬유"] = dietary_fiber_quote
     
-    print(f"적정 칼로리 : {user_max_calorie}")
+    # print(f"적정 칼로리 : {user_max_calorie}")
     # print(f"영양소 비율 : {nurtient_proportion}")
     # print(f"주의 경고 : {warnings_dict}")
 

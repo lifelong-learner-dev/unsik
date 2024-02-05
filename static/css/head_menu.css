@@ -88,7 +88,7 @@
 }
 
 /* 메뉴 2개 짜리 */
-.head_menu > li:hover .submenu1 {
+.head_menu > li:hover .submenu2 {
     box-shadow: 2px 2px 5px 0px #555555;
     height: 100px;
     transition-duration: 0.5s;
