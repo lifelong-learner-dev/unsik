@@ -7,7 +7,13 @@ from django.utils import timezone
 from django.db import connection
 from django.db.models import Sum
 from django.db.models.functions import TruncDay
-import datetime
+from datetime import datetime, date
+from django.views.decorators.csrf import csrf_exempt
+from .apps import ExerciseConfig
+from .moduls.data_anal import calories_model_load
+from django.core.exceptions import ObjectDoesNotExist
+import json
+import pandas as pd
 
 # def exercise_index(request):
 #     return render(request, 'exercise/exercise_index.html' )
@@ -64,7 +70,7 @@ def get_exercises_for_date(request, date):
 @login_required
 def exercise_index(request):
     user_instance = UsersAppUser.objects.get(id=request.user.id)
-    today = datetime.date.today()
+    today = date.today()
 
     if request.method == "POST":
         search_date = request.POST.get('search_date')
@@ -105,3 +111,49 @@ def exercise_delete(request, id):
     exercise = Exercise.objects.get(postnum=id)
     exercise.delete()
     return redirect('exercise_index')
+
+@csrf_exempt
+def predict_calories(request):
+    if request.method == 'POST':
+        try:
+            exercise_amount = request.POST['exercise_amount']
+            id = request.POST['id']
+            
+    # 사용자 정보 가져오기
+            user = UsersAppUser.objects.get(id=id)
+            
+            # 나이 계산
+            current_year = datetime.now().year
+            age = current_year - user.user_birth.year if user.user_birth else 0
+
+            # 성별 데이터 준비
+            gender_male = 1 if user.user_gender == 'Male' else 0
+            gender_female = 1 if user.user_gender == 'Female' else 0
+            
+            # data_anal.py의 함수를 사용하여 칼로리 예측
+            predicted_calories = calories_model_load(
+                age=age,
+                height=user.user_height,
+                weight=user.user_weight,
+                exercise_amount=exercise_amount,
+                heart_rate=110,
+                body_temp=39,
+                gender_female=gender_female,
+                gender_male=gender_male
+            )
+
+            # JSON 응답 반환
+            return JsonResponse({"predicted_calories": predicted_calories}, status=200)
+            
+        except UsersAppUser.DoesNotExist:
+            # 사용자가 존재하지 않는 경우
+            return JsonResponse({"error": "User not found"}, status=404)
+        except json.JSONDecodeError:
+            # JSON 파싱 오류
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        except Exception as e:
+            # 그 외 예외 처리
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        # POST 요청이 아닌 경우
+        return JsonResponse({"error": "Only POST requests are allowed."}, status=405)

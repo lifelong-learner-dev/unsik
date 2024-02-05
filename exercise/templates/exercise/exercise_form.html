@@ -1,22 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
 <!-- venv\Scripts\activate 가상환경 활성화 -->
 <!-- deactivate 비활성화 -->
 {% block content %}
+<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <div class="container">
-    <h2>운동 기록</h2>
-    <form method="post" onsubmit="return exerciseUploadCheck()" class="exercise-form">
+    <h2 id="title_exercise">당신의 하루 운동을 기록하세요!</h2>
+    <form id="predict-form" method="post" onsubmit="return exerciseUploadCheck()" class="exercise-form">
+        <input type="hidden" name="id" value='{{ user.id }}'>
         {% csrf_token %}
         <table id="form_tbl" class="table">
             <tr>
-                <th>{{ form.exercise_date.label_tag }}</th>
+                <th>운동 시각</th>
                 <td>{{ form.exercise_date }}</td>
             </tr>
 
             <tr>
-                <th>운동 유형:</th>
+                <th>운동 유형</th>
                 <td>
                     <label class="radio-label">
-                        <input type="radio" name="exercise_type" value="유산소" checked="checked"> 유산소
+                        <input type="radio" name="exercise_type" value="유산소" checked="checked">유산소
                     </label>
                     <label class="radio-label">
                         <input type="radio" name="exercise_type" value="웨이트"> 웨이트
@@ -25,52 +29,53 @@
             </tr>
 
             <tr>
-                <th>{{ form.exercise_name.label_tag }}</th>
+                <th>운동명</th>
                 <td>{{ form.exercise_name }}</td>
             </tr>
 
             <tr>
-                <th>운동 지속 시간(분):</th>
+                <th>운동 지속 시간(분)</th>
                 <td>{{ form.exercise_amount }}</td>
             </tr>
-
             <tr>
-                <th>{{ form.calories_burned.label_tag }}</th>
+                <th>칼로리 소모량</th>
                 <td>{{ form.calories_burned }}</td>
             </tr>
 
-            <tr class="weight-fields">
-                <th>{{ form.weight.label_tag }}</th>
-                <td>{{ form.weight }}</td>
-            </tr>
+            <tbody class="weight-fields-container">
+                <tr class="weight-fields">
+                    <th>무게</th>
+                    <td>{{ form.weight }}</td>
+                </tr>
 
-            <tr class="weight-fields">
-                <th>{{ form.reps.label_tag }}</th>
-                <td>{{ form.reps }}</td>
-            </tr>
+                <tr class="weight-fields">
+                    <th>횟수</th>
+                    <td>{{ form.reps }}</td>
+                </tr>
 
-            <tr class="weight-fields">
-                <th>{{ form.sets.label_tag }}</th>
-                <td>{{ form.sets }}</td>
-            </tr>
+                <tr class="weight-fields">
+                    <th>세트 수</th>
+                    <td>{{ form.sets }}</td>
+                </tr>
+            </tbody>
 
             <!-- <div>{{ form.errors }}</div> -->
         </table>
         <br>
         <button id="form_btn" type="submit" class="btn btn-primary">기록하기</button>
+        <!-- <button type="submit" class="btn btn-info">예측하기</button> -->
+        <button id="predict_btn" type="button" class="btn btn-info">예측하기</button>
     </form>
+    <p id="prediction_result"></p>
 </div>
 <script>
     function toggleWeightFields() {
-        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type"]');
+        var exerciseTypeRadios = document.querySelectorAll(' input[name="exercise_type" ]');
         var weightFields = document.querySelectorAll('.weight-fields');
-
         exerciseTypeRadios.forEach(function (radio) {
             radio.addEventListener('change', function () {
                 if (radio.value === '웨이트') {
-                    weightFields.forEach(function (field) {
-                        field.style.display = 'table-row';
-                    });
+                    weightFields.forEach(function (field) { field.style.display = 'table-row'; });
                 } else {
                     weightFields.forEach(function (field) {
                         field.style.display = 'none';
@@ -78,20 +83,17 @@
                 }
             });
         });
-    }
-
-    toggleWeightFields();
+    } toggleWeightFields();
 
     function exerciseUploadCheck() {
         var exerciseDate = document.getElementById('id_exercise_date').value;
-        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type"]');
+        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type" ]');
         var exerciseName = document.getElementById('id_exercise_name').value;
-        var exerciseAmount = document.getElementById('id_exercise_amount').value;
-
-        // 체크된 라디오 버튼의 값을 가져오기
+        var exerciseAmount = document.getElementById('id_exercise_amount').value; // 체크된 라디오 버튼의 값을 가져오기 
+        var caloriesBurned = document.getElementById('id_calories_burned').value;
         var selectedExerciseType = Array.from(exerciseTypeRadios).find(radio => radio.checked).value;
 
-        if (!exerciseDate || !exerciseName || !exerciseAmount) {
+        if (!exerciseDate || !exerciseName || !exerciseAmount || !caloriesBurned) {
             alert('빈칸을 채워주세요');
             return false;
         }
@@ -109,6 +111,50 @@
 
         return true;
     };
+
+    // "예측하기" 버튼 클릭 이벤트에 대한 핸들러
+    $('#predict_btn').click(function () {
+        let formData = $('#predict-form').serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://127.0.0.1:8000/exercise/record_exercise/predict_calories/', // 수정된 URL
+            data: formData,
+            success: function (response) {
+                // 예측 결과 처리
+                $("#prediction_result").text("예상 칼로리 소모량: " + response.predicted_calories + " kcal");
+            },
+            error: function (error) {
+                // 오류 처리
+                console.log(error);
+            }
+        });
+    });
+
+    // "기록하기" 버튼에 대한 폼 제출 이벤트
+    $("#predict-form").submit(function (e) {
+        if (!exerciseUploadCheck()) {
+            e.preventDefault(); // 폼 검증이 실패하면 제출 방지
+        }
+    });
+
+    $(document).ready(function () {
+        // 초기 상태 설정: 웨이트가 선택되어 있지 않으면 숨김
+        if (!$('input[name="exercise_type"][value="웨이트"]').is(':checked')) {
+            $('.weight-fields-container').hide();
+        }
+
+        // 라디오 버튼 상태 변경 감지
+        $('input[name="exercise_type"]').change(function () {
+            // 웨이트 라디오 버튼이 선택되었을 때
+            if ($(this).val() === '웨이트') {
+                $('.weight-fields-container').slideDown();
+            } else {
+                $('.weight-fields-container').slideUp();
+            }
+        });
+    });
+
 </script>
 <style>
     .container {
@@ -118,14 +164,37 @@
         border: 1px solid #ddd;
         border-radius: 5px;
         background-color: #f5f5f5;
+        display: inline-block;
     }
 
     .table {
         width: 100%;
     }
 
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    #title_exercise {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 600;
+        /* 더 굵은 글씨체를 위해 */
+        text-align: center;
+        /* 제목을 가운데 정렬 */
+        margin-bottom: 20px;
+        /* 폼과의 간격을 늘림 */
+    }
+
     .radio-label {
-        margin-right: 20px;
+        display: inline-block;
+        background-color: #65a36a;
+        color: white;
+        padding: 6px 12px;
+        font-family: sans-serif;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        /* 라벨 간격 */
     }
 
     .weight-fields {
@@ -139,6 +208,60 @@
         padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
+    }
+
+    .radio-label input[type="radio"] {
+        display: none;
+        /* 원래 라디오 버튼 숨기기 */
+    }
+
+    .radio-label input[type="radio"]:checked+label:before {
+        content: "\2714";
+    }
+
+    /* 라디오 버튼이 체크될 때 스타일 */
+    .radio-label input[type="radio"]:checked+label {
+        background-color: #4CAF50;
+        /* 체크된 라디오 버튼 라벨 배경색 변경 */
+        color: white;
+        /* 라벨 텍스트 색상 변경 */
+    }
+
+    /* 버튼 스타일 일치 */
+    .btn-primary,
+    .btn-info {
+        background-color: #65a36a;
+        display: inline-block;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        /* 버튼 텍스트 크기 */
+        width: 35%;
+        /* 버튼 너비 */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* 버튼 그림자 */
+    }
+
+    #form_btn:hover {
+        background-color: #558a58;
+        /* 호버 상태일 때의 배경색 */
+    }
+
+    #predict_btn:hover {
+        background-color: #558a58;
+        color: white;
+    }
+
+
+
+    /* 예측 결과 스타일 */
+    #prediction_result {
+        margin-top: 15px;
+        /* 결과 텍스트와 버튼 사이의 간격 */
+        font-size: 1rem;
     }
 </style>
 {% endblock content %}
