@@ -175,12 +175,12 @@
 }
 
 .exercise-card h3 {
-    margin-top: 0;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-bottom: 2px;
     color: #007bff;
-    /* 운동 카드 제목 색상 */
     text-align: left;
     flex-grow: 1;
-    /* 제목이 가능한 공간을 차지하도록 함 */
 }
 
 .exercise-actions {
@@ -235,6 +235,10 @@
     /* 이 항목은 유연하게 늘어나지 않음 */
     white-space: nowrap;
     /* 날짜가 줄바꿈되지 않도록 함 */
+}
+
+.exercise-date {
+    margin-right: 1px;
 }
 
 .exercise-details {
@@ -330,4 +334,18 @@
     flex-basis: 20%;
     /* 적절한 공간을 할당 */
     text-align: left;
+}
+
+.show-calories {
+    margin-top: 30px;
+    /* 위쪽 영역과의 거리를 늘림 */
+}
+
+.show-calories p {
+    font-family: 'NanumSquare', sans-serif;
+}
+
+.show-calories h4 {
+    font-family: 'JalnanGothic', sans-serif;
+    font-weight: lighter;
 }
