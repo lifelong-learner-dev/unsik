@@ -67,7 +67,7 @@ def get_recommend_mealtype(id):
 
     if total_sugar > recommended_weekly_sugar:
         return '당뇨식'
-    elif total_natrium < recommended_weekly_natrium:
+    elif total_natrium > recommended_weekly_natrium:
         return '저염식'
     else:
         return '일반식'

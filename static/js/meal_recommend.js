@@ -1,6 +1,10 @@
 $(document).ready(function () {
 
     let map;
+    let isinitMap = true;
+    let latitude = 0.0
+    let longitude = 0.0
+
 
     async function initMap(menuItemText) {
 
@@ -11,7 +15,9 @@ $(document).ready(function () {
         // const { MarkerClusterer } = await google.maps.importLibrary("markerclusterer");
 
         if (navigator.geolocation) {
+
             navigator.geolocation.getCurrentPosition(function (position) {
+                // console.log('여기 못오는거지 ?')
                 // 37.6267087,126.7080431
                 // 테스트용
                 // const myLatLng = { lat: 37.60159, lng: 126.771916 };
@@ -24,7 +30,7 @@ $(document).ready(function () {
 
                 // 현재 위치를 기반으로 지도 그리기
                 map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 14,
+                    zoom: 15,
                     center: currentLocation,
                     styles: [
                         // 쓸데없는 마커들 지우기
@@ -44,23 +50,69 @@ $(document).ready(function () {
                         // 여기에 더 많은 스타일 규칙을 추가할 수 있습니다.
                     ]
                 });
-                // console.log('views.py에서  잘 오니 ?  : ', searchText)
+                // console.log('views.py에서  잘 오니 ?  : ')
                 findPlace(currentLocation, menuItemText);
 
 
 
-            }, function () {
-                handleLocationError(true, map.getCenter());
+            }, function (err) {
+                // handleLocationError(true, map.getCenter());
+                fetchUserLocationFallback();
+                console.log('err :', err)
             });
         } else {
             // Browser doesn't support Geolocation
-            handleLocationError(false, map.getCenter());
+            // console.log('여기 오면 안되는데...')
+            // handleLocationError(false, map.getCenter());
 
         }
+    }
+
+    async function initMap2(loc1, loc2, menuItemText) {
+        const { Map } = await google.maps.importLibrary("maps");
+        const { AdvancedMarkerView } = await google.maps.importLibrary("marker");
+
+        // console.log('여기 들어오니 이제  ?');
+
+        // 사용자의 현재 위치를 받아온다
+        var currentLocation = {
+            lat: loc1,
+            lng: loc2
+        };
+
+        // 현재 위치를 기반으로 지도 그리기
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: currentLocation,
+            styles: [
+                // 쓸데없는 마커들 지우기
+                {
+                    featureType: "poi.business",
+                    stylers: [{ visibility: "off" }]
+                },
+                {
+                    featureType: "poi.school",
+                    stylers: [{ visibility: "off" }]
+                },
+                {
+                    featureType: "transit",
+                    elementType: "labels.icon",
+                    stylers: [{ visibility: "off" }]
+                }
+                // 여기에 더 많은 스타일 규칙을 추가할 수 있습니다.
+            ]
+        });
+        // console.log('views.py에서  잘 오니 ?  : ')
+        findPlace(currentLocation, menuItemText);
+
+
+
 
     }
 
     async function findPlace(currentLocation, seachText) {
+
+        // console.log('seachText :', seachText)
 
         const request = {
             textQuery: seachText,
@@ -131,20 +183,42 @@ $(document).ready(function () {
             this.classList.add('clicked-item');
             var menuItemText = this.textContent;
 
-            initMap(menuItemText);
+            // console.log('ㅎㅇ ?  : ', isinitMap);
+
+            if (isinitMap) {
+
+                initMap(menuItemText);
+            } else {
+                initMap2(latitude, longitude, menuItemText)
+            }
         });
     });
+
+    function fetchUserLocationFallback() {
+        fetch("https://ipinfo.io/json")
+            //     console.log('response.json()' , response.json());
+            // })
+            // .catch(error => console.log('error', error));
+
+            // fetch('https://ipinfo.io/json?token=YOUR_TOKEN_HERE')
+            .then(response => response.json())
+            .then(data => {
+                // loc 속성에서 위도와 경도 추출
+                isinitMap = false;
+                const loc = data.loc.split(','); // loc 문자열을 쉼표로 분리하여 배열로 변환
+                latitude = parseFloat(loc[0]); // 배열의 첫 번째 요소(위도)를 실수로 변환
+                longitude = parseFloat(loc[1]); // 배열의 두 번째 요소(경도)를 실수로 변환
+
+                // console.log(`위도: ${latitude}, 경도: ${longitude}`);
+
+                initMap2(latitude, longitude, ' ')
+
+                // 여기에서 latitude와 longitude를 사용하여 필요한 작업을 수행하세요.
+                // 예를 들어, Google Maps API를 사용하여 지도에 마커를 추가하거나, 지도 중심을 이동시킬 수 있습니다.
+            });
+    }
 
 
     initMap(' ');
 
 });
-
-// 일단 안씀
-// function callback(results, status) {
-//     if (status == google.maps.places.PlacesServiceStatus.OK) {
-//         for (var i = 0; i < results.length; i++) {
-//             createMarker(results[i]);
-//         }
-//     }
-// }
