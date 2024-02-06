@@ -26,7 +26,9 @@ from django.db.models import Sum
 import ast
 from random import sample
 import pytz
-
+from django.conf import settings
+from dotenv import load_dotenv
+import os
 # Create your views here.
 
 
@@ -37,7 +39,14 @@ def meal_analyze(request):
 
     return render(request, 'meal/meal_analyze.html')
 
+
 def meal_recommend(request):
+    dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+    # print('dotenv_path : ',dotenv_path)
+    load_dotenv(dotenv_path)
+    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+    # print(GOOGLE_API_KEY)
+
     id = request.user.id
 
     recommended = []
@@ -54,13 +63,35 @@ def meal_recommend(request):
         random_menus = sample(list(menu), min(len(menu), 3))
 
         for data in random_menus:
-            print('data : ',type(data.menu_dtl))
+            # print('data : ',type(data.menu_dtl))
             recommended.append([data.menu_dtl])
+
+    for i in range(len(recommended)):
+        recommended[i] = recommended[i][0].split(', ')
+
+    # 수정해서 이제 안씀
+    # search_items = [menu[0] for menu in recommended]
+
+    # print('세개 search_items ',search_items)
+    msg = ''
+
+    if chk_meal_type == '저염식':
+        msg = '식습관 분석에 따르면 나트륨 섭취가 권장량을 초과하는 경향이 있습니다. 건강을 위해 나트륨을 줄인 저염식을 추천해 드립니다.'
+    elif chk_meal_type =='당뇨식':
+        msg = '분석 결과, 당분 섭취가 일반적인 권장량을 넘는 것으로 나타났습니다. 건강 관리를 위해 혈당 조절에 도움이 되는 당뇨식을 권장합니다'
+    else:
+        msg = '귀하의 식습관은 대체로 균형 잡힌 것으로 보입니다. 현재의 건강한 식단을 유지하시면서 다양한 영양소가 포함된 일반식을 계속 드실 것을 추천합니다.'
 
     context = {
         'meal_type': chk_meal_type,
-        'recommend': recommended
+        'recommend': recommended,
+        # 'searchText' : search_items
+        # 'searchText' : json.dumps(search_items),
+        'msg' : msg,
+        'GOOGLE_API_KEY' : GOOGLE_API_KEY
     }
+
+    # print('context : ',context)
 
     return render(request, 'meal/meal_recommend.html', context)
 
@@ -70,20 +101,6 @@ def meal_history(request):
 
     meals = Meal.objects.filter(user_id=id).order_by('meal_date')
 
-    recommended = []
-
-    # if menu is None : 
-        # recommend = None
-        # pass
-    # else:
-        # random_menus = sample(list(menu), min(len(menu), 3))
-
-        # for data in random_menus:
-            # print('data : ',type(data.menu_dtl))
-            # recommended.append([data.menu_dtl])
-
-    # print('recommended' ,recommended)
-            
     today = datetime.today()
     month_data = today.month
     first_day_of_month = today.replace(day=1)
@@ -105,20 +122,13 @@ def meal_history(request):
     # 데이터가 있는 날짜
     days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
 
-    for i in range(len(recommended)):
-        recommended[i] = recommended[i][0].split(', ')
-
     context = {
         'title': '그래프',
         'month': month_data ,
         'dates': json.dumps(dates),
         'calories': json.dumps(calories),
         'days_with_data': days_with_data,  # 이번달중 데이터가 있는 날짜
-        # 'meal_type': chk_meal_type,
-        'recommend': recommended
     }
-
-    # print('context 확인 : ',context)
 
     return render(request, 'meal/meal_history.html', context)
 
@@ -147,8 +157,6 @@ def get_monthly_history(request, year, month):
 
     # 데이터가 있는 날짜
     days_with_data = sum(1 for val, cal in calories_by_date.items() if cal > 0)
-
-    print('month : ',month)
 
     data = {
         'month': month ,
@@ -255,6 +263,8 @@ def meal_detail(request, date):
         'meal_info': meal_information,
         'deficient_nutrients' : deficient_nutrients
     }
+
+    # print('context : ',context['deficient_nutrients'])
 
     return render(request, 'meal/meal_detail.html', context)
 
@@ -445,15 +455,15 @@ def meal_post(request):
             # DB에 저장
             # 조작 시간을 사용할 경우 models.py에서 meal_date에 auto_now_add=False로 바꾸자.
 
-            # Meal.objects.create(
-            #     user = user_instance,
-            #     meal_date = current_time,
-            #     meal_photo = meal_data_list[-1],
-            #     meal_info = json.dumps(filtered_list),
-            #     meal_type = meal_type,
-            #     meal_calories = meal_calories,
-            #     nutrient_info = json.dumps(nutrient_info)
-            # )
+            Meal.objects.create(
+                user = user_instance,
+                meal_date = current_time,
+                meal_photo = meal_data_list[-1],
+                meal_info = json.dumps(filtered_list),
+                meal_type = meal_type,
+                meal_calories = meal_calories,
+                nutrient_info = json.dumps(nutrient_info)
+            )
 
             ############ DB 저장 완료 후 로직 #############
 

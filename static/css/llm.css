@@ -10,7 +10,7 @@
     border-radius: 10px;
     margin-bottom: 20px;
     overflow-y: scroll;
-    height: 300px;
+    height: 500px;
 }
 
 .chat-message {
@@ -70,4 +70,27 @@
 #loader {
     font-size: 25px;
     text-align: center;
+}
+
+
+.intro-container {
+    max-width: 1000px;
+    margin: auto;
+    box-shadow: 0px 0px 10px #0000001a;
+    flex: 1;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.startButton {
+    padding: 10px 20px;
+    background-color: #50bc54;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }

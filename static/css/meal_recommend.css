@@ -1,0 +1,69 @@
+.clicked-item {
+    background-color: #f4f81f;
+    border: 1px solid #000;
+}
+
+.recommendation-section {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.meal-recommendation table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-right: 20px;
+}
+
+.meal-recommendation th,
+.meal-recommendation td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #e7e7e7;
+}
+
+.meal-recommendation thead th {
+    background-color: #50bc54;
+    color: white;
+}
+
+.meal-recommendation tbody td {
+    background-color: #f9f9f9;
+}
+
+.meal-recommendation tbody tr:nth-child(even) td {
+    background-color: #e7e7e7;
+}
+
+.restaurant-recommendation {
+    flex: 1;
+}
+
+.restaurant-recommendation #map {
+    height: 500px;
+}
+
+#recommendation {
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+#recommendation h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    line-height: 1.2;
+    color: #444;
+}
+
+.meal-recommendation table {
+    font-size: 0.9em;
+}
+
+.recommendation-section {
+    font-size: 0.95em;
+}

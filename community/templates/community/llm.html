@@ -4,16 +4,28 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="{% static '/css/llm.css' %}">
+<script>
+    var days_left = {{days_left|safe}};
+</script>
 <div id="intro" class="intro-container">
-        <h1>주제를 선택하고 AI 건강관리사에게 상담받으세요.</h1>
+        <h4>주제를 선택하고 AI 건강관리사 운식이에게 상담받으세요.</h4>
+        <br>
+        <h4>🎉🎊"환영합니다~!"🎊🎉</h4>
+        <br>
+        <h5>구독 종료까지 {{ days_left }}일 남았습니다. </h5>
+        <br>
+        <img src="{% static 'images/unsik_mascot_3.png' %}"> 
+        <br>
         <label for="subject">어떤 주제를 여쭙고 싶은가요?</label>
+        <br>
         <select id="subject" name="subject">
             <option value="운동">운동</option>
             <option value="건강">건강</option>
             <option value="식단">식단</option>
             <option value="질병">질병</option>
         </select>
-        <button type="button" onclick="start()">AI 건강관리사에게 상담받기</button>
+        <br>
+        <button class="startButton" type="button" onclick="start()">AI 건강관리사 운식이에게 상담받기</button>
 </div>
 {% csrf_token %}
 <div id="chat" class="chat-container" style="display: none;">
@@ -26,7 +38,7 @@
             <i class="fa fa-spinner fa-spin"></i>
         </div>
         <div class="chat-input">
-            <input type="text" placeholder="메시지를 입력하세요">
+            <input type="text" placeholder="메시지를 입력하세요" onkeydown="if(event.key === 'Enter') document.getElementById('btn').click()">
             <button id="btn" onclick="spinner()">전송</button>
         </div>
 </div>

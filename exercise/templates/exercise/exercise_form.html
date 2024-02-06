@@ -1,22 +1,27 @@
 {% extends 'base.html' %}
+{% load static %}
 <!-- venv\Scripts\activate 가상환경 활성화 -->
 <!-- deactivate 비활성화 -->
 {% block content %}
+<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link href="http://fonts.googleapis.com/earlyaccess/nanumgothic.css" rel="preload">
 <div class="container">
-    <h2>운동 기록</h2>
-    <form method="post" onsubmit="return exerciseUploadCheck()" class="exercise-form">
+    <h2 id="title_exercise">당신의 하루 운동을 기록하세요!</h2>
+    <form id="predict-form" method="post" onsubmit="return exerciseUploadCheck()" class="exercise-form">
+        <input type="hidden" name="id" value='{{ user.id }}'>
         {% csrf_token %}
         <table id="form_tbl" class="table">
             <tr>
-                <th>{{ form.exercise_date.label_tag }}</th>
+                <th>운동 시각</th>
                 <td>{{ form.exercise_date }}</td>
             </tr>
 
             <tr>
-                <th>운동 유형:</th>
+                <th>운동 유형</th>
                 <td>
                     <label class="radio-label">
-                        <input type="radio" name="exercise_type" value="유산소" checked="checked"> 유산소
+                        <input type="radio" name="exercise_type" value="유산소" checked="checked">유산소
                     </label>
                     <label class="radio-label">
                         <input type="radio" name="exercise_type" value="웨이트"> 웨이트
@@ -25,52 +30,58 @@
             </tr>
 
             <tr>
-                <th>{{ form.exercise_name.label_tag }}</th>
+                <th>운동명</th>
                 <td>{{ form.exercise_name }}</td>
             </tr>
 
             <tr>
-                <th>운동 지속 시간(분):</th>
+                <th>운동 지속 시간(분)</th>
                 <td>{{ form.exercise_amount }}</td>
             </tr>
-
             <tr>
-                <th>{{ form.calories_burned.label_tag }}</th>
+                <th>칼로리 소모량</th>
                 <td>{{ form.calories_burned }}</td>
             </tr>
 
-            <tr class="weight-fields">
-                <th>{{ form.weight.label_tag }}</th>
-                <td>{{ form.weight }}</td>
-            </tr>
+            <tbody class="weight-fields-container">
+                <tr class="weight-fields">
+                    <th>무게</th>
+                    <td>{{ form.weight }}</td>
+                </tr>
 
-            <tr class="weight-fields">
-                <th>{{ form.reps.label_tag }}</th>
-                <td>{{ form.reps }}</td>
-            </tr>
+                <tr class="weight-fields">
+                    <th>횟수</th>
+                    <td>{{ form.reps }}</td>
+                </tr>
 
-            <tr class="weight-fields">
-                <th>{{ form.sets.label_tag }}</th>
-                <td>{{ form.sets }}</td>
-            </tr>
-
-            <!-- <div>{{ form.errors }}</div> -->
+                <tr class="weight-fields">
+                    <th>세트 수</th>
+                    <td>{{ form.sets }}</td>
+                </tr>
+            </tbody>
         </table>
         <br>
         <button id="form_btn" type="submit" class="btn btn-primary">기록하기</button>
+        <!-- <button type="submit" class="btn btn-info">예측하기</button> -->
+        <button id="predict_btn" type="button" class="btn btn-info">예측하기</button>
     </form>
+    <p id="prediction_result"></p>
+</div>
+
+<!-- 안내 영역 -->
+<div class="info-section">
+    <h3>운식에서 운동 칼로리를 예측해드립니다! 🔥</h3>
+    <p>운식에서는 내 신체, 나이, 운동 지속 시간 등을 바탕으로 학습한 AI를 통해 운동 칼로리를 쉽게 확인할 수 있습니다. 복잡한 계산 없이 운동 소모 칼로리를 기록하세요!</p>
+    <!-- <a href="#" class="info-button">칼로리 확인하기</a> -->
 </div>
 <script>
     function toggleWeightFields() {
-        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type"]');
+        var exerciseTypeRadios = document.querySelectorAll(' input[name="exercise_type" ]');
         var weightFields = document.querySelectorAll('.weight-fields');
-
         exerciseTypeRadios.forEach(function (radio) {
             radio.addEventListener('change', function () {
                 if (radio.value === '웨이트') {
-                    weightFields.forEach(function (field) {
-                        field.style.display = 'table-row';
-                    });
+                    weightFields.forEach(function (field) { field.style.display = 'table-row'; });
                 } else {
                     weightFields.forEach(function (field) {
                         field.style.display = 'none';
@@ -78,20 +89,17 @@
                 }
             });
         });
-    }
-
-    toggleWeightFields();
+    } toggleWeightFields();
 
     function exerciseUploadCheck() {
         var exerciseDate = document.getElementById('id_exercise_date').value;
-        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type"]');
+        var exerciseTypeRadios = document.querySelectorAll('input[name="exercise_type" ]');
         var exerciseName = document.getElementById('id_exercise_name').value;
-        var exerciseAmount = document.getElementById('id_exercise_amount').value;
-
-        // 체크된 라디오 버튼의 값을 가져오기
+        var exerciseAmount = document.getElementById('id_exercise_amount').value; // 체크된 라디오 버튼의 값을 가져오기 
+        var caloriesBurned = document.getElementById('id_calories_burned').value;
         var selectedExerciseType = Array.from(exerciseTypeRadios).find(radio => radio.checked).value;
 
-        if (!exerciseDate || !exerciseName || !exerciseAmount) {
+        if (!exerciseDate || !exerciseName || !exerciseAmount || !caloriesBurned) {
             alert('빈칸을 채워주세요');
             return false;
         }
@@ -109,23 +117,113 @@
 
         return true;
     };
+
+    // "예측하기" 버튼 클릭 이벤트에 대한 핸들러
+    $('#predict_btn').click(function () {
+        let formData = $('#predict-form').serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://127.0.0.1:8000/exercise/record_exercise/predict_calories/', // 수정된 URL
+            data: formData,
+            success: function (response) {
+                // 예측 결과 처리
+                $("#prediction_result").text("예상 칼로리 소모량은 " + response.predicted_calories + " kcal 입니다");
+            },
+            error: function (error) {
+                // 오류 처리
+                console.log(error);
+            }
+        });
+    });
+
+    // "기록하기" 버튼에 대한 폼 제출 이벤트
+    $("#predict-form").submit(function (e) {
+        if (!exerciseUploadCheck()) {
+            e.preventDefault(); // 폼 검증이 실패하면 제출 방지
+        }
+    });
+
 </script>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap');
+
+    /* BMJUA 폰트 */
+    @font-face {
+        font-family: 'BMJUA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
     .container {
         max-width: 600px;
         margin: 0 auto;
         padding: 20px;
         border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f5f5f5;
+        border-radius: 8px;
+        /* background-color: #f5f5f5; */
+        background-color: #e4f3e3;
+        display: inline-block;
     }
 
     .table {
         width: 100%;
+        border-collapse: separate;
+        /* border-radius를 적용하기 위해 필요 */
+        border-spacing: 0;
+        /* 셀 간격을 제거 */
+        border-radius: 8px;
+        /* 모서리를 둥글게 만듭니다 */
+        overflow: hidden;
+        /* 내용이 둥근 모서리를 넘어가지 않도록 */
+        border-collapse: collapse;
+        /* 셀 테두리를 겹치게 하여 테두리 간격 제거 */
+    }
+
+    th,
+    td {
+        border: none;
+        /* 셀 테두리 제거 */
+    }
+
+    body {
+        font-family: 'Nanum Gothic', sans-serif;
+    }
+
+    h3 {
+        font-family: 'BMJUA', sans-serif;
+    }
+
+    th {
+        font-family: 'Nanum Gothic', sans-serif;
+        font-weight: normal;
+        text-align: left;
+        padding-left: 50px !important;
+    }
+
+    #title_exercise {
+        font-weight: 300;
+        /* 더 굵은 글씨체를 위해 */
+        text-align: center;
+        /* 제목을 가운데 정렬 */
+        margin-bottom: 20px;
+        /* 폼과의 간격을 늘림 */
+        font-family: 'BMJUA', sans-serif;
+        color: #65a36a;
     }
 
     .radio-label {
-        margin-right: 20px;
+        display: inline-block;
+        /* background-color: #65a36a; */
+        background-color: #50bc54;
+        color: white;
+        padding: 6px 12px;
+        font-family: sans-serif;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        /* 라벨 간격 */
     }
 
     .weight-fields {
@@ -133,12 +231,124 @@
     }
 
     #form_btn {
-        background-color: #65a36a;
+        /* background-color: #65a36a; */
+        background-color: #50bc54;
         color: #fff;
         border: none;
         padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
+    }
+
+    .radio-label input[type="radio"] {
+        display: none;
+        /* 원래 라디오 버튼 숨기기 */
+    }
+
+    .radio-label input[type="radio"]:checked+label:before {
+        content: "\2714";
+    }
+
+    /* 라디오 버튼이 체크될 때 스타일 */
+    .radio-label input[type="radio"]:checked+label {
+        background-color: #4CAF50;
+        /* 체크된 라디오 버튼 라벨 배경색 변경 */
+        color: white;
+        /* 라벨 텍스트 색상 변경 */
+    }
+
+    /* 버튼 스타일 일치 */
+    .btn-primary,
+    .btn-info {
+        /* background-color: #65a36a; */
+        background-color: #50bc54;
+        display: inline-block;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        /* 버튼 텍스트 크기 */
+        width: 35%;
+        /* 버튼 너비 */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* 버튼 그림자 */
+    }
+
+    #form_btn:hover {
+        background-color: #65a36a;
+        /* 호버 상태일 때의 배경색 */
+    }
+
+    #predict_btn:hover {
+        background-color: #65a36a;
+        color: white;
+    }
+
+    /* 예측 결과 스타일 */
+    #prediction_result {
+        margin-top: 15px;
+        /* 결과 텍스트와 버튼 사이의 간격 */
+        font-size: 1rem;
+    }
+
+    /* 안내 영역 스타일 */
+    .info-section {
+        max-width: 600px;
+        background-color: #eaeaf5;
+        padding: 20px;
+        margin: 0 auto;
+        border-radius: 8px;
+        margin-top: 20px;
+        /* 위쪽 요소와의 간격 */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* 상자 그림자 */
+        font-family: 'Nanum Gothic', sans-serif;
+    }
+
+    .info-section h3 {
+        color: #5754f5;
+        text-align: left;
+        /* 텍스트를 왼쪽으로 정렬 */
+    }
+
+    .info-section p {
+        color: #4b4a4a;
+        /* 진한 회색 글씨 */
+        margin-bottom: 16px;
+        /* 버튼 위 간격 */
+        text-align: left;
+        font-size: 14px;
+        /* 글자 크기 조정 */
+    }
+
+    .info-button {
+        /* background-color: #65a36a; */
+        background-color: #50bc54;
+        color: white;
+        /* 흰색 글씨 */
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        /* 밑줄 없애기 */
+        font-weight: bold;
+        /* 글씨 굵게 */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* 버튼 그림자 */
+    }
+
+    .info-button:hover {
+        background-color: #558a58;
+        /* 호버 상태 색상 변경 */
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"] {
+        width: 76%;
+        box-sizing: border-box;
     }
 </style>
 {% endblock content %}

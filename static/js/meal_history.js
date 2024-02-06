@@ -2,6 +2,21 @@ $(document).ready(function () {
 
     var currentYear = new Date().getFullYear();
     var currentMonth = new Date().getMonth() + 1;
+    // 이번달에서 변하지않는값
+    const nowMonth = new Date().getMonth() + 1;
+
+    // console.log('currentMonth : ', currentMonth);
+    // console.log('dates : ', dates[0].split('-')[1]);
+
+    // 이번달 그래프인지 체크
+    var dateCkt = dates[0].split('-')[1].startsWith('0') ? dates[0].split('-')[1].substring(1) : dates[0].split('-')[1];
+    // console.log('dateCkt : ', dateCkt);
+
+    if (nowMonth == dateCkt) {
+        $('#next-month').hide();
+    } else {
+        $('#next-month').show();
+    }
 
     $('#prev-month').click(function () {
         changeMonth(-1);
@@ -20,7 +35,7 @@ $(document).ready(function () {
             datasets: [{
                 label: '칼로리', // 데이터셋의 레이블
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Green,
-                borderColor: 'green', // 선 색
+                borderColor: '#50bc54', // 선 색
                 borderWidth: 1,
                 data: calories, // y축 데이터로 칼로리 사용
                 barThickness: 30
@@ -37,11 +52,18 @@ $(document).ready(function () {
             onClick: function (e) {
                 var activePoints = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
 
+                // 창 띄우는 위치 조정
+                var new_page_width = 1000;
+                var new_page_height = 750;
+                var new_page_top = (screen.height - new_page_height) / 2;
+                var new_page_left = (screen.width - new_page_width) / 2;
+
+
                 if (activePoints.length) {
                     var firstPoint = activePoints[0];
                     var label = chart.data.labels[firstPoint.index];
                     // 새 창에서 상세 정보 페이지
-                    window.open('/meal/meal_detail/' + label, '_blank', 'width=600,height=400,top=100,left=100');
+                    window.open('/meal/meal_detail/' + label, '_blank', 'width=' + new_page_width + ',height=' + new_page_height + ',top=' + new_page_top + ',left=' + new_page_left);
                 }
             }
         }
@@ -64,6 +86,13 @@ $(document).ready(function () {
             url: `/meal/meal_history/${currentYear}/${currentMonth}/`,
             dataType: 'json',
             success: function (response) {
+                // console.log('response : ', response.month);
+                // console.log('nowMonth : ', nowMonth);
+                if (nowMonth == response.month) {
+                    $('#next-month').hide();
+                } else {
+                    $('#next-month').show();
+                }
                 updateChart(response);
             },
             error: function (err) {

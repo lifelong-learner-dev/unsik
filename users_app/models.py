@@ -10,6 +10,7 @@ class User(AbstractUser):
     user_activity = models.CharField(max_length=255, blank=True, null=True)
     user_daily_calorie = models.IntegerField(blank=True, null=True)
     user_target_weight = models.IntegerField(blank=True, null=True)
+    user_exercise_purpose = models.CharField(max_length=45, blank=True, null=True)
 
 class UsersAppUser(models.Model):
     id = models.BigAutoField(primary_key=True)
