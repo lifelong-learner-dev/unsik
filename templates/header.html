@@ -3,10 +3,11 @@
 <header>
     <div id="logo_box">
         <a href="{% url 'main' %}">
-            <img id="unsik_header_logo" src="{% static 'images/unsik_logo1.png' %}" alt="unsik_logo1">
+            <img id="unsik_header_logo" src="{% static 'images/Unsik_headlogo.png' %}" alt="Unsik_headlogo">
         </a>
     </div>
     <section id="user_menu_section">
+        {% include 'nvbar.html' %}
         <div id="user_info">
             {% if user.is_authenticated %}
             <ul>
@@ -22,7 +23,6 @@
             </ul>
             {% endif %}
         </div>
-        {% include 'nvbar.html' %}
     </section>
 
     <!-- 로그인 모달 -->

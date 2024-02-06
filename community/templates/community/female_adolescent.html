@@ -5,11 +5,15 @@
 <script src="{% static 'js/female_adolescent_predict.js' %}"></script>
 <script src="{% static 'js/accordion.js' %}"></script>
     
-<h4>여성 청소년 페이지</h4>
-
+<section class="title-explain-section">
+    <img src="{% static 'images/unsik_mascot_2.png' %}"> 
+    <h5 style="text-align:left;"><b>청소년 여성분들을 위한 운동측정 페이지입니다 <br><br>
+        "이제는 집에서 체력등급을 확인하세요 <br>
+        &nbsp국민체육진흥공단 국민체력100의 데이터를 통한 운동등급예측"<b></h5>
+</section>
 <div class="container">
     <section class="measure-section">
-        <h6><b>어떻게 운동을 측정하는지 확인하세요</b></h6>
+        <h5>🏃‍♀️🏃‍♂️ 영상들을 확인하여 운동 측정방법을 확인하세요</h5>
         <!-- 운동별 섹션 -->
         <div class="accordion">
             <button class="accordion-button">앉아윗몸앞으로 굽히기</button>
@@ -38,7 +42,10 @@
             </div>
         </div>
     </section>
-    <section class="predict-section">
+    <section class="predict-section" id="predict-section">
+        <h5 style="text-align:left; margin-left:20px;">📝 운동측정결과값을 입력 후 확인 버튼을 누르세요</h5>
+        <h5 style="text-align:left; margin-left:20px;">🤖 예측 AI가 운동 등급을 알려줍니다.</h5>    
+        <br>  
         <form id="predict-form" method="post" class="predict-form">
             {% csrf_token %}
             <div class="form-group">
@@ -61,12 +68,28 @@
                 <label for="hang_time">체공시간(초)</label>
                 <input type="text" id="hang_time" name="hang_time" placeholder="숫자만 입력하세요" class="form-control">
             </div>
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">확인</button>
+            <div id="loader" class="loader" style="display: none;">
+                <i class="fa fa-spinner fa-spin"></i>
+            </div>
+            <div class="form-actions" id="form-actions">
+                <button type="submit" class="btn-submit" onclick="spinner()">확인</button>
                 <input type="reset" class="btn-reset" value="리셋">
             </div>
         </form>
-        <p id="prediction_result" class="result"></p>
+    </section>
+    <section id="result-section" class="result-section" style="display: none;">
+        <div>
+            <p id="prediction_result" class="result"></p>
+            <canvas id="performanceChart"></canvas>
+            <div id="result-text-box" class="result-text-box">
+            </div>
+        </div>
     </section>
 </div>
+<script>
+        function spinner() {
+            document.getElementById('loader').style.display = "block";
+            document.getElementById("form-actions").style.display = "none";
+        }
+</script>
 {% endblock content %}

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -13,5 +13,6 @@ urlpatterns = [
     path("female_child_predict_ajax/", views.female_child_predict_ajax, name='female_child_predict_ajax'),
     path("llm/", views.llm_index, name='llm_index'),
     path("healthcareassistant/", views.healthcareassistant, name='healthcareassistant'),
-    # path("payment/", views.payment, name='payment')
+    re_path(r'^payment/(?P<username>[\w.@+-]+)/$', views.payment, name='payment'),
+    path("create_point_entry/", views.create_point_entry, name='create_point_entry')
 ]

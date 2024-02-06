@@ -1,20 +1,41 @@
 {% extends 'base.html' %}
-
 {% block content %}
+
+{% load static %}
+<script type="text/javascript">
+    var searchText = {{ searchText | safe }};
+</script>
+<script>
+    const key = "{{ GOOGLE_API_KEY | safe}}";
+    (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
+        key: key, libraries: ["marker", "places"], callback: "initMap"
+    });
+</script>
 <section>
     {% if recommend %}
-    <h2><b>오늘의 식단 추천 : {{meal_type}}</b></h2>
+    <div>
+        <h2><b>오늘의 식단 추천 : {{meal_type}} </b></h2>
+        <h4><span id="tooltiptext">일주일간 기록된 메뉴의 목록과 성분을 분석하여 적절한 식사메뉴를 추천해드립니다
+                <br>{{user.username}} 님의 식사 패턴 분석 결과
+                <br><b class="{% if meal_type == '저염식' or meal_type == '당뇨식' %}text-danger{% endif %}">{{ msg }}</b>
+                <br>위치 제공에 동의해주시면 메뉴 클릭시 현재 위치 기준으로 식당을 추천해드립니다.</span></h4>
+    </div>
+    <hr>
     <div class="container">
         {% for menu in recommend %}
         <div class="diet-section">
-            <h2>식단 {{forloop.counter}} </h2>
+            <h2><b>식단 {{forloop.counter}} </b></h2>
             <ol>
                 {% for item in menu %}
-                <li>{{item}}</li>
+                <li class="menu-item">{{item}}</li>
                 {% endfor %}
             </ol>
         </div>
         {% endfor %}
+    </div>
+    <div>
+        <h3>추천 식당</h3>
+        <div id="map" style="height:500px;width:50%;margin-left: 25%;"></div>
     </div>
     {% endif %}
 </section>
