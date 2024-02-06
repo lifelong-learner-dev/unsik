@@ -75,7 +75,7 @@ def exercise_index(request):
     if request.method == "POST":
         search_date = request.POST.get('search_date')
         if search_date:
-            search_date = datetime.datetime.strptime(search_date, '%Y-%m-%d').date()
+            search_date = datetime.strptime(search_date, '%Y-%m-%d').date()
             exercises = Exercise.objects.filter(user=user_instance, exercise_date__date=search_date)
         else:
             exercises = Exercise.objects.none()
