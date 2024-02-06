@@ -35,7 +35,7 @@ $(document).ready(function () {
             datasets: [{
                 label: '칼로리', // 데이터셋의 레이블
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Green,
-                borderColor: 'green', // 선 색
+                borderColor: '#50bc54', // 선 색
                 borderWidth: 1,
                 data: calories, // y축 데이터로 칼로리 사용
                 barThickness: 30
@@ -54,7 +54,7 @@ $(document).ready(function () {
 
                 // 창 띄우는 위치 조정
                 var new_page_width = 1000;
-                var new_page_height = 800;
+                var new_page_height = 750;
                 var new_page_top = (screen.height - new_page_height) / 2;
                 var new_page_left = (screen.width - new_page_width) / 2;
 

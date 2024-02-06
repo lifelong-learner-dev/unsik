@@ -1,8 +1,19 @@
-/* General table styles */
 .table_container {
-    width: 100%;
+    width: 80%;
+    margin-left: 10%;
     margin: 0 auto;
     overflow-x: auto;
+    background-color: rgba(0, 0, 0, 0.05);
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
 }
 
 .table_container h1,
@@ -15,6 +26,9 @@
 .meal-table {
     border-collapse: collapse;
     margin: 20px 0;
+    width: 100%;
+    margin-bottom: 20px;
+    /* 테이블 아래 여백 */
     font-size: 0.9em;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
@@ -30,7 +44,7 @@
 }
 
 .meal-table thead tr {
-    background-color: #009879;
+    background-color: #50bc54;
     color: #ffffff;
     text-align: left;
 }
@@ -49,10 +63,10 @@
 }
 
 .meal-table tbody tr:last-of-type {
-    border-bottom: 2px solid #009879;
+    border-bottom: 2px solid #50bc54;
 }
 
 .meal-table tbody tr.active-row {
     font-weight: bold;
-    color: #009879;
+    color: #50bc54;
 }
