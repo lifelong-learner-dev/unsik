@@ -36,19 +36,4 @@ class ExerciseForm(forms.ModelForm):
         #     'exercise_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         # }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['exercise_type'].widget = forms.RadioSelect(choices=[('유산소', '유산소'), ('웨이트', '웨이트')])
 
-    #     # JavaScript에서 사용할 클래스 이름을 추가
-    #     self.fields['exercise_type'].widget.attrs['class'] = 'exercise-type-field'
-
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     exercise_date = cleaned_data.get('exercise_date')
-    #     exercise_type = cleaned_data.get('exercise_type')
-    #     exercise_name = cleaned_data.get('exercise_name')
-    #     exercise_amount = cleaned_data.get('exercise_amount')
-
-    #     if not exercise_date or not exercise_type or not exercise_name or not exercise_amount:
-    #         raise forms.ValidationError('빈칸을 입력해 주세요')

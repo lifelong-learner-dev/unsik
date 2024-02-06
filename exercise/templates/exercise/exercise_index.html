@@ -27,151 +27,67 @@
         });
     });
 </script>
-    
-
-<!-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script> -->
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            dateClick: function (info) {
-                var clickedDate = info.dateStr; // 클릭된 날짜 'YYYY-MM-DD'
-                fetchExerciseData(clickedDate);
-            }
-        });
-        calendar.render();
-    });
-
-    function fetchExerciseData(date) {
-        alert('aa')
-        // 날짜 형식 'YYYY-MM-DD'를 사용하여 서버에 요청
-        // fetch(`/exercises/${date}/`)
-        fetch(`http://127.0.0.1:8000/exercise/exercises/${date}`)
-            .then(response => response.json())
-            .then(data => {
-                updateResults(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                updateResults([]); // 오류 발생 시 결과창을 비움
-            });
-    }
-
-    function updateResults(data) {
-        console.log(data)
-        var resultsDiv = document.getElementById('results');
-        // 결과창에 데이터를 표시하는 코드를 작성
-        var html = data.map(exercise => `
-        <div>
-            <p>운동 날짜: ${exercise.exercise_date}</p>
-            <p>운동 유형: ${exercise.exercise_type}</p>
-            <p>운동명: ${exercise.exercise_name}</p>
-            <p>운동 지속 시간(분): ${exercise.exercise_amount}</p>
-            <p>칼로리 소모: ${exercise.calories_burned}</p>
-            <p>무게: ${exercise.weight}</p>
-            <p>횟수: ${exercise.reps}</p>
-            <p>세트 수: ${exercise.sets}</p>
-        </div>
-    `).join('');
-        html = '<p>운동 날짜</p>'
-        resultsDiv.innerHTML = html;
-    }
-</script> -->
 
 <link rel=" stylesheet" href="{% static 'css/exercise.css' %}">
+
 <div class="container">
-    <h2>{{ user.username }}님의 운동기록</h2>
-    <!-- <div class="flex-container">
-        <div class="calendar-container">
-            <div id='calendar'></div>
-        </div>
-        <div class="results-container">
-            <div id="results"></div>
-        </div>
-    </div> -->
-    <br>
-    <form method="post" action="{% url 'exercise_index' %}">
-        {% csrf_token %}
-        <input type="date" name="search_date" value="{{ today }}">
-        <input type="submit" value="검색">
-    </form><br><br>
+    <header>
+        <h2>{{ user.username }}님의 운동기록</h2>
+        <br>
+        <form method="post" action="{% url 'exercise_index' %}">
+            {% csrf_token %}
+            <input type="date" name="search_date" value="{{ today }}">
+            <input type="submit" value="검색">
+        </form>
+    </header>
+    <br><br>
 
     {% if exercises %}
-    <div class="exercise-results">
-        <div class="aerobic-exercises">
-            <h3>유산소</h3>
-            <table>
-                <tr>
-                    <th>운동 수행 시각</th>
-                    <th>운동명</th>
-                    <th>운동 지속 시간</th>
-                    <th>칼로리 소모</th>
-                    <th>수정</th>
-                    <th>삭제</th>
-                </tr>
-                {% for exercise in exercises %}
-                {% if exercise.exercise_type == "유산소" %}
-                <tr>
-                    <td>{{ exercise.exercise_date }}</td>
-                    <td>{{ exercise.exercise_name }}</td>
-                    <td>{{ exercise.exercise_amount }}</td>
-                    <td>{{ exercise.calories_burned }}</td>
-                    <td>
-                        <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
-                    </td>
-                    <td>
-                        <a href="{% url 'exercise_delete' exercise.postnum %}"
-                            onclick="return confirm('삭제하시겠습니까?');">삭제</a>
-                    </td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </table>
-        </div>
-
-        <div class="weight-exercises">
-            <h3>웨이트</h3>
-            <table>
-                <tr>
-                    <th>운동 수행 시각</th>
-                    <th>운동명</th>
-                    <th>운동 지속 시간</th>
-                    <th>칼로리 소모</th>
-                    <th>무게</th>
-                    <th>횟수</th>
-                    <th>세트 수</th>
-                    <th>수정</th>
-                    <th>삭제</th>
-                </tr>
-                {% for exercise in exercises %}
-                {% if exercise.exercise_type == "웨이트" %}
-                <tr>
-                    <td>{{ exercise.exercise_date }}</td>
-                    <td>{{ exercise.exercise_name }}</td>
-                    <td>{{ exercise.exercise_amount }}</td>
-                    <td>{{ exercise.calories_burned }}</td>
-                    <td>{{ exercise.weight }}</td>
-                    <td>{{ exercise.reps }}</td>
-                    <td>{{ exercise.sets }}</td>
-                    <td>
-                        <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
-                    </td>
-                    <td>
-                        <a href="{% url 'exercise_delete' exercise.postnum %}"
-                            onclick="return confirm('삭제하시겠습니까?');">삭제</a>
-                    </td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </table>
-        </div>
+    <div class="exercises-container">
+        <h3>유산소</h3><br>
+        <section class="exercise-section aerobic">
+            {% for exercise in exercises %}
+            {% if exercise.exercise_type == "유산소" %}
+            <div class="exercise-card">
+                <h3>{{ exercise.exercise_name }}</h3>
+                <p>{{ exercise.exercise_date }}</p>
+                <p>{{ exercise.exercise_amount }}분</p>
+                <p>{{ exercise.calories_burned }}kcal</p>
+                <div class="exercise-actions">
+                    <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
+                    <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </section>
+        <h3>웨이트</h3>
+        <section class="exercise-section weight">
+            {% for exercise in exercises %}
+            {% if exercise.exercise_type == "웨이트" %}
+            <div class="exercise-card">
+                <h3>{{ exercise.exercise_name }}</h3>
+                <p>{{ exercise.exercise_date }}</p>
+                <p>{{ exercise.exercise_amount }}분</p>
+                <p>{{ exercise.calories_burned }}kcal</p>
+                <p>무게 {{ exercise.weight }}kg</p>
+                <p>{{ exercise.reps }}회</p>
+                <p>{{ exercise.sets }}set</p>
+                <div class="exercise-actions">
+                    <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
+                    <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </section>
     </div>
+
     {% else %}
     <p>운동 기록이 없습니다.</p>
     {% endif %}
 
-    <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+    <div class="chart-container" style="position: relative; height: auto; width: 70%;">
         <canvas id="calorieChart"></canvas>
     </div>
 </div>
