@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "meal",
     "community",
     "users_app",
+    "board_app",
 ]
 
 MIDDLEWARE = [

@@ -5,8 +5,8 @@
     height: 40px;
 }
 
-.head_menu > li {
-    width: 28%;
+.head_menu>li {
+    width: 23%;
     height: 40px;
     margin-right: 10px;
     float: left;
@@ -18,7 +18,7 @@
     position: relative;
 }
 
-.head_menu > li > p {
+.head_menu>li>p {
     display: block;
     position: relative;
 
@@ -27,7 +27,7 @@
     font-weight: bolder;
 }
 
-.head_menu > li > p::after {
+.head_menu>li>p::after {
     content: "";
     position: absolute;
     bottom: 0;
@@ -40,13 +40,13 @@
     transform: translate3d(-100%, 0, 0);
 }
 
-.head_menu > li:hover > p::after,
-.head_menu > li:focus > p::after {
+.head_menu>li:hover>p::after,
+.head_menu>li:focus>p::after {
     opacity: 1;
     transform: translate3d(0, 0, 0);
 }
 
-.head_menu > li:hover {
+.head_menu>li:hover {
     /* background-color: #56c05a; */
     /* border-bottom: 2px solid #50bc54; */
     transition: all 0.5s ease-in-out;
@@ -76,7 +76,7 @@
     transition-duration: 0.4s;
 } */
 
-.head_menu > li:not(:hover) {
+.head_menu>li:not(:hover) {
     /* background-color: aqua; */
     transition-duration: 0.5s;
 }
@@ -87,7 +87,9 @@
     display: block;
 }
 
-.submenu1, .submenu2, .submenu3 {
+.submenu1,
+.submenu2,
+.submenu3 {
     overflow: hidden;
     position: absolute;
     border-radius: 14px;
@@ -109,60 +111,61 @@
     border-color: transparent transparent #fff;
 } */
 
-.submenu1 > li,
-.submenu2 > li,
-.submenu3 > li {
+.submenu1>li,
+.submenu2>li,
+.submenu3>li {
     line-height: 50px;
     background: white;
     /* background-color: #eeeeee; */
 }
 
-.submenu1 > li:hover,
-.submenu2 > li:hover,
-.submenu3 > li:hover {
+.submenu1>li:hover,
+.submenu2>li:hover,
+.submenu3>li:hover {
     background-color: #50bc54;
 
     /* transition-duration: 0.5s; */
 }
 
-.submenu1 > li:hover a,
-.submenu2 > li:hover a,
-.submenu3 > li:hover a {
+.submenu1>li:hover a,
+.submenu2>li:hover a,
+.submenu3>li:hover a {
     font-weight: bolder;
     color: #fff;
 }
 
 /* 메뉴 1개 짜리 */
-.head_menu > li:hover .submenu1 {
+.head_menu>li:hover .submenu1 {
     box-shadow: 2px 2px 5px 0px #555555;
-    height: 50px; /* 하나 당 50px */
+    height: 50px;
+    /* 하나 당 50px */
     transition-duration: 0.5s;
 }
 
 /* 메뉴 2개 짜리 */
-.head_menu > li:hover .submenu2 {
+.head_menu>li:hover .submenu2 {
     box-shadow: 2px 2px 5px 0px #555555;
     height: 100px;
     transition-duration: 0.5s;
 }
 
 /* 메뉴 3개 짜리 */
-.head_menu > li:hover .submenu3 {
+.head_menu>li:hover .submenu3 {
     box-shadow: 2px 2px 5px 0px #555555;
     height: 150px;
     transition-duration: 0.5s;
 }
 
-.head_menu > li:not(:hover) .submenu1,
-.head_menu > li:not(:hover) .submenu2,
-.head_menu > li:not(:hover) .submenu3 {
+.head_menu>li:not(:hover) .submenu1,
+.head_menu>li:not(:hover) .submenu2,
+.head_menu>li:not(:hover) .submenu3 {
     height: 0px;
     transition-duration: 0.5s;
 }
 
 /* 미완성 미디어 쿼리 */
 @media (max-width: 768px) {
-    .head_menu > li {
+    .head_menu>li {
         width: 20%;
         float: none;
     }

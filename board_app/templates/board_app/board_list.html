@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/calorie_dict.css' %}">
+<section class="calorie_dict_box">
+    <h3 style="margin-top:70px;">게시판 정보 조회</h3>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <td colspan="5" style="text-align: right;"> <a href="{% url 'board_search' %}"> <button type="button" class="btn btn-primary">게시물 검색</button></td>
+                    <td colspan="5" style="text-align: right;"> <a href="{% url 'board_insert' %}"> <button type="button" class="btn btn-primary">게시물 등록</button></td>
+                </tr>
+                <tr> 
+                    <th scope="col" class="text-center">게시번호</th>
+                    <th scope="col" class="text-center">제목</th>
+                    <th scope="col" class="text-center">카테고리</th>
+                    <th scope="col" class="text-center">작성자</th>
+                    <th scope="col" class="text-center">작성일</th>
+                    <th scope="col" class="text-center">수정</th>
+                    <th scope="col" class="text-center">삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for bd in boards %}
+                <tr class="align-middle">
+                    <td class="text-center" scope="row"><a href="{% url 'board_detail' bd.postnum %}"> {{ bd.postnum }} </td>
+                    <td class="text-center" scope="row"> {{ bd.title }} </td>
+                    <td class="text-center" scope="row"> {{ bd.category }} </td>
+                    <td class="text-center" scope="row"> {{ bd.user.username }} </td>
+                    <td class="text-center" scope="row"> {{ bd.post_date|date:"Y년 m월 d일" }} </td>
+                    <td class="text-center" scope="row">
+                        <a href="{% url 'board_update' bd.postnum %}" class="btn btn-info" role="button">수정</a>
+                    </td>
+                    <td class="text-center" scope="row">
+                        <a href="{% url 'board_delete' bd.postnum %}" class="btn btn-danger" role="button" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
+                    </td>
+            {% endfor %}
+            </tbody>
+        </table>
+</section>
+<style>
+/* 게시판 정보 조회 테이블 스타일 */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 150px;
+}
+
+.table th,
+.table td {
+    padding: 8px;
+    text-align: center;
+}
+
+.table th {
+    background-color: #50bc54;
+    color: #fff;
+}
+
+.table tr:nth-child(even) {
+    background-color: #e0e0e0;
+}
+
+.table tr:nth-child(odd) {
+    background-color: #f0f0f0;
+}
+
+.btn-primary {
+    background-color: #50bc54;
+    border: none;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #409f48;
+}
+</style>
+{% endblock content %}
