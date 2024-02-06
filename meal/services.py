@@ -65,12 +65,33 @@ def get_recommend_mealtype(id):
 
     recommended_weekly_natrium = 7 * nutrient_res["natrium_recommended"]
 
-    if total_sugar > recommended_weekly_sugar:
+    # 당과 나트륨의 초과 비율 계산
+    sugar_excess_ratio = total_sugar / recommended_weekly_sugar
+    natrium_excess_ratio = total_natrium / recommended_weekly_natrium
+
+    # print('sugar_excess_ratio : ',sugar_excess_ratio)
+    # print('natrium_excess_ratio : ',natrium_excess_ratio)
+    
+
+    # 둘 다 기준치를 초과한 경우, 초과 비율이 더 높은 항목에 따라 식단을 추천
+    if sugar_excess_ratio > 1 and natrium_excess_ratio > 1:
+        if sugar_excess_ratio > natrium_excess_ratio:
+            return '당뇨식'
+        else:
+            return '저염식'
+    elif sugar_excess_ratio > 1:
         return '당뇨식'
-    elif total_natrium < recommended_weekly_natrium:
+    elif natrium_excess_ratio > 1:
         return '저염식'
     else:
         return '일반식'
+
+    # if total_sugar > recommended_weekly_sugar:
+    #     return '당뇨식'
+    # elif total_natrium > recommended_weekly_natrium:
+    #     return '저염식'
+    # else:
+    #     return '일반식'
 
 # 유저 정보별로 영양소 권장 섭취 칼로리 계산
 def get_personal_recommended_nutrient(user_height, user_weight, user_gender, user_age, user_activity):
