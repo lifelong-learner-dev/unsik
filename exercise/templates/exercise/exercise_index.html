@@ -31,51 +31,59 @@
 <link rel=" stylesheet" href="{% static 'css/exercise.css' %}">
 
 <div class="container">
-    <header>
+    <div class="header-container">
         <h2>{{ user.username }}님의 운동기록</h2>
-        <br>
-        <form method="post" action="{% url 'exercise_index' %}">
+        <form method="post" action="{% url 'exercise_index' %}" class="search-form">
             {% csrf_token %}
             <input type="date" name="search_date" value="{{ today }}">
             <input type="submit" value="검색">
         </form>
-    </header>
+    </div>
     <br><br>
 
     {% if exercises %}
     <div class="exercises-container">
-        <h3>유산소</h3><br>
         <section class="exercise-section aerobic">
+            <h3>유산소</h3>
             {% for exercise in exercises %}
             {% if exercise.exercise_type == "유산소" %}
             <div class="exercise-card">
-                <h3>{{ exercise.exercise_name }}</h3>
-                <p>{{ exercise.exercise_date }}</p>
-                <p>{{ exercise.exercise_amount }}분</p>
-                <p>{{ exercise.calories_burned }}kcal</p>
-                <div class="exercise-actions">
-                    <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
-                    <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                <div class="exercise-header">
+                    <h3>{{ exercise.exercise_name }}</h3>
+                    <p class="exercise-date">{{ exercise.exercise_date }}</p>
+                </div>
+                <div class="exercise-details">
+                    <p>{{ exercise.exercise_amount }}분</p>
+                    <p>{{ exercise.calories_burned }}kcal</p>
+                    <div class="exercise-actions">
+                        <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
+                        <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                    </div>
                 </div>
             </div>
             {% endif %}
             {% endfor %}
         </section>
-        <h3>웨이트</h3>
+
         <section class="exercise-section weight">
+            <h3>웨이트</h3>
             {% for exercise in exercises %}
             {% if exercise.exercise_type == "웨이트" %}
             <div class="exercise-card">
-                <h3>{{ exercise.exercise_name }}</h3>
-                <p>{{ exercise.exercise_date }}</p>
-                <p>{{ exercise.exercise_amount }}분</p>
-                <p>{{ exercise.calories_burned }}kcal</p>
-                <p>무게 {{ exercise.weight }}kg</p>
-                <p>{{ exercise.reps }}회</p>
-                <p>{{ exercise.sets }}set</p>
-                <div class="exercise-actions">
-                    <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
-                    <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                <div class="exercise-header">
+                    <h3>{{ exercise.exercise_name }}</h3>
+                    <p class="exercise-date">{{ exercise.exercise_date }}</p>
+                </div>
+                <div class="exercise-details">
+                    <p>{{ exercise.exercise_amount }}분</p>
+                    <p>{{ exercise.calories_burned }}kcal</p>
+                    <p>{{ exercise.weight }}kg</p>
+                    <p>{{ exercise.reps }}회</p>
+                    <p>{{ exercise.sets }}set</p>
+                    <div class="exercise-actions">
+                        <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
+                        <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                    </div>
                 </div>
             </div>
             {% endif %}
@@ -92,15 +100,3 @@
     </div>
 </div>
 {% endblock content %}
-
-<!-- 
-남은 할일 
-1. 모델 넣기
-2. 로그인 안했을 시 오류 해결
--->
-
-<!-- 
-    USE_TZ = False라서 발생하는 문제 해결법
-    views.py에서 timezone.localdate()을 사용중이라면 
-    datetime.date.today()로 바꾸기
- -->

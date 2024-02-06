@@ -1,3 +1,5 @@
+@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
+
 .container {
     max-width: 960px;
     margin: 0 auto;
@@ -6,9 +8,91 @@
     display: inline-block;
 }
 
-.header h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
+.search-form {
+    display: flex;
+    justify-content: center;
+    /* form 내부 요소들을 가운데 정렬 */
+    width: 100%;
+    /* 폼의 너비를 최대로 설정 */
+    margin-top: 10px;
+    /* 위쪽 여백 추가 */
+}
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    /* 요소들을 수직으로 쌓음 */
+    align-items: center;
+    /* 가로축에 대하여 중앙 정렬 */
+    justify-content: center;
+    /* 세로축에 대하여 중앙 정렬 */
+    padding: 20px;
+    /* 패딩 추가 */
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    /* 요소들을 수직으로 정렬 */
+    align-items: center;
+    /* 요소들을 가로축 중앙으로 정렬 */
+    justify-content: center;
+    /* 요소들을 세로축 중앙으로 정렬 */
+    padding: 20px;
+}
+
+@font-face {
+    font-family: 'JalnanGothic';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/JalnanGothic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.header-container h2 {
+    font-family: 'JalnanGothic', sans-serif;
+    /* 기본 글꼴과 함께 사용자 지정 글꼴을 적용 */
+    /* 나머지 스타일 속성들 */
+}
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    /* form 내부 요소들을 가운데 정렬 */
+    width: auto;
+    /* 폼의 너비를 내용에 맞게 조정 */
+    margin-top: 10px;
+    /* 위쪽 여백 추가 */
+}
+
+.search-form input[type="submit"] {
+    background-color: #50bc54;
+    /* 버튼 배경색 설정 */
+    color: white;
+    /* 버튼 텍스트 색상을 흰색으로 설정 */
+    border: none;
+    /* 기본 테두리 제거 */
+    padding: 10px 15px;
+    /* 버튼 안쪽 여백 설정 */
+    border-radius: 5px;
+    /* 버튼 모서리 둥글게 설정 */
+    cursor: pointer;
+    /* 마우스 오버시 커서 변경 */
+}
+
+/* 마우스 오버시 버튼 스타일 변경을 위한 선택자 */
+.search-form input[type="submit"]:hover {
+    background-color: #449d48;
+    /* 버튼 배경색을 어둡게 변경 */
+}
+
+
+.search-form input[type="date"],
+.search-form input[type="submit"] {
+    height: 30px;
+    /* 세로 높이 설정 */
+    padding: 5px 10px;
+    margin: 0 5px;
+    /* 입력란과 버튼 사이의 여백 */
 }
 
 .exercises-container {
@@ -17,12 +101,20 @@
     margin-bottom: 20px;
 }
 
-.exercise-section {
+/* .exercise-section {
     width: 48%;
     background-color: #f9f9f9;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+.exercise-section {
+    width: 48%;
+    /* 각 섹션의 너비 */
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .exercise-section h2 {
@@ -30,6 +122,7 @@
     border-bottom: 1px solid #ccc;
     padding-bottom: 5px;
     margin-bottom: 10px;
+    text-align: left;
 }
 
 .chart-container {
@@ -39,4 +132,202 @@
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+}
+
+.exercise-section h3 {
+    font-size: 24px;
+    /* 제목 크기 */
+    color: #333;
+    margin-bottom: 15px;
+    /* 제목과 내용 사이의 여백 */
+    text-align: center;
+    /* 제목 정렬 */
+    font-family: 'JalnanGothic', sans-serif;
+    /* 사용자 지정 글꼴 적용 */
+    font-weight: lighter;
+    /* 글꼴 두께를 얇게 설정 */
+}
+
+.exercise-card {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 0.5px solid #ccc;
+    /* 테두리 색상을 회색으로 설정하고, 너비를 1px로 설정 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* 그림자를 더 진하고 넓게 설정 */
+}
+
+.exercise-card p,
+.exercise-card a {
+    font-family: 'NanumSquare', sans-serif;
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    /* 제목과 날짜 사이의 공간을 균등하게 배분 */
+    align-items: center;
+    /* 세로 중앙 정렬 */
+    margin-bottom: 10px;
+    /* 헤더와 세부사항 사이의 여백 */
+}
+
+.exercise-card h3 {
+    margin-top: 0;
+    color: #007bff;
+    /* 운동 카드 제목 색상 */
+    text-align: left;
+    flex-grow: 1;
+    /* 제목이 가능한 공간을 차지하도록 함 */
+}
+
+.exercise-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* 수정, 삭제 버튼 오른쪽 정렬 */
+    padding-left: 0px;
+    /* p 태그들과의 간격 */
+}
+
+.exercise-actions a {
+    color: #007bff;
+    /* 링크 색상 */
+    text-decoration: none;
+    /* 밑줄 제거 */
+    margin: 0 5px;
+    /* 링크들 사이의 마진 줄임 */
+    white-space: nowrap;
+}
+
+/* 추가: 각 섹션을 가로로 나란히 배열 */
+.exercise-section-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 추가: 각 섹션을 구분하기 위한 컨테이너 */
+.aerobic-container,
+.weight-container {
+    width: 48%;
+}
+
+.exercise-card p {
+    margin: 5px 10px;
+    /* 각 항목 사이의 여백을 조정 */
+    flex: 1 1 auto;
+    /* 플렉스 아이템으로 설정 */
+    min-width: 0;
+    /* 줄바꿈을 위한 최소 너비 설정 */
+    white-space: nowrap;
+    /* 줄바꿈 방지 */
+    overflow: hidden;
+    /* 내용이 넘칠 경우 숨김 */
+    text-overflow: ellipsis;
+    /* 넘치는 내용을 말줄임표로 표시 */
+}
+
+.exercise-header .exercise-date {
+    margin: 0;
+    flex: none;
+    /* 이 항목은 유연하게 늘어나지 않음 */
+    white-space: nowrap;
+    /* 날짜가 줄바꿈되지 않도록 함 */
+}
+
+.exercise-details {
+    display: flex;
+    flex-wrap: wrap;
+    /* 내용이 넘칠 경우 줄바꿈 */
+    justify-content: flex-end;
+    /* 오른쪽 정렬 */
+    align-items: center;
+    /* 내용을 세로 중앙 정렬 */
+    gap: 0px;
+    /* 항목 사이의 간격 */
+}
+
+.exercise-details p,
+.exercise-details .exercise-actions {
+    margin: 5px;
+    flex: 1 1 auto;
+    /* 내용에 따라 크기 조정 */
+    min-width: 0;
+    /* 너무 많은 내용이 있는 경우 무시 */
+    white-space: nowrap;
+    /* 내용이 줄바꿈되지 않도록 함 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.exercise-details .exercise-actions a {
+    margin-right: 10px;
+    /* 링크 사이의 여백 */
+    white-space: nowrap;
+}
+
+/* p 태그와 링크가 같은 줄에 있을 수 있도록 flex-basis 값을 조정 */
+.exercise-details p,
+.exercise-details .exercise-actions a {
+    flex-basis: 20%;
+    /* 적절한 공간을 할당 */
+    text-align: left;
+}
+
+.exercise-details p {
+    margin: 5px 5px;
+    flex: 1 1 auto;
+    /* 가용 공간에 맞게 각 p 태그가 유연하게 늘어남 */
+    min-width: 0;
+    /* 최소 너비 설정 */
+    text-align: right;
+}
+
+/* 웨이트 특정 정보에 대한 스타일 */
+.weight-container .exercise-details p {
+    flex: 1 1 20%;
+    /* 웨이트 세부 정보가 더 많으므로 더 작은 비율로 설정 */
+}
+
+.exercise-header h3,
+.exercise-header .exercise-date {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 100px;
+}
+
+.weight-details {
+    display: flex;
+    justify-content: space-between;
+    /* 항목 사이에 공간을 균등하게 배분 */
+    align-items: center;
+    /* 세로 중앙 정렬 */
+    flex-wrap: wrap;
+    /* 필요에 따라 항목을 다음 줄로 넘김 */
+}
+
+.weight-details p,
+.weight-details .exercise-actions {
+    margin: 5px;
+    flex: 1 1 auto;
+    /* 내용에 따라 크기 조정, 하지만 더 작은 flex-basis가 필요할 수 있음 */
+    white-space: nowrap;
+    /* 내용이 줄바꿈되지 않도록 함 */
+}
+
+.weight-details .exercise-actions a {
+    margin-right: 10px;
+    /* 링크 사이의 여백 */
+    white-space: nowrap;
+}
+
+.weight-details p,
+.weight-details .exercise-actions a {
+    flex-basis: 20%;
+    /* 적절한 공간을 할당 */
+    text-align: left;
 }
