@@ -45,31 +45,10 @@ def get_exercises_for_date(request, date):
     data = list(exercises.values('exercise_date', 'exercise_type', 'exercise_name', 'exercise_amount', 'calories_burned', 'weight', 'reps', 'sets'))
     return JsonResponse(data, safe=False)
 
-# 기존의 index페이지 views.py 함수
-# @login_required
-# def exercise_index(request):
-#     user_instance = UsersAppUser.objects.get(id=request.user.id)
-
-#     # 현재 날짜를 naive datetime 객체로 가져오기
-#     today = datetime.date.today()
-
-#     if request.method == "POST":
-#         search_date = request.POST.get('search_date')
-
-#         if search_date:
-#             search_date = datetime.datetime.strptime(search_date, '%Y-%m-%d').date()
-#             exercises = Exercise.objects.filter(user=user_instance, exercise_date__date=search_date)
-#         else:
-#             exercises = Exercise.objects.none()
-#     else:
-#         # 처음 페이지에 접속했거나 GET 요청인 경우 오늘 날짜의 운동 기록을 보여줌
-#         exercises = Exercise.objects.filter(user=user_instance, exercise_date__date=today).order_by('exercise_date')
-
-#     return render(request, 'exercise/exercise_index.html', {'exercises': exercises, 'today': today})
-
 @login_required
 def exercise_index(request):
     user_instance = UsersAppUser.objects.get(id=request.user.id)
+    consumed_calories = calculate_calories(user_instance)
     today = date.today()
 
     if request.method == "POST":
@@ -78,20 +57,32 @@ def exercise_index(request):
             search_date = datetime.strptime(search_date, '%Y-%m-%d').date()
             exercises = Exercise.objects.filter(user=user_instance, exercise_date__date=search_date)
         else:
+            search_date = today
             exercises = Exercise.objects.none()
     else:
         exercises = Exercise.objects.filter(user=user_instance, exercise_date__date=today).order_by('exercise_date')
+        search_date = today
+
+    daily_calories = exercises.aggregate(total_calories=Sum('calories_burned'))['total_calories'] or 0
 
     # 날짜별로 칼로리 합계를 계산
     calorie_data = Exercise.objects.filter(user=user_instance).annotate(date=TruncDay('exercise_date')).values('date').annotate(total_calories=Sum('calories_burned')).order_by('date')
-    dates = [data['date'].strftime("%Y-%m-%d") for data in calorie_data]
-    calories = [data['total_calories'] for data in calorie_data]
+    dates = [data['date'].strftime("%Y-%m-%d") for data in calorie_data if data['date'] is not None]
+    calories = [data['total_calories'] for data in calorie_data if data['date'] is not None]
+
+    # 사용자의 하루 총 소비 칼로리 계산 (기초 대사량(BMR)에 활동 계수를 곱한 값 + 운동으로 인한 칼로리 소모)
+    consumed_calories = calculate_calories(user_instance)  # 기존에 계산한 consumed_calories를 가져옴
+    total_consumed_calories = consumed_calories + daily_calories  # 그날 소모한 총 칼로리
 
     return render(request, 'exercise/exercise_index.html', {
         'exercises': exercises, 
         'today': today,
         'dates': dates, 
-        'calories': calories
+        'calories': calories,
+        'consumed_calories': consumed_calories,
+        'search_date': search_date,
+        'total_consumed_calories': total_consumed_calories,
+        'daily_calories': daily_calories,
     })
 
 @login_required
@@ -157,3 +148,22 @@ def predict_calories(request):
     else:
         # POST 요청이 아닌 경우
         return JsonResponse({"error": "Only POST requests are allowed."}, status=405)
+    
+
+# 기초 대사량(BMR)과 소비 칼로리를 계산하는 함수
+def calculate_calories(user):
+    # 나이 계산 (오늘 기준으로 계산)
+    age = date.today().year - user.user_birth.year
+
+    # BMR 계산
+    if user.user_gender == 1:  # 여성
+        bmr = (10 * user.user_weight) + (6.25 * user.user_height) - (5 * age) - 161
+    else:  # 남성
+        bmr = (10 * user.user_weight) + (6.25 * user.user_height) - (5 * age) + 5
+
+    # 활동 계수를 기반으로 소비 칼로리 계산
+    activity_levels = {'1단계': 1.2, '2단계': 1.375, '3단계': 1.55, '4단계': 1.725, '5단계': 1.9}
+    activity_factor = activity_levels.get(user.user_activity, 1)
+    total_calories = bmr * activity_factor
+    
+    return total_calories

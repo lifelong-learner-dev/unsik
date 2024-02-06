@@ -53,8 +53,8 @@
                     <p class="exercise-date">{{ exercise.exercise_date }}</p>
                 </div>
                 <div class="exercise-details">
-                    <p>{{ exercise.exercise_amount }}분</p>
-                    <p>{{ exercise.calories_burned }}kcal</p>
+                    <p>{{ exercise.exercise_amount }}분 / {{ exercise.calories_burned }}kcal</p>
+                    <!-- <p>{{ exercise.calories_burned }}kcal</p> -->
                     <div class="exercise-actions">
                         <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
                         <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
@@ -75,11 +75,11 @@
                     <p class="exercise-date">{{ exercise.exercise_date }}</p>
                 </div>
                 <div class="exercise-details">
-                    <p>{{ exercise.exercise_amount }}분</p>
-                    <p>{{ exercise.calories_burned }}kcal</p>
+                    <p>{{ exercise.exercise_amount }}분 / {{ exercise.calories_burned }}kcal / {{ exercise.weight }}kg / {{ exercise.reps }}회 / {{ exercise.sets }}set</p>
+                    <!-- <p>{{ exercise.calories_burned }}kcal</p>
                     <p>{{ exercise.weight }}kg</p>
                     <p>{{ exercise.reps }}회</p>
-                    <p>{{ exercise.sets }}set</p>
+                    <p>{{ exercise.sets }}set</p> -->
                     <div class="exercise-actions">
                         <a href="{% url 'exercise_edit' exercise.postnum %}">수정</a>
                         <a href="{% url 'exercise_delete' exercise.postnum %}" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
@@ -97,6 +97,10 @@
 
     <div class="chart-container" style="position: relative; height: auto; width: 70%;">
         <canvas id="calorieChart"></canvas>
+    </div>
+    <div class="show-calories">
+        <h4>{{ search_date }} 소비한 총 칼로리 {{ total_consumed_calories|floatformat:2 }}kcal</h4>
+        <p>{{ user.username }}님의 기초 대사량과 활동계수를 곱한 소비 칼로리 {{ consumed_calories|floatformat:2 }}kcal와 당일 운동으로 소모한 {{ daily_calories|floatformat:2 }}kcal를 더한 값이에요!</p>
     </div>
 </div>
 {% endblock content %}
