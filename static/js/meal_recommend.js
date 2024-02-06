@@ -24,7 +24,7 @@ $(document).ready(function () {
 
                 // 현재 위치를 기반으로 지도 그리기
                 map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 16,
+                    zoom: 14,
                     center: currentLocation,
                     styles: [
                         // 쓸데없는 마커들 지우기
@@ -138,7 +138,7 @@ $(document).ready(function () {
 
     initMap(' ');
 
-})
+});
 
 // 일단 안씀
 // function callback(results, status) {
