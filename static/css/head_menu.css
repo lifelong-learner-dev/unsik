@@ -160,6 +160,13 @@
     transition-duration: 0.5s;
 }
 
+.btn-info {
+    --bs-btn-bg: #50bc54!important;
+    --bs-btn-hover-bg: #358b38!important;
+    --bs-btn-color: #fff!important;
+    --bs-btn-hover-color: #fff!important;
+}
+
 /* 미완성 미디어 쿼리 */
 @media (max-width: 768px) {
     .head_menu > li {
