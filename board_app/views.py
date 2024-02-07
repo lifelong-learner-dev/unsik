@@ -54,7 +54,7 @@ def board_insert(request):
 @login_required
 def board_update(request, postnum):
     # (1) 전달받은 bookno에 해당되는 상품 정보 가져와서
-    book = get_object_or_404(Community, pk=postnum)
+    board = get_object_or_404(Community, pk=postnum)
         # 유효성 검사 is_valid
     if request.method == "POST":
         # (3) 폼변수의 가져온 값(=book 데이터 내용)을 form 변수에 저장
@@ -73,9 +73,9 @@ def board_update(request, postnum):
             board.save()
             # (7) DB에 저장 후 결과 확인하기 위해 상품 조회 화면으로 이동 (포워딩)
             # redirect() 사용
-            return redirect('book_list')
+            return redirect('board_list')
     else:
-        form = BoardForm(instance=book) #처음 form 화면 출력
+        form = BoardForm(instance=board) #처음 form 화면 출력
         # form의 bookno에 해당되는 상품 데이터 출력
 
     # (8) else : POST 요청이 아니라면 입력 폼 그대로 출력

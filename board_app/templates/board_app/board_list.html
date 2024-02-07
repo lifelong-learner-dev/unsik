@@ -29,7 +29,7 @@
                     <td class="text-center" scope="row"> {{ bd.user.username }} </td>
                     <td class="text-center" scope="row"> {{ bd.post_date|date:"Y년 m월 d일" }} </td>
                     <td class="text-center" scope="row">
-                        <a href="{% url 'board_update' bd.postnum %}" class="btn btn-info" role="button">수정</a>
+                        <a href="{% url 'board_update' bd.postnum %}" class="btn-info" role="button">수정</a>
                     </td>
                     <td class="text-center" scope="row">
                         <a href="{% url 'board_delete' bd.postnum %}" class="btn btn-danger" role="button" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
@@ -74,5 +74,15 @@
 .btn-primary:hover {
     background-color: #409f48;
 }
+
+.btn-info{
+    background-color: #50bc54;
+    border: none;
+    color: #fff;
+}
+.btn-info:hover {
+    background-color: #409f48;
+}
+
 </style>
 {% endblock content %}
